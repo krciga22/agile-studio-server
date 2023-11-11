@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Agile Studio specific ignores
+README.Development.md
+appsettings.Development.json
