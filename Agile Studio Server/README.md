@@ -1,3 +1,3 @@
-#Agile Studio Server
+# Agile Studio Server
 
-Agile Studio Server is an api based web application that allows developers to manage their agile projects easily with only the basic agile essentials!
+Agile Studio Server is the backend for Agile Studio. It provides essential agile project management services and exposes public apis for Agile Studio Client or other clients to consume.
