@@ -1,4 +1,4 @@
-namespace Agile_Studio_Server
+namespace AgileStudioServer
 {
     public class WeatherForecast
     {

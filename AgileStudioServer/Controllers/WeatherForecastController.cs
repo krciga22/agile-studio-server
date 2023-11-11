@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Agile_Studio_Server.Controllers
+namespace AgileStudioServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]

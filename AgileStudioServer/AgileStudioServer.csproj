@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Agile_Studio_Server</RootNamespace>
+    <RootNamespace>AgileStudioServer</RootNamespace>
     <UserSecretsId>458c7384-b3de-4f95-8b07-128aa520c896</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
   </PropertyGroup>

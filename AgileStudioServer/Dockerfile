@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Agile Studio Server/Agile Studio Server.csproj", "Agile Studio Server/"]
-RUN dotnet restore "Agile Studio Server/Agile Studio Server.csproj"
+COPY ["AgileStudioServer/AgileStudioServer.csproj", "AgileStudioServer/"]
+RUN dotnet restore "AgileStudioServer/AgileStudioServer.csproj"
 COPY . .
-WORKDIR "/src/Agile Studio Server"
-RUN dotnet build "Agile Studio Server.csproj" -c Release -o /app/build
+WORKDIR "/src/AgileStudioServer"
+RUN dotnet build "AgileStudioServer.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Agile Studio Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AgileStudioServer.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Agile Studio Server.dll"]
+ENTRYPOINT ["dotnet", "AgileStudioServer.dll"]

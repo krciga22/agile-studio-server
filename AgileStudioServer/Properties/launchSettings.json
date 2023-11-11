@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Agile_Studio_Server": {
+    "AgileStudioServer": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
