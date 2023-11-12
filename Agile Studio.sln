@@ -5,6 +5,11 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgileStudioServer", "AgileStudioServer\AgileStudioServer.csproj", "{1E5587B7-9000-4A9F-8ABB-FC04D8833349}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileStudioServerTest", "AgileStudioServerTest\AgileStudioServerTest.csproj", "{8CE236AF-CC63-42E0-BF82-4DAC340761BD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E5587B7-9000-4A9F-8ABB-FC04D8833349} = {1E5587B7-9000-4A9F-8ABB-FC04D8833349}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{1E5587B7-9000-4A9F-8ABB-FC04D8833349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E5587B7-9000-4A9F-8ABB-FC04D8833349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E5587B7-9000-4A9F-8ABB-FC04D8833349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CE236AF-CC63-42E0-BF82-4DAC340761BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CE236AF-CC63-42E0-BF82-4DAC340761BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CE236AF-CC63-42E0-BF82-4DAC340761BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CE236AF-CC63-42E0-BF82-4DAC340761BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
