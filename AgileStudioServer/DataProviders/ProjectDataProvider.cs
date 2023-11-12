@@ -15,10 +15,14 @@ namespace AgileStudioServer.DataProviders
         public List<ProjectApiResource> GetProjects()
         {
             List<Project> projects = _DBContext.Projects.ToList();
+
             List<ProjectApiResource> projectApiResources = new();
             projects.ForEach(project => {
-                ProjectApiResource projectApiResource = new(project);
+                projectApiResources.Add(
+                    new ProjectApiResource(project)
+                );
             });
+
             return projectApiResources;
         }
     }
