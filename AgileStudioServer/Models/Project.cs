@@ -12,6 +12,7 @@
 
         public Project(string title) { 
             Title = title;
+            CreatedOn = DateTime.Now;
         }
     }
 }

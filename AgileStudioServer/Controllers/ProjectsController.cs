@@ -1,5 +1,6 @@
 using AgileStudioServer.ApiResources;
 using AgileStudioServer.DataProviders;
+using AgileStudioServer.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServer.Controllers
@@ -19,6 +20,12 @@ namespace AgileStudioServer.Controllers
         public List<ProjectApiResource> Get()
         {
             return _projectDataProvider.GetProjects();
+        }
+
+        [HttpPost(Name = "CreateProject")]
+        public ProjectApiResource Post(ProjectPostDto projectPostDto)
+        {
+            return _projectDataProvider.CreateProject(projectPostDto);
         }
     }
 }

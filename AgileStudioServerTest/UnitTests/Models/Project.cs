@@ -1,6 +1,6 @@
 using AgileStudioServer.Models;
 
-namespace AgileStudioServerTest.Models
+namespace AgileStudioServerTest.UnitTests.Models
 {
     public class Project
     {

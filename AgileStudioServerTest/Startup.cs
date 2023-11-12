@@ -1,4 +1,6 @@
 ﻿using AgileStudioServer;
+using AgileStudioServer.Controllers;
+using AgileStudioServer.DataProviders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -33,6 +35,10 @@ namespace AgileStudioServerTest
                     )
                     .UseSnakeCaseNamingConvention();
             });
+
+            services.AddScoped<ProjectsController>();
+
+            services.AddScoped<ProjectDataProvider>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AgileStudioServer.ApiResources;
+using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
 
 namespace AgileStudioServer.DataProviders
@@ -24,6 +25,18 @@ namespace AgileStudioServer.DataProviders
             });
 
             return projectApiResources;
+        }
+
+        public ProjectApiResource CreateProject(ProjectPostDto projectPostDto)
+        {
+            var project = new Project(projectPostDto.Title) {
+                Description = projectPostDto.Description
+            };
+
+            _DBContext.Add(project);
+            _DBContext.SaveChanges();
+
+            return new ProjectApiResource(project);
         }
     }
 }
