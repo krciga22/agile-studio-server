@@ -1,6 +1,6 @@
-using AgileStudioServer.Models;
+using AgileStudioServer.ApiResources;
+using AgileStudioServer.DataProviders;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Immutable;
 
 namespace AgileStudioServer.Controllers
 {
@@ -8,19 +8,17 @@ namespace AgileStudioServer.Controllers
     [Route("[controller]")]
     public class ProjectsController : ControllerBase
     {
-        private readonly DBContext _db;
+        private readonly ProjectDataProvider _projectDataProvider;
 
-        public ProjectsController(DBContext db)
+        public ProjectsController(ProjectDataProvider projectDataProvider)
         {
-            _db = db;
+            _projectDataProvider = projectDataProvider;
         }
 
         [HttpGet(Name = "GetProjects")]
-        public ImmutableList<Project> Get()
+        public List<ProjectApiResource> Get()
         {
-            ImmutableList<Project> projects = _db.Projects.ToImmutableList();
-
-            return projects;
+            return _projectDataProvider.GetProjects();
         }
     }
 }

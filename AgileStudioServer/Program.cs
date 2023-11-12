@@ -1,3 +1,4 @@
+using AgileStudioServer.DataProviders;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioServer
@@ -33,6 +34,8 @@ namespace AgileStudioServer
                     )
                     .UseSnakeCaseNamingConvention();
             });
+
+            builder.Services.AddScoped<ProjectDataProvider>();
 
             var app = builder.Build();
 
