@@ -23,9 +23,16 @@ namespace AgileStudioServer.Controllers
         }
 
         [HttpPost(Name = "CreateProject")]
-        public ProjectApiResource Post(ProjectPostDto projectPostDto)
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public CreatedResult Post(ProjectPostDto projectPostDto)
         {
-            return _projectDataProvider.CreateProject(projectPostDto);
+            var projectApiResource = _projectDataProvider.CreateProject(projectPostDto);
+            // todo fix project url after creating new endpoint to get a project
+            var projectUrl = Url.Action("Get") ?? "";
+            return Created(projectUrl, projectApiResource);
         }
     }
 }

@@ -17,7 +17,9 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         [Fact]
         public void Create_Project_ReturnsProjectApiResource()
         {
-            var projectPostDto = new ProjectPostDto("Test Project");
+            var projectPostDto = new ProjectPostDto() {
+                Title = "Test Project"
+            };
 
             var projectApiResource = _ProjectDataProvider.CreateProject(projectPostDto);
 

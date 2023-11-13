@@ -1,25 +1,61 @@
 ﻿using AgileStudioServer;
-using AgileStudioServer.ApiResources;
-using AgileStudioServer.Controllers;
 using AgileStudioServer.Dto;
-using AgileStudioServerTest.IntegrationTests.DataProviders;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net.Http.Headers;
+using System.Net.Mime;
+using System.Text.Json;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
-    public class ProjectsControllerTest : AbstractControllerTest
+    public class ProjectsControllerTest : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly ProjectsController _ProjectsController;
+        private readonly WebApplicationFactory<Program> _factory;
 
-        public ProjectsControllerTest(DBContext dbContext, ProjectsController projectsController) : base(dbContext) {
-            _ProjectsController = projectsController;
+        public ProjectsControllerTest(WebApplicationFactory<Program> factory)
+        {
+            _factory = factory;
         }
 
         [Fact]
-        public void Post_ProjectPostDto_ReturnsProjectApiResource()
+        public async Task Post_Project_ReturnsCreatedResult()
         {
-            var projectPostDto = new ProjectPostDto("Test Project");
-            var projectApiResource = _ProjectsController.Post(projectPostDto);
-            Assert.IsType<ProjectApiResource>(projectApiResource);
+            var projectPostDto = new ProjectPostDto()
+            {
+                Title = "Test Project"
+            };
+            var httpContent = new StringContent(JsonSerializer.Serialize(projectPostDto), System.Text.Encoding.UTF8, "text/json");
+            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var client = _factory.CreateClient();
+            var response = await client.PostAsync("/Projects", httpContent);
+
+            Assert.Equal(
+                (Int32)System.Net.HttpStatusCode.Created,
+                (Int32)response.StatusCode
+            );
+        }
+
+        [Fact]
+        public async void Post_Project_ReturnsBadRequestReqult()
+        {
+            var projectPostDto = new ProjectPostDto()
+            {
+                Title = null
+            };
+            var httpContent = new StringContent(
+                JsonSerializer.Serialize(projectPostDto), 
+                System.Text.Encoding.UTF8, 
+                MediaTypeNames.Application.Json
+            );
+            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var client = _factory.CreateClient();
+            var response = await client.PostAsync("/Projects", httpContent);
+
+            Assert.Equal(
+                (Int32)System.Net.HttpStatusCode.BadRequest,
+                (Int32)response.StatusCode
+            );
         }
     }
 }
