@@ -2,7 +2,7 @@ using AgileStudioServer.Models;
 
 namespace AgileStudioServerTest.UnitTests.Models
 {
-    public class Project
+    public class ProjectTest
     {
         [Fact]
         public void TestConstructNewProject()

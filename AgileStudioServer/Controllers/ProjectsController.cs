@@ -2,6 +2,7 @@ using AgileStudioServer.ApiResources;
 using AgileStudioServer.DataProviders;
 using AgileStudioServer.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace AgileStudioServer.Controllers
 {
@@ -17,9 +18,24 @@ namespace AgileStudioServer.Controllers
         }
 
         [HttpGet(Name = "GetProjects")]
-        public List<ProjectApiResource> Get()
+        [ProducesResponseType(typeof(List<ProjectApiResource>), StatusCodes.Status200OK)]
+        public IActionResult Get()
         {
-            return _projectDataProvider.GetProjects();
+            return Ok(_projectDataProvider.GetProjects());
+        }
+
+        [HttpGet("{id}", Name = "GetProject")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)] // todo
+        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
+        public IActionResult Get(int id)
+        {
+            var project = _projectDataProvider.GetProject(id);
+            if (project == null){
+                return NotFound();
+            }
+
+            return Ok(project);
         }
 
         [HttpPost(Name = "CreateProject")]
@@ -30,8 +46,19 @@ namespace AgileStudioServer.Controllers
         public CreatedResult Post(ProjectPostDto projectPostDto)
         {
             var projectApiResource = _projectDataProvider.CreateProject(projectPostDto);
-            // todo fix project url after creating new endpoint to get a project
-            var projectUrl = Url.Action("Get") ?? "";
+
+            var urlActionContext = new UrlActionContext() { 
+                Action = nameof(Get),
+                Values = new { id = projectApiResource.ID },
+                Controller = nameof(ProjectsController),
+                Protocol = "http",
+                Host = "localhost",
+            };
+
+            var projectUrl = "";
+            if (Url != null){
+                projectUrl = Url.Action(urlActionContext) ?? projectUrl;
+            }
             return Created(projectUrl, projectApiResource);
         }
     }

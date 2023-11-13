@@ -13,7 +13,7 @@ namespace AgileStudioServer.DataProviders
             _DBContext = dbContext;
         }
 
-        public List<ProjectApiResource> GetProjects()
+        public virtual List<ProjectApiResource> GetProjects()
         {
             List<Project> projects = _DBContext.Projects.ToList();
 
@@ -27,7 +27,13 @@ namespace AgileStudioServer.DataProviders
             return projectApiResources;
         }
 
-        public ProjectApiResource CreateProject(ProjectPostDto projectPostDto)
+        public virtual ProjectApiResource? GetProject(int id)
+        {
+            Project? project = _DBContext.Projects.Find(id);
+            return project != null ? new ProjectApiResource(project) : null;
+        }
+
+        public virtual ProjectApiResource CreateProject(ProjectPostDto projectPostDto)
         {
             var project = new Project(projectPostDto.Title) {
                 Description = projectPostDto.Description
