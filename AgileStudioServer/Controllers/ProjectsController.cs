@@ -26,7 +26,7 @@ namespace AgileStudioServer.Controllers
 
         [HttpGet("{id}", Name = "GetProject")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)] // todo
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
@@ -47,17 +47,9 @@ namespace AgileStudioServer.Controllers
         {
             var projectApiResource = _projectDataProvider.CreateProject(projectPostDto);
 
-            var urlActionContext = new UrlActionContext() { 
-                Action = nameof(Get),
-                Values = new { id = projectApiResource.ID },
-                Controller = nameof(ProjectsController),
-                Protocol = "http",
-                Host = "localhost",
-            };
-
             var projectUrl = "";
             if (Url != null){
-                projectUrl = Url.Action(urlActionContext) ?? projectUrl;
+                projectUrl = Url.Action(nameof(Get), new { id = projectApiResource.ID }) ?? projectUrl;
             }
             return Created(projectUrl, projectApiResource);
         }
