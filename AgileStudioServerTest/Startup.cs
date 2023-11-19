@@ -36,8 +36,10 @@ namespace AgileStudioServerTest
                     .UseSnakeCaseNamingConvention();
             });
 
+            services.AddScoped<BacklogItemTypeSchemasController>();
             services.AddScoped<ProjectsController>();
 
+            services.AddScoped<BacklogItemTypeSchemaDataProvider>();
             services.AddScoped<ProjectDataProvider>();
         }
     }
