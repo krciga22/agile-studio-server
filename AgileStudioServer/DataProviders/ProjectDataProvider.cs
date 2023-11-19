@@ -44,5 +44,19 @@ namespace AgileStudioServer.DataProviders
 
             return new ProjectApiResource(project);
         }
+
+        public virtual ProjectApiResource? UpdateProject(int id, ProjectPatchDto projectPatchDto)
+        {
+            var project = _DBContext.Projects.Find(id);
+            if(project is null){
+                return null;
+            }
+
+            project.Title = projectPatchDto.Title;
+            project.Description = projectPatchDto.Description;
+            _DBContext.SaveChanges();
+
+            return new ProjectApiResource(project);
+        }
     }
 }

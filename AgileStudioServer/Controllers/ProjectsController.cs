@@ -53,5 +53,21 @@ namespace AgileStudioServer.Controllers
             }
             return Created(projectUrl, projectApiResource);
         }
+
+        [HttpPatch(Name = "UpdateProject")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public IActionResult Patch(int id, ProjectPatchDto projectPatchDto)
+        {
+            var projectApiResource = _projectDataProvider.UpdateProject(id, projectPatchDto);
+            if(projectApiResource is null){
+                return NotFound();
+            }
+            
+            return new OkObjectResult(projectApiResource);
+        }
     }
 }

@@ -51,6 +51,19 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             Assert.Equal(projects.Count, projectApiResources.Count);
         }
 
+        [Fact]
+        public void UpdateProject_WithValidProjectPatchDto_ReturnsProjectApiResource()
+        {
+            var project = CreateProject();
+            var projectPatchDto = new ProjectPatchDto() {
+                Title = $"{project.Title} Updated"
+            };
+
+            var projectApiResource = _ProjectDataProvider.UpdateProject(project.ID, projectPatchDto);
+            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);

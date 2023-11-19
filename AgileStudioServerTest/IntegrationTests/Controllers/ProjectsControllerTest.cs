@@ -75,6 +75,25 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             Assert.Equal(projectPostDto.Title, projectApiResource.Title);
         }
 
+        [Fact]
+        public void Patch_WithProjectPatchDto_ReturnsProjectApiResource()
+        {
+            var project = CreateProject();
+
+            var projectPatchDto = new ProjectPatchDto() { 
+                Title = $"{project.Title} Updated"
+            };
+            IActionResult result = _ProjectsController.Patch(project.ID, projectPatchDto);
+
+            ProjectApiResource? projectApiResource = null;
+            if (result is OkObjectResult okObjectResult){
+                projectApiResource = okObjectResult.Value as ProjectApiResource;
+            }
+
+            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
