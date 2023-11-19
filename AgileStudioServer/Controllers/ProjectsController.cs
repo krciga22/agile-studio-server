@@ -69,5 +69,24 @@ namespace AgileStudioServer.Controllers
             
             return new OkObjectResult(projectApiResource);
         }
+
+        [HttpDelete(Name = "DeleteProject")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public IActionResult Delete(int id)
+        {
+            var project = _projectDataProvider.GetProject(id);
+            if(project is null){
+                return NotFound();
+            }
+
+            var result = _projectDataProvider.DeleteProject(id);
+            if(!result){
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
+            return new OkResult();
+        }
     }
 }

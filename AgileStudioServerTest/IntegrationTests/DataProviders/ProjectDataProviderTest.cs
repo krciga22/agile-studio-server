@@ -64,6 +64,15 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
         }
 
+        [Fact]
+        public void DeleteProject_WithValidId_ReturnsTrue()
+        {
+            var project = CreateProject();
+
+            bool result = _ProjectDataProvider.DeleteProject(project.ID);
+            Assert.True(result);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);

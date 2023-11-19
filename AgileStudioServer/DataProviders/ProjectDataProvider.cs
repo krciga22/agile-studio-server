@@ -58,5 +58,17 @@ namespace AgileStudioServer.DataProviders
 
             return new ProjectApiResource(project);
         }
+
+        public virtual bool DeleteProject(int id)
+        {
+            var project = _DBContext.Projects.Find(id);
+            if(project is null){
+                return false;
+            }
+
+            _DBContext.Projects.Remove(project);
+            _DBContext.SaveChanges();
+            return true;
+        }
     }
 }
