@@ -1,61 +1,78 @@
-﻿using AgileStudioServer;
+﻿
+using AgileStudioServer;
+using AgileStudioServer.ApiResources;
+using AgileStudioServer.Controllers;
 using AgileStudioServer.Dto;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text.Json;
+using AgileStudioServer.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
-    public class ProjectsControllerTest : IClassFixture<WebApplicationFactory<Program>>
+    public class ProjectsControllerTest : AbstractControllerTest
     {
-        private readonly WebApplicationFactory<Program> _factory;
+        private readonly ProjectsController _ProjectsController;
 
-        public ProjectsControllerTest(WebApplicationFactory<Program> factory)
+        public ProjectsControllerTest(DBContext dbContext, ProjectsController projectsController) : base(dbContext)
         {
-            _factory = factory;
+            _ProjectsController = projectsController;
         }
 
         [Fact]
-        public async Task Post_Project_ReturnsCreatedResult()
+        public void Get_WithNoArguments_ReturnsProjectApiResources()
         {
-            var projectPostDto = new ProjectPostDto()
-            {
+            List<Project> projects = new () {
+                CreateProject("Test Project 1"),
+                CreateProject("Test Project 2")
+            };
+
+            List<ProjectApiResource>? projectApiResources = null;
+            IActionResult result = _ProjectsController.Get();
+            if (result is OkObjectResult okResult){
+                projectApiResources = okResult.Value as List<ProjectApiResource>;
+            }
+
+            Assert.IsType<List<ProjectApiResource>>(projectApiResources);
+            Assert.Equal(projects.Count, projectApiResources.Count);
+        }
+
+        [Fact]
+        public void Get_WithProjectId_ReturnsProjectApiResource()
+        {
+            var project = CreateProject();
+
+            ProjectApiResource? projectApiResource = null;
+            IActionResult result = _ProjectsController.Get(project.ID);
+            if (result is OkObjectResult okResult){
+                projectApiResource = okResult.Value as ProjectApiResource;
+            }
+
+            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.Equal(project.ID, projectApiResource.ID);
+        }
+
+        [Fact]
+        public void Post_WithProjectPostDto_ReturnsProjectApiResource()
+        {
+            var projectPostDto = new ProjectPostDto() { 
                 Title = "Test Project"
             };
-            var httpContent = new StringContent(JsonSerializer.Serialize(projectPostDto), System.Text.Encoding.UTF8, "text/json");
-            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-            var client = _factory.CreateClient();
-            var response = await client.PostAsync("/Projects", httpContent);
+            ProjectApiResource? projectApiResource = null;
+            IActionResult result = _ProjectsController.Post(projectPostDto);
+            if (result is CreatedResult createdResult){
+                projectApiResource = createdResult.Value as ProjectApiResource;
+            }
 
-            Assert.Equal(
-                (Int32)System.Net.HttpStatusCode.Created,
-                (Int32)response.StatusCode
-            );
+            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.Equal(projectPostDto.Title, projectApiResource.Title);
         }
 
-        [Fact]
-        public async void Post_Project_ReturnsBadRequestReqult()
+        private Project CreateProject(string title = "test Project")
         {
-            var projectPostDto = new ProjectPostDto()
-            {
-                Title = null
-            };
-            var httpContent = new StringContent(
-                JsonSerializer.Serialize(projectPostDto), 
-                System.Text.Encoding.UTF8, 
-                MediaTypeNames.Application.Json
-            );
-            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-            var client = _factory.CreateClient();
-            var response = await client.PostAsync("/Projects", httpContent);
-
-            Assert.Equal(
-                (Int32)System.Net.HttpStatusCode.BadRequest,
-                (Int32)response.StatusCode
-            );
+            var project = new Project(title);
+            _DBContext.Projects.Add(project);
+            _DBContext.SaveChanges();
+            return project;
         }
     }
 }
