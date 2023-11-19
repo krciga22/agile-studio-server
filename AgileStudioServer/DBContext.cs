@@ -7,6 +7,8 @@ namespace AgileStudioServer
     {
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<BacklogItemTypeSchema> BacklogItemTypeSchemas { get; set; }
+
         public DBContext(DbContextOptions contextOptions) : base(contextOptions)
         {
 
