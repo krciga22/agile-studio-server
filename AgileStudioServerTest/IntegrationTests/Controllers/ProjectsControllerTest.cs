@@ -51,6 +51,14 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void Get_WithInvalidProjectId_ReturnsNotFoundResult()
+        {
+            var nonExistantId = 9999;
+            IActionResult result = _ProjectsController.Get(nonExistantId);
+            Assert.IsType<NotFoundResult>(result as NotFoundResult);
+        }
+
+        [Fact]
         public void Post_WithProjectPostDto_ReturnsProjectApiResource()
         {
             var projectPostDto = new ProjectPostDto() { 
