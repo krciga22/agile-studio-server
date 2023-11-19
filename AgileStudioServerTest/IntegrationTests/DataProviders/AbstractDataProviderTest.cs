@@ -4,7 +4,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
 {
     public abstract class AbstractDataProviderTest : IDisposable
     {
-        private readonly DBContext _DBContext;
+        protected readonly DBContext _DBContext;
 
         public AbstractDataProviderTest(DBContext dbContext)
         {
