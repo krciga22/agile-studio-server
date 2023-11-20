@@ -6,11 +6,11 @@ using AgileStudioServer.Models;
 
 namespace AgileStudioServerTest.IntegrationTests.DataProviders
 {
-    public class BacklogItemTypeSchemaTest : AbstractDataProviderTest
+    public class BacklogItemTypeSchemaDataProviderTest : AbstractDataProviderTest
     {
         private readonly BacklogItemTypeSchemaDataProvider _BacklogItemTypeSchemaDataProvider;
 
-        public BacklogItemTypeSchemaTest(DBContext dbContext, BacklogItemTypeSchemaDataProvider backlogItemTypeSchemaDataProvider) : base(dbContext)
+        public BacklogItemTypeSchemaDataProviderTest(DBContext dbContext, BacklogItemTypeSchemaDataProvider backlogItemTypeSchemaDataProvider) : base(dbContext)
         {
             _BacklogItemTypeSchemaDataProvider = backlogItemTypeSchemaDataProvider;
         }
