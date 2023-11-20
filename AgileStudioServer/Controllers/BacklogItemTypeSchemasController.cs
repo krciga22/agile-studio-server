@@ -16,6 +16,27 @@ namespace AgileStudioServer.Controllers
             _backlogItemTypeSchemaDataProvider = backlogItemTypeSchemaDataProvider;
         }
 
+        [HttpGet(Name = "GetBacklogItemTypeSchemas")]
+        [ProducesResponseType(typeof(List<BacklogItemTypeSchemaApiResource>), StatusCodes.Status200OK)]
+        public IActionResult Get()
+        {
+            return Ok(_backlogItemTypeSchemaDataProvider.GetBacklogItemTypeSchemas());
+        }
+
+        [HttpGet("{id}", Name = "GetBacklogItemTypeSchema")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BacklogItemTypeSchemaApiResource), StatusCodes.Status200OK)]
+        public IActionResult Get(int id)
+        {
+            var apiResource = _backlogItemTypeSchemaDataProvider.GetBacklogItemTypeSchema(id);
+            if (apiResource == null){
+                return NotFound();
+            }
+
+            return Ok(apiResource);
+        }
+
         [HttpPost(Name = "CreateBacklogItemTypeSchema")]
         [Consumes("application/json")]
         [Produces("application/json")]
