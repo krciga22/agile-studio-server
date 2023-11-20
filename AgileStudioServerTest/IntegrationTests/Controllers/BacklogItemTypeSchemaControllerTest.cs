@@ -73,6 +73,28 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             Assert.Equal(dto.Title, apiResource.Title);
         }
 
+        [Fact]
+        public void Patch_WithPatchDto_ReturnsApiResource()
+        {
+            var project = CreateProject();
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+
+            var dto = new BacklogItemTypeSchemaPatchDto(){
+                Title = $"{backlogItemTypeSchema.Title} Updated",
+            };
+
+            IActionResult result = _BacklogItemTypeSchemasController.Patch(backlogItemTypeSchema.ID, dto);
+
+            BacklogItemTypeSchemaApiResource? apiResource = null;
+            if (result is OkObjectResult okObjectResult)
+            {
+                apiResource = okObjectResult.Value as BacklogItemTypeSchemaApiResource;
+            }
+
+            Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
+            Assert.Equal(dto.Title, apiResource.Title);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);

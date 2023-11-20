@@ -53,5 +53,21 @@ namespace AgileStudioServer.Controllers
             }
             return Created(apiResourceUrl, apiResource);
         }
+
+        [HttpPatch(Name = "UpdateBacklogItemTypeSchema")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BacklogItemTypeSchemaApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto dto)
+        {
+            var apiResource = _backlogItemTypeSchemaDataProvider.UpdateBacklogItemTypeSchema(id, dto);
+            if (apiResource is null){
+                return NotFound();
+            }
+
+            return new OkObjectResult(apiResource);
+        }
     }
 }

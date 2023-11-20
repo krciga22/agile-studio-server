@@ -56,6 +56,21 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
         }
 
+        [Fact]
+        public void UpdateBacklogItemTypeSchema_WithValidDto_ReturnsApiResource()
+        {
+            var project = CreateProject();
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+
+            var dto = new BacklogItemTypeSchemaPatchDto(){
+                Title = $"{backlogItemTypeSchema.Title} Updated"
+            };
+
+            var apiResource = _dataProvider.UpdateBacklogItemTypeSchema(backlogItemTypeSchema.ID, dto);
+            Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
+            Assert.Equal(dto.Title, apiResource.Title);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
