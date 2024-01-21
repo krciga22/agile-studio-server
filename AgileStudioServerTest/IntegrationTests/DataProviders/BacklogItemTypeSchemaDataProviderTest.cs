@@ -45,8 +45,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         [Fact]
         public void GetBacklogItemTypeSchema_ById_ReturnsApiResource()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             var apiResource = _dataProvider.Get(backlogItemTypeSchema.ID);
 
@@ -56,8 +55,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         [Fact]
         public void UpdateBacklogItemTypeSchema_WithValidDto_ReturnsApiResource()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
@@ -70,8 +68,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         [Fact]
         public void DeleteBacklogItemTypeSchema_WithValidId_ReturnsTrue()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             bool result = _dataProvider.Delete(backlogItemTypeSchema.ID);
             Assert.True(result);
@@ -85,8 +82,12 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             return project;
         }
 
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project project, string title = "Test Backlog Item Type Schema")
+        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project? project = null, string title = "Test Backlog Item Type Schema")
         {
+            if (project is null){
+                project = CreateProject();
+            }
+
             var backlogItemTypeSchema = new BacklogItemTypeSchema(title)
             {
                 Project = project

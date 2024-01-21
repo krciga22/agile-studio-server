@@ -40,8 +40,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Get_WithId_ReturnsApiResource()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
             IActionResult result = _BacklogItemTypeSchemasController.Get(backlogItemTypeSchema.ID);
@@ -73,8 +72,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Patch_WithPatchDto_ReturnsApiResource()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
@@ -94,8 +92,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Delete_WithId_ReturnsOkResult()
         {
-            var project = CreateProject();
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             IActionResult result = _BacklogItemTypeSchemasController.Delete(backlogItemTypeSchema.ID);
 
@@ -110,8 +107,12 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             return project;
         }
 
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project project, string title = "Test Backlog Item Type Schema")
+        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project? project = null, string title = "Test Backlog Item Type Schema")
         {
+            if(project is null){
+                project = CreateProject();
+            }
+
             var backlogItemTypeSchema = new BacklogItemTypeSchema(title) 
             { 
                 Project = project
