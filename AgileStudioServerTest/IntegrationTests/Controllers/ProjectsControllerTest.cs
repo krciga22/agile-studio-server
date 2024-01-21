@@ -20,7 +20,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Get_WithNoArguments_ReturnsProjectApiResources()
+        public void Get_WithNoArguments_ReturnsApiResources()
         {
             List<Project> projects = new () {
                 CreateProject("Test Project 1"),
@@ -38,7 +38,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Get_WithProjectId_ReturnsProjectApiResource()
+        public void Get_WithId_ReturnsApiResource()
         {
             var project = CreateProject();
 
@@ -53,7 +53,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Get_WithInvalidProjectId_ReturnsNotFoundResult()
+        public void Get_WithInvalidId_ReturnsNotFoundResult()
         {
             var nonExistantId = _NonExistantProjectId;
             IActionResult result = _Controller.Get(nonExistantId);
@@ -61,7 +61,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Post_WithProjectPostDto_ReturnsProjectApiResource()
+        public void Post_WithDto_ReturnsApiResource()
         {
             var projectPostDto = new ProjectPostDto("Test Project");
 
@@ -76,7 +76,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Patch_WithProjectPatchDto_ReturnsProjectApiResource()
+        public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var project = CreateProject();
 

@@ -18,7 +18,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void GetByProject_WithProjectId_ReturnsApiResources()
+        public void GetByProject_WithId_ReturnsApiResources()
         {
             var project = CreateProject();
 
@@ -53,7 +53,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Post_WithPostDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsApiResource()
         {
             var project = CreateProject();
 
@@ -70,7 +70,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Patch_WithPatchDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
