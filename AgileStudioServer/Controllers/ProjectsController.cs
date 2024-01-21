@@ -10,18 +10,18 @@ namespace AgileStudioServer.Controllers
     [Route("[controller]")]
     public class ProjectsController : ControllerBase
     {
-        private readonly ProjectDataProvider _projectDataProvider;
+        private readonly ProjectDataProvider DataProvider;
 
         public ProjectsController(ProjectDataProvider projectDataProvider)
         {
-            _projectDataProvider = projectDataProvider;
+            DataProvider = projectDataProvider;
         }
 
         [HttpGet(Name = "GetProjects")]
         [ProducesResponseType(typeof(List<ProjectApiResource>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            return Ok(_projectDataProvider.GetProjects());
+            return Ok(DataProvider.GetProjects());
         }
 
         [HttpGet("{id}", Name = "GetProject")]
@@ -30,7 +30,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var project = _projectDataProvider.GetProject(id);
+            var project = DataProvider.GetProject(id);
             if (project == null){
                 return NotFound();
             }
@@ -45,7 +45,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(ProjectPostDto projectPostDto)
         {
-            var projectApiResource = _projectDataProvider.CreateProject(projectPostDto);
+            var projectApiResource = DataProvider.CreateProject(projectPostDto);
 
             var projectUrl = "";
             if (Url != null){
@@ -62,7 +62,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ProjectPatchDto projectPatchDto)
         {
-            var projectApiResource = _projectDataProvider.UpdateProject(id, projectPatchDto);
+            var projectApiResource = DataProvider.UpdateProject(id, projectPatchDto);
             if(projectApiResource is null){
                 return NotFound();
             }
@@ -76,12 +76,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var project = _projectDataProvider.GetProject(id);
+            var project = DataProvider.GetProject(id);
             if(project is null){
                 return NotFound();
             }
 
-            var result = _projectDataProvider.DeleteProject(id);
+            var result = DataProvider.DeleteProject(id);
             if(!result){
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
