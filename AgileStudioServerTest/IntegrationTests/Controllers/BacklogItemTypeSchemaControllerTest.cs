@@ -99,6 +99,14 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             Assert.IsType<OkResult>(result as OkResult);
         }
 
+        [Fact]
+        public void Delete_WithInvalidId_ReturnsNotFoundResult()
+        {
+            IActionResult result = _Controller.Delete(Constants.NonExistantId);
+
+            Assert.IsType<NotFoundResult>(result as NotFoundResult);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
