@@ -9,18 +9,18 @@ namespace AgileStudioServer.Controllers
     [Route("[controller]")]
     public class BacklogItemTypeSchemasController : ControllerBase
     {
-        private readonly BacklogItemTypeSchemaDataProvider DataProvider;
+        private readonly BacklogItemTypeSchemaDataProvider _DataProvider;
 
         public BacklogItemTypeSchemasController(BacklogItemTypeSchemaDataProvider dataProvider)
         {
-            DataProvider = dataProvider;
+            _DataProvider = dataProvider;
         }
 
         [HttpGet(Name = "GetBacklogItemTypeSchemas")]
         [ProducesResponseType(typeof(List<BacklogItemTypeSchemaApiResource>), StatusCodes.Status200OK)]
         public IActionResult GetByProject(int projectId)
         {
-            return Ok(DataProvider.List(projectId));
+            return Ok(_DataProvider.List(projectId));
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemTypeSchema")]
@@ -29,7 +29,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(BacklogItemTypeSchemaApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = DataProvider.Get(id);
+            var apiResource = _DataProvider.Get(id);
             if (apiResource == null){
                 return NotFound();
             }
@@ -44,7 +44,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(BacklogItemTypeSchemaPostDto dto)
         {
-            var apiResource = DataProvider.Create(dto);
+            var apiResource = _DataProvider.Create(dto);
 
             var apiResourceUrl = "";
             if (Url != null){
@@ -62,7 +62,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto dto)
         {
-            var apiResource = DataProvider.Update(id, dto);
+            var apiResource = _DataProvider.Update(id, dto);
             if (apiResource is null){
                 return NotFound();
             }
@@ -76,12 +76,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = DataProvider.Get(id);
+            var apiResource = _DataProvider.Get(id);
             if (apiResource is null){
                 return NotFound();
             }
 
-            var result = DataProvider.Delete(id);
+            var result = _DataProvider.Delete(id);
             if (!result){
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
