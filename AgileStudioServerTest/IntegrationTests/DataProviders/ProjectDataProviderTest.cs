@@ -22,7 +22,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
                 Title = "Test Project"
             };
 
-            var projectApiResource = _ProjectDataProvider.CreateProject(projectPostDto);
+            var projectApiResource = _ProjectDataProvider.Create(projectPostDto);
 
             Assert.IsType<ProjectApiResource>(projectApiResource);
         }
@@ -32,7 +32,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         {
             var project = CreateProject();
 
-            var projectApiResource = _ProjectDataProvider.GetProject(project.ID);
+            var projectApiResource = _ProjectDataProvider.Get(project.ID);
 
             Assert.IsType<ProjectApiResource>(projectApiResource);
         }
@@ -46,7 +46,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
                 CreateProject("Test Project 2")
             };
 
-            List<ProjectApiResource> projectApiResources = _ProjectDataProvider.GetProjects();
+            List<ProjectApiResource> projectApiResources = _ProjectDataProvider.List();
 
             Assert.Equal(projects.Count, projectApiResources.Count);
         }
@@ -59,7 +59,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
                 Title = $"{project.Title} Updated"
             };
 
-            var projectApiResource = _ProjectDataProvider.UpdateProject(project.ID, projectPatchDto);
+            var projectApiResource = _ProjectDataProvider.Update(project.ID, projectPatchDto);
             Assert.IsType<ProjectApiResource>(projectApiResource);
             Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
         }
@@ -69,7 +69,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         {
             var project = CreateProject();
 
-            bool result = _ProjectDataProvider.DeleteProject(project.ID);
+            bool result = _ProjectDataProvider.Delete(project.ID);
             Assert.True(result);
         }
 

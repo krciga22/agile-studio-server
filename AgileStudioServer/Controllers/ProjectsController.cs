@@ -21,7 +21,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(List<ProjectApiResource>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            return Ok(DataProvider.GetProjects());
+            return Ok(DataProvider.List());
         }
 
         [HttpGet("{id}", Name = "GetProject")]
@@ -30,7 +30,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var project = DataProvider.GetProject(id);
+            var project = DataProvider.Get(id);
             if (project == null){
                 return NotFound();
             }
@@ -45,7 +45,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(ProjectPostDto projectPostDto)
         {
-            var projectApiResource = DataProvider.CreateProject(projectPostDto);
+            var projectApiResource = DataProvider.Create(projectPostDto);
 
             var projectUrl = "";
             if (Url != null){
@@ -62,7 +62,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ProjectPatchDto projectPatchDto)
         {
-            var projectApiResource = DataProvider.UpdateProject(id, projectPatchDto);
+            var projectApiResource = DataProvider.Update(id, projectPatchDto);
             if(projectApiResource is null){
                 return NotFound();
             }
@@ -76,12 +76,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var project = DataProvider.GetProject(id);
+            var project = DataProvider.Get(id);
             if(project is null){
                 return NotFound();
             }
 
-            var result = DataProvider.DeleteProject(id);
+            var result = DataProvider.Delete(id);
             if(!result){
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

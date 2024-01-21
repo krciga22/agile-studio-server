@@ -20,7 +20,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(List<BacklogItemTypeSchemaApiResource>), StatusCodes.Status200OK)]
         public IActionResult GetByProject(int projectId)
         {
-            return Ok(DataProvider.GetBacklogItemTypeSchemas(projectId));
+            return Ok(DataProvider.List(projectId));
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemTypeSchema")]
@@ -29,7 +29,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(BacklogItemTypeSchemaApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = DataProvider.GetBacklogItemTypeSchema(id);
+            var apiResource = DataProvider.Get(id);
             if (apiResource == null){
                 return NotFound();
             }
@@ -44,7 +44,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(BacklogItemTypeSchemaPostDto dto)
         {
-            var apiResource = DataProvider.CreateBacklogItemTypeSchema(dto);
+            var apiResource = DataProvider.Create(dto);
 
             var apiResourceUrl = "";
             if (Url != null){
@@ -62,7 +62,7 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto dto)
         {
-            var apiResource = DataProvider.UpdateBacklogItemTypeSchema(id, dto);
+            var apiResource = DataProvider.Update(id, dto);
             if (apiResource is null){
                 return NotFound();
             }

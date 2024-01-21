@@ -29,7 +29,7 @@ namespace AgileStudioServerTest.UnitTests.Controllers
 
             var mockProjectDataProvider = new Mock<ProjectDataProvider>(_DBContext);
             mockProjectDataProvider
-                .Setup(dataProvider => dataProvider.GetProjects())
+                .Setup(dataProvider => dataProvider.List())
                 .Returns(projects);
 
             var projectsController = new ProjectsController(mockProjectDataProvider.Object);
@@ -44,7 +44,7 @@ namespace AgileStudioServerTest.UnitTests.Controllers
 
             var mockProjectDataProvider = new Mock<ProjectDataProvider>(_DBContext);
             mockProjectDataProvider
-                .Setup(dataProvider => dataProvider.GetProject(project.ID))
+                .Setup(dataProvider => dataProvider.Get(project.ID))
                 .Returns(new ProjectApiResource(project));
 
             var projectsController = new ProjectsController(mockProjectDataProvider.Object);
@@ -57,7 +57,7 @@ namespace AgileStudioServerTest.UnitTests.Controllers
         {
             var mockProjectDataProvider = new Mock<ProjectDataProvider>(_DBContext);
             mockProjectDataProvider
-                .Setup(dataProvider => dataProvider.GetProject(1));
+                .Setup(dataProvider => dataProvider.Get(1));
 
             var projectsController = new ProjectsController(mockProjectDataProvider.Object);
             var result = projectsController.Get(1);
@@ -75,7 +75,7 @@ namespace AgileStudioServerTest.UnitTests.Controllers
 
             var mockProjectDataProvider = new Mock<ProjectDataProvider>(_DBContext);
             mockProjectDataProvider
-                .Setup(dataProvider => dataProvider.CreateProject(projectPostDto))
+                .Setup(dataProvider => dataProvider.Create(projectPostDto))
                 .Returns(testProjectApiResource);
 
             var projectsController = new ProjectsController(mockProjectDataProvider.Object);

@@ -13,7 +13,7 @@ namespace AgileStudioServer.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<ProjectApiResource> GetProjects()
+        public virtual List<ProjectApiResource> List()
         {
             List<Project> projects = _DBContext.Projects.ToList();
 
@@ -27,13 +27,13 @@ namespace AgileStudioServer.DataProviders
             return projectApiResources;
         }
 
-        public virtual ProjectApiResource? GetProject(int id)
+        public virtual ProjectApiResource? Get(int id)
         {
             Project? project = _DBContext.Projects.Find(id);
             return project != null ? new ProjectApiResource(project) : null;
         }
 
-        public virtual ProjectApiResource CreateProject(ProjectPostDto projectPostDto)
+        public virtual ProjectApiResource Create(ProjectPostDto projectPostDto)
         {
             var project = new Project(projectPostDto.Title) {
                 Description = projectPostDto.Description
@@ -45,7 +45,7 @@ namespace AgileStudioServer.DataProviders
             return new ProjectApiResource(project);
         }
 
-        public virtual ProjectApiResource? UpdateProject(int id, ProjectPatchDto projectPatchDto)
+        public virtual ProjectApiResource? Update(int id, ProjectPatchDto projectPatchDto)
         {
             var project = _DBContext.Projects.Find(id);
             if(project is null){
@@ -59,7 +59,7 @@ namespace AgileStudioServer.DataProviders
             return new ProjectApiResource(project);
         }
 
-        public virtual bool DeleteProject(int id)
+        public virtual bool Delete(int id)
         {
             var project = _DBContext.Projects.Find(id);
             if(project is null){

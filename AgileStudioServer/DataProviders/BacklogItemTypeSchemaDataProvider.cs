@@ -13,7 +13,7 @@ namespace AgileStudioServer.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? CreateBacklogItemTypeSchema(BacklogItemTypeSchemaPostDto dto)
+        public virtual BacklogItemTypeSchemaApiResource? Create(BacklogItemTypeSchemaPostDto dto)
         {
             var project = _DBContext.Projects.Find(dto.ProjectId);
             if(project is null){
@@ -31,7 +31,8 @@ namespace AgileStudioServer.DataProviders
 
             return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
         }
-        public virtual List<BacklogItemTypeSchemaApiResource> GetBacklogItemTypeSchemas(int projectId)
+
+        public virtual List<BacklogItemTypeSchemaApiResource> List(int projectId)
         {
             List<BacklogItemTypeSchemaApiResource> apiResources = new();
 
@@ -52,7 +53,7 @@ namespace AgileStudioServer.DataProviders
             return apiResources;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? GetBacklogItemTypeSchema(int id)
+        public virtual BacklogItemTypeSchemaApiResource? Get(int id)
         {
             BacklogItemTypeSchema? backlogItemTypeSchema = _DBContext.BacklogItemTypeSchemas.Find(id);
             if(backlogItemTypeSchema is null){
@@ -64,7 +65,7 @@ namespace AgileStudioServer.DataProviders
             return backlogItemTypeSchema != null ? new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema) : null;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? UpdateBacklogItemTypeSchema(int id, BacklogItemTypeSchemaPatchDto dto)
+        public virtual BacklogItemTypeSchemaApiResource? Update(int id, BacklogItemTypeSchemaPatchDto dto)
         {
             var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchemas.Find(id);
             if (backlogItemTypeSchema is null){
