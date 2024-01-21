@@ -1,10 +1,12 @@
-﻿namespace AgileStudioServer.Models
+﻿using AgileStudioServer.Dto;
+
+namespace AgileStudioServer.Models
 {
     public class BacklogItemTypeSchema
     {
         public int ID { get; set; }
 
-        public Project Project { get; set; }
+        public Project Project { get; set; } = null!;
 
         public string Title { get; set; }
 

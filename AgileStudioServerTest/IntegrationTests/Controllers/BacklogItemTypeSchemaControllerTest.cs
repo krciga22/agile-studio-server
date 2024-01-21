@@ -18,7 +18,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void Get_WithNoArguments_ReturnsApiResources()
+        public void GetByProject_WithProjectId_ReturnsApiResources()
         {
             var project = CreateProject();
 
@@ -28,7 +28,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             };
 
             List<BacklogItemTypeSchemaApiResource>? apiResources = null;
-            IActionResult result = _BacklogItemTypeSchemasController.Get();
+            IActionResult result = _BacklogItemTypeSchemasController.GetByProject(project.ID);
             if (result is OkObjectResult okResult){
                 apiResources = okResult.Value as List<BacklogItemTypeSchemaApiResource>;
             }
@@ -58,10 +58,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var project = CreateProject();
 
-            var dto = new BacklogItemTypeSchemaPostDto() { 
-                Title = "Test Backlog Item Type Schema",
-                ProjectId = project.ID
-            };
+            var dto = new BacklogItemTypeSchemaPostDto("Test Backlog Item Type Schema", project.ID);
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
             IActionResult result = _BacklogItemTypeSchemasController.Post(dto);
@@ -79,9 +76,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var project = CreateProject();
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
 
-            var dto = new BacklogItemTypeSchemaPatchDto(){
-                Title = $"{backlogItemTypeSchema.Title} Updated",
-            };
+            var title = $"{backlogItemTypeSchema.Title} Updated";
+            var dto = new BacklogItemTypeSchemaPatchDto(title);
 
             IActionResult result = _BacklogItemTypeSchemasController.Patch(backlogItemTypeSchema.ID, dto);
 
@@ -105,8 +101,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
 
         private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project project, string title = "Test Backlog Item Type Schema")
         {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title)
-            {
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title) 
+            { 
                 Project = project
             };
             _DBContext.BacklogItemTypeSchemas.Add(backlogItemTypeSchema);

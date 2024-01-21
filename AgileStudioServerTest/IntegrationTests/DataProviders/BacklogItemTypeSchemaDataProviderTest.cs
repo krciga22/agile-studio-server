@@ -20,10 +20,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         {
             var project = CreateProject();
 
-            var dto = new BacklogItemTypeSchemaPostDto() {
-                Title = "Test Schema",
-                ProjectId = project.ID
-            };
+            var dto = new BacklogItemTypeSchemaPostDto("Test Schema", project.ID);
 
             var apiResource = _dataProvider.CreateBacklogItemTypeSchema(dto);
 
@@ -40,7 +37,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
                 CreateBacklogItemTypeSchema(project, "Test Backlog Item Type Schema 2")
             };
 
-            List<BacklogItemTypeSchemaApiResource> apiResources = _dataProvider.GetBacklogItemTypeSchemas();
+            List<BacklogItemTypeSchemaApiResource> apiResources = _dataProvider.GetBacklogItemTypeSchemas(project.ID);
 
             Assert.Equal(backlogItemTypeSchemas.Count, apiResources.Count);
         }
@@ -62,9 +59,8 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             var project = CreateProject();
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
 
-            var dto = new BacklogItemTypeSchemaPatchDto(){
-                Title = $"{backlogItemTypeSchema.Title} Updated"
-            };
+            var title = $"{backlogItemTypeSchema.Title} Updated";
+            var dto = new BacklogItemTypeSchemaPatchDto(title);
 
             var apiResource = _dataProvider.UpdateBacklogItemTypeSchema(backlogItemTypeSchema.ID, dto);
             Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
@@ -81,7 +77,8 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
 
         private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project project, string title = "Test Backlog Item Type Schema")
         {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title) { 
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title)
+            {
                 Project = project
             };
             _DBContext.BacklogItemTypeSchemas.Add(backlogItemTypeSchema);

@@ -18,9 +18,9 @@ namespace AgileStudioServer.Controllers
 
         [HttpGet(Name = "GetBacklogItemTypeSchemas")]
         [ProducesResponseType(typeof(List<BacklogItemTypeSchemaApiResource>), StatusCodes.Status200OK)]
-        public IActionResult Get()
+        public IActionResult GetByProject(int projectId)
         {
-            return Ok(_backlogItemTypeSchemaDataProvider.GetBacklogItemTypeSchemas());
+            return Ok(_backlogItemTypeSchemaDataProvider.GetBacklogItemTypeSchemas(projectId));
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemTypeSchema")]
