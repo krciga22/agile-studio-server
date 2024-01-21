@@ -18,9 +18,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         [Fact]
         public void CreateProject_WithProjectPostDto_ReturnsProjectApiResource()
         {
-            var projectPostDto = new ProjectPostDto() {
-                Title = "Test Project"
-            };
+            var projectPostDto = new ProjectPostDto("Test Project");
 
             var projectApiResource = _ProjectDataProvider.Create(projectPostDto);
 
@@ -55,9 +53,8 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         public void UpdateProject_WithValidProjectPatchDto_ReturnsProjectApiResource()
         {
             var project = CreateProject();
-            var projectPatchDto = new ProjectPatchDto() {
-                Title = $"{project.Title} Updated"
-            };
+            var title = $"{project.Title} Updated";
+            var projectPatchDto = new ProjectPatchDto(title);
 
             var projectApiResource = _ProjectDataProvider.Update(project.ID, projectPatchDto);
             Assert.IsType<ProjectApiResource>(projectApiResource);

@@ -67,9 +67,7 @@ namespace AgileStudioServerTest.UnitTests.Controllers
         [Fact]
         public void Post_Project_ReturnsOkResult()
         {
-            var projectPostDto = new ProjectPostDto() {
-                Title = "Test Project"
-            };
+            var projectPostDto = new ProjectPostDto("Test Project");
 
             var testProjectApiResource = CreateTestProjectApiResource();
 

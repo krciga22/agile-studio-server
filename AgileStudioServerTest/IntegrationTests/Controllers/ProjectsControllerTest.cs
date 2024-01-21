@@ -63,9 +63,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Post_WithProjectPostDto_ReturnsProjectApiResource()
         {
-            var projectPostDto = new ProjectPostDto() { 
-                Title = "Test Project"
-            };
+            var projectPostDto = new ProjectPostDto("Test Project");
 
             ProjectApiResource? projectApiResource = null;
             IActionResult result = _Controller.Post(projectPostDto);
@@ -82,9 +80,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var project = CreateProject();
 
-            var projectPatchDto = new ProjectPatchDto() { 
-                Title = $"{project.Title} Updated"
-            };
+            var title = $"{project.Title} Updated";
+            var projectPatchDto = new ProjectPatchDto(title);
             IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
 
             ProjectApiResource? projectApiResource = null;
