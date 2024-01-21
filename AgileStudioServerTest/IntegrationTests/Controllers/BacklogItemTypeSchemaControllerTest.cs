@@ -10,11 +10,11 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
     public class BacklogItemTypeSchemasControllerTest : AbstractControllerTest
     {
-        private readonly BacklogItemTypeSchemasController _BacklogItemTypeSchemasController;
+        private readonly BacklogItemTypeSchemasController _Controller;
 
-        public BacklogItemTypeSchemasControllerTest(DBContext dbContext, BacklogItemTypeSchemasController backlogItemTypeSchemasController) : base(dbContext)
+        public BacklogItemTypeSchemasControllerTest(DBContext dbContext, BacklogItemTypeSchemasController controller) : base(dbContext)
         {
-            _BacklogItemTypeSchemasController = backlogItemTypeSchemasController;
+            _Controller = controller;
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             };
 
             List<BacklogItemTypeSchemaApiResource>? apiResources = null;
-            IActionResult result = _BacklogItemTypeSchemasController.GetByProject(project.ID);
+            IActionResult result = _Controller.GetByProject(project.ID);
             if (result is OkObjectResult okResult){
                 apiResources = okResult.Value as List<BacklogItemTypeSchemaApiResource>;
             }
@@ -43,7 +43,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
-            IActionResult result = _BacklogItemTypeSchemasController.Get(backlogItemTypeSchema.ID);
+            IActionResult result = _Controller.Get(backlogItemTypeSchema.ID);
             if (result is OkObjectResult okResult){
                 apiResource = okResult.Value as BacklogItemTypeSchemaApiResource;
             }
@@ -60,7 +60,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var dto = new BacklogItemTypeSchemaPostDto("Test Backlog Item Type Schema", project.ID);
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
-            IActionResult result = _BacklogItemTypeSchemasController.Post(dto);
+            IActionResult result = _Controller.Post(dto);
             if (result is CreatedResult createdResult){
                 apiResource = createdResult.Value as BacklogItemTypeSchemaApiResource;
             }
@@ -77,7 +77,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
 
-            IActionResult result = _BacklogItemTypeSchemasController.Patch(backlogItemTypeSchema.ID, dto);
+            IActionResult result = _Controller.Patch(backlogItemTypeSchema.ID, dto);
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
             if (result is OkObjectResult okObjectResult)
@@ -94,7 +94,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
 
-            IActionResult result = _BacklogItemTypeSchemasController.Delete(backlogItemTypeSchema.ID);
+            IActionResult result = _Controller.Delete(backlogItemTypeSchema.ID);
 
             Assert.IsType<OkResult>(result as OkResult);
         }

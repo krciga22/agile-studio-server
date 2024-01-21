@@ -10,13 +10,13 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
     public class ProjectsControllerTest : AbstractControllerTest
     {
-        private readonly ProjectsController _ProjectsController;
+        private readonly ProjectsController _Controller;
 
         private readonly int _NonExistantProjectId = 9999;
 
-        public ProjectsControllerTest(DBContext dbContext, ProjectsController projectsController) : base(dbContext)
+        public ProjectsControllerTest(DBContext dbContext, ProjectsController controller) : base(dbContext)
         {
-            _ProjectsController = projectsController;
+            _Controller = controller;
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             };
 
             List<ProjectApiResource>? projectApiResources = null;
-            IActionResult result = _ProjectsController.Get();
+            IActionResult result = _Controller.Get();
             if (result is OkObjectResult okResult){
                 projectApiResources = okResult.Value as List<ProjectApiResource>;
             }
@@ -43,7 +43,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var project = CreateProject();
 
             ProjectApiResource? projectApiResource = null;
-            IActionResult result = _ProjectsController.Get(project.ID);
+            IActionResult result = _Controller.Get(project.ID);
             if (result is OkObjectResult okResult){
                 projectApiResource = okResult.Value as ProjectApiResource;
             }
@@ -56,7 +56,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithInvalidProjectId_ReturnsNotFoundResult()
         {
             var nonExistantId = _NonExistantProjectId;
-            IActionResult result = _ProjectsController.Get(nonExistantId);
+            IActionResult result = _Controller.Get(nonExistantId);
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
@@ -68,7 +68,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             };
 
             ProjectApiResource? projectApiResource = null;
-            IActionResult result = _ProjectsController.Post(projectPostDto);
+            IActionResult result = _Controller.Post(projectPostDto);
             if (result is CreatedResult createdResult){
                 projectApiResource = createdResult.Value as ProjectApiResource;
             }
@@ -85,7 +85,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var projectPatchDto = new ProjectPatchDto() { 
                 Title = $"{project.Title} Updated"
             };
-            IActionResult result = _ProjectsController.Patch(project.ID, projectPatchDto);
+            IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
 
             ProjectApiResource? projectApiResource = null;
             if (result is OkObjectResult okObjectResult){
@@ -101,7 +101,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var project = CreateProject();
 
-            IActionResult result = _ProjectsController.Delete(project.ID);
+            IActionResult result = _Controller.Delete(project.ID);
 
             Assert.IsType<OkResult>(result as OkResult);
         }
@@ -109,7 +109,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Delete_WithInvalidId_ReturnsNotFoundResult()
         {
-            IActionResult result = _ProjectsController.Delete(_NonExistantProjectId);
+            IActionResult result = _Controller.Delete(_NonExistantProjectId);
 
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
