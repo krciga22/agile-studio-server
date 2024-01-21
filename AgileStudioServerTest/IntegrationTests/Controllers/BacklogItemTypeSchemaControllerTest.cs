@@ -91,6 +91,17 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             Assert.Equal(dto.Title, apiResource.Title);
         }
 
+        [Fact]
+        public void Delete_WithId_ReturnsOkResult()
+        {
+            var project = CreateProject();
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+
+            IActionResult result = _BacklogItemTypeSchemasController.Delete(backlogItemTypeSchema.ID);
+
+            Assert.IsType<OkResult>(result as OkResult);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);

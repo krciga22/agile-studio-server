@@ -81,6 +81,18 @@ namespace AgileStudioServer.DataProviders
             return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
         }
 
+        public virtual bool Delete(int id)
+        {
+            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchemas.Find(id);
+            if (backlogItemTypeSchema is null){
+                return false;
+            }
+
+            _DBContext.BacklogItemTypeSchemas.Remove(backlogItemTypeSchema);
+            _DBContext.SaveChanges();
+            return true;
+        }
+
         private void LoadReferences(BacklogItemTypeSchema backlogItemTypeSchema)
         {
             _DBContext.Entry(backlogItemTypeSchema).Reference("Project").Load();

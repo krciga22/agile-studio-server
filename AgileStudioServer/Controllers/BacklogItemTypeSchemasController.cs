@@ -69,5 +69,24 @@ namespace AgileStudioServer.Controllers
 
             return new OkObjectResult(apiResource);
         }
+
+        [HttpDelete(Name = "DeleteBacklogItemTypeSchema")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public IActionResult Delete(int id)
+        {
+            var apiResource = DataProvider.Get(id);
+            if (apiResource is null){
+                return NotFound();
+            }
+
+            var result = DataProvider.Delete(id);
+            if (!result){
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return new OkResult();
+        }
     }
 }

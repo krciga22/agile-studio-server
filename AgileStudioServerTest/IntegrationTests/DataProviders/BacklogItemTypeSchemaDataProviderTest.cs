@@ -67,6 +67,16 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             Assert.Equal(dto.Title, apiResource.Title);
         }
 
+        [Fact]
+        public void DeleteBacklogItemTypeSchema_WithValidId_ReturnsTrue()
+        {
+            var project = CreateProject();
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema(project);
+
+            bool result = _dataProvider.Delete(backlogItemTypeSchema.ID);
+            Assert.True(result);
+        }
+
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
