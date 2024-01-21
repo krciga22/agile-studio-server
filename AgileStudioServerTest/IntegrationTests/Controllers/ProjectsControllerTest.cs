@@ -12,8 +12,6 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
     {
         private readonly ProjectsController _Controller;
 
-        private readonly int _NonExistantProjectId = 9999;
-
         public ProjectsControllerTest(DBContext dbContext, ProjectsController controller) : base(dbContext)
         {
             _Controller = controller;
@@ -55,8 +53,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Get_WithInvalidId_ReturnsNotFoundResult()
         {
-            var nonExistantId = _NonExistantProjectId;
-            IActionResult result = _Controller.Get(nonExistantId);
+            IActionResult result = _Controller.Get(Constants.NonExistantId);
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
@@ -106,7 +103,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Delete_WithInvalidId_ReturnsNotFoundResult()
         {
-            IActionResult result = _Controller.Delete(_NonExistantProjectId);
+            IActionResult result = _Controller.Delete(Constants.NonExistantId);
 
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
