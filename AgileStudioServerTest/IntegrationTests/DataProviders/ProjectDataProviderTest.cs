@@ -73,7 +73,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
-            _DBContext.Projects.Add(project);
+            _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
             return project;
         }

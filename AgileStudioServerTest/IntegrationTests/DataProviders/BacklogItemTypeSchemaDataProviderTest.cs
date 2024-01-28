@@ -77,7 +77,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
-            _DBContext.Projects.Add(project);
+            _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
             return project;
         }
@@ -92,7 +92,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             {
                 Project = project
             };
-            _DBContext.BacklogItemTypeSchemas.Add(backlogItemTypeSchema);
+            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
         }
