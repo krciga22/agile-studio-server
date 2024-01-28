@@ -9,13 +9,14 @@ using Moq;
 
 namespace AgileStudioServerTest.UnitTests.Controllers
 {
-    public class ProjectsControllerTest
+    public class ProjectsControllerTest : IDisposable
     {
         private readonly DBContext _DBContext;
 
         public ProjectsControllerTest(DBContext dbContext) 
         {
             _DBContext = dbContext;
+            _DBContext.Database.BeginTransaction();
         }
 
         [Fact]
@@ -100,6 +101,12 @@ namespace AgileStudioServerTest.UnitTests.Controllers
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
+        }
+
+        public void Dispose()
+        {
+            _DBContext.Database.RollbackTransaction();
+            GC.SuppressFinalize(this);
         }
     }
 }
