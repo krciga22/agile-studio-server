@@ -36,6 +36,26 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void ListBacklogItemTypes_WithId_ReturnsApiResources()
+        {
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+
+            List<BacklogItemType> backlogItemTypes = new() {
+                CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 1"),
+                CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 2")
+            };
+
+            List<BacklogItemTypeApiResource>? apiResources = null;
+            IActionResult result = _Controller.ListBacklogItemTypes(backlogItemTypeSchema.ID);
+            if (result is OkObjectResult okResult){
+                apiResources = okResult.Value as List<BacklogItemTypeApiResource>;
+            }
+
+            Assert.IsType<List<BacklogItemTypeApiResource>>(apiResources);
+            Assert.Equal(backlogItemTypes.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void Get_WithId_ReturnsApiResource()
         {
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
@@ -109,6 +129,15 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
+        }
+
+        private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema backlogItemTypeSchema, string title = "Test Backlog Item Type")
+        {
+            var backlogItemType = new BacklogItemType(title);
+            backlogItemType.BacklogItemTypeSchema = backlogItemTypeSchema;
+            _DBContext.BacklogItemType.Add(backlogItemType);
+            _DBContext.SaveChanges();
+            return backlogItemType;
         }
     }
 }

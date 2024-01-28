@@ -3,6 +3,7 @@ using AgileStudioServer.ApiResources;
 using AgileStudioServer.DataProviders;
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.DataProviders
 {
@@ -35,6 +36,22 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         }
 
         [Fact]
+        public void ListByBacklogItemTypeSchemaId_ReturnsApiResources()
+        {
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+
+            List<BacklogItemType> backlogItemTypes = new() {
+                CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 1"),
+                CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 2")
+            };
+
+            List<BacklogItemTypeApiResource>? apiResources = _dataProvider.ListByBacklogItemTypeSchemaId(backlogItemTypeSchema.ID);
+
+            Assert.IsType<List<BacklogItemTypeApiResource>>(apiResources);
+            Assert.Equal(backlogItemTypes.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void UpdateBacklogItemType_WithValidDto_ReturnsApiResource()
         {
             var backlogItemType = CreateBacklogItemType();
@@ -56,9 +73,12 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
             Assert.True(result);
         }
 
-        private BacklogItemType CreateBacklogItemType(string title = "Test Backlog Item Type Schema")
+        private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Backlog Item Type Schema")
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            if(backlogItemTypeSchema is null)
+            {
+                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            }
 
             var backlogItemType = new BacklogItemType(title);
             backlogItemType.BacklogItemTypeSchema = backlogItemTypeSchema;

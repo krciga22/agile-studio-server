@@ -10,10 +10,14 @@ namespace AgileStudioServer.Controllers
     public class BacklogItemTypeSchemasController : ControllerBase
     {
         private readonly BacklogItemTypeSchemaDataProvider _DataProvider;
+        private readonly BacklogItemTypeDataProvider _BacklogItemTypeDataProvider;
 
-        public BacklogItemTypeSchemasController(BacklogItemTypeSchemaDataProvider dataProvider)
+        public BacklogItemTypeSchemasController(
+            BacklogItemTypeSchemaDataProvider dataProvider, 
+            BacklogItemTypeDataProvider backlogItemTypeDataProvider)
         {
             _DataProvider = dataProvider;
+            _BacklogItemTypeDataProvider = backlogItemTypeDataProvider;
         }
 
         [HttpGet(Name = "GetBacklogItemTypeSchemas")]
@@ -31,6 +35,21 @@ namespace AgileStudioServer.Controllers
         {
             var apiResource = _DataProvider.Get(id);
             if (apiResource == null){
+                return NotFound();
+            }
+
+            return Ok(apiResource);
+        }
+
+        [HttpGet("{id}/BacklogItemTypes", Name = "ListBacklogItemTypeSchema_BacklogItemTypes")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<BacklogItemTypeApiResource>), StatusCodes.Status200OK)]
+        public IActionResult ListBacklogItemTypes(int id)
+        {
+            var apiResource = _BacklogItemTypeDataProvider.ListByBacklogItemTypeSchemaId(id);
+            if (apiResource == null)
+            {
                 return NotFound();
             }
 
