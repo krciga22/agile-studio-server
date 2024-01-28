@@ -67,7 +67,8 @@ namespace AgileStudioServerTest.UnitTests.Controllers
         [Fact]
         public void Post_Project_ReturnsOkResult()
         {
-            var projectPostDto = new ProjectPostDto("Test Project");
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
             var testProjectApiResource = CreateTestProjectApiResource();
 
@@ -91,6 +92,14 @@ namespace AgileStudioServerTest.UnitTests.Controllers
         private static Project CreateTestProject()
         {
             return new Project("Test Project") { ID = 1 };
+        }
+
+        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
+        {
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
+            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
+            _DBContext.SaveChanges();
+            return backlogItemTypeSchema;
         }
     }
 }

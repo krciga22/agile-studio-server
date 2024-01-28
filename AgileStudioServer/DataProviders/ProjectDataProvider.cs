@@ -19,6 +19,8 @@ namespace AgileStudioServer.DataProviders
 
             List<ProjectApiResource> projectApiResources = new();
             projects.ForEach(project => {
+                LoadReferences(project);
+
                 projectApiResources.Add(
                     new ProjectApiResource(project)
                 );
@@ -30,13 +32,26 @@ namespace AgileStudioServer.DataProviders
         public virtual ProjectApiResource? Get(int id)
         {
             Project? project = _DBContext.Project.Find(id);
-            return project != null ? new ProjectApiResource(project) : null;
+            if(project is null){
+                return null;
+            }
+
+            LoadReferences(project);
+
+            return new ProjectApiResource(project);
         }
 
         public virtual ProjectApiResource Create(ProjectPostDto projectPostDto)
         {
+            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(projectPostDto.BacklogItemTypeSchemaId);
+            if (backlogItemTypeSchema is null)
+            {
+                throw new Exception("BacklogItemTypeSchema not found");
+            }
+
             var project = new Project(projectPostDto.Title) {
-                Description = projectPostDto.Description
+                Description = projectPostDto.Description,
+                BacklogItemTypeSchema = backlogItemTypeSchema
             };
 
             _DBContext.Add(project);
@@ -56,6 +71,8 @@ namespace AgileStudioServer.DataProviders
             project.Description = projectPatchDto.Description;
             _DBContext.SaveChanges();
 
+            LoadReferences(project);
+
             return new ProjectApiResource(project);
         }
 
@@ -69,6 +86,11 @@ namespace AgileStudioServer.DataProviders
             _DBContext.Project.Remove(project);
             _DBContext.SaveChanges();
             return true;
+        }
+
+        private void LoadReferences(Project project)
+        {
+            _DBContext.Entry(project).Reference("BacklogItemTypeSchema").Load();
         }
     }
 }

@@ -18,17 +18,15 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
-        public void GetByProject_WithId_ReturnsApiResources()
+        public void List_ReturnsApiResources()
         {
-            var project = CreateProject();
-
             List<BacklogItemTypeSchema> backlogItemTypeSchemas = new() {
-                CreateBacklogItemTypeSchema(project, "Test Backlog Item Type Schema 1"),
-                CreateBacklogItemTypeSchema(project, "Test Backlog Item Type Schema 2")
+                CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 1"),
+                CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 2")
             };
 
             List<BacklogItemTypeSchemaApiResource>? apiResources = null;
-            IActionResult result = _Controller.GetByProject(project.ID);
+            IActionResult result = _Controller.List();
             if (result is OkObjectResult okResult){
                 apiResources = okResult.Value as List<BacklogItemTypeSchemaApiResource>;
             }
@@ -55,9 +53,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
-            var project = CreateProject();
-
-            var dto = new BacklogItemTypeSchemaPostDto("Test Backlog Item Type Schema", project.ID);
+            var dto = new BacklogItemTypeSchemaPostDto("Test Backlog Item Type Schema");
 
             BacklogItemTypeSchemaApiResource? apiResource = null;
             IActionResult result = _Controller.Post(dto);
@@ -107,24 +103,9 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
-        private Project CreateProject(string title = "test Project")
+        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
         {
-            var project = new Project(title);
-            _DBContext.Project.Add(project);
-            _DBContext.SaveChanges();
-            return project;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(Project? project = null, string title = "Test Backlog Item Type Schema")
-        {
-            if(project is null){
-                project = CreateProject();
-            }
-
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title) 
-            { 
-                Project = project
-            };
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;

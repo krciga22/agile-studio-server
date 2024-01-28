@@ -15,15 +15,9 @@ namespace AgileStudioServer.DataProviders
 
         public virtual BacklogItemTypeSchemaApiResource? Create(BacklogItemTypeSchemaPostDto dto)
         {
-            var project = _DBContext.Project.Find(dto.ProjectId);
-            if(project is null){
-                return null;
-            }
-
             var backlogItemTypeSchema = new BacklogItemTypeSchema(dto.Title)
             {
                 Description = dto.Description,
-                Project = project
             };
 
             _DBContext.Add(backlogItemTypeSchema);
@@ -32,16 +26,11 @@ namespace AgileStudioServer.DataProviders
             return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
         }
 
-        public virtual List<BacklogItemTypeSchemaApiResource> List(int projectId)
+        public virtual List<BacklogItemTypeSchemaApiResource> List()
         {
             List<BacklogItemTypeSchemaApiResource> apiResources = new();
 
-            Project? project = _DBContext.Project.Find(projectId);
-            if(project is null){
-                return apiResources;
-            }
-
-            List<BacklogItemTypeSchema> backlogItemTypeSchemas = _DBContext.BacklogItemTypeSchema.Where(x => x.Project == project).ToList();
+            List<BacklogItemTypeSchema> backlogItemTypeSchemas = _DBContext.BacklogItemTypeSchema.ToList();
             backlogItemTypeSchemas.ForEach(backlogItemTypeSchema => {
                 LoadReferences(backlogItemTypeSchema);
 
@@ -95,7 +84,7 @@ namespace AgileStudioServer.DataProviders
 
         private void LoadReferences(BacklogItemTypeSchema backlogItemTypeSchema)
         {
-            _DBContext.Entry(backlogItemTypeSchema).Reference("Project").Load();
+            // stub
         }
     }
 }

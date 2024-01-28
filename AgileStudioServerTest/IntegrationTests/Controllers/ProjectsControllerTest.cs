@@ -60,7 +60,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
-            var projectPostDto = new ProjectPostDto("Test Project");
+            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
             ProjectApiResource? projectApiResource = null;
             IActionResult result = _Controller.Post(projectPostDto);
@@ -111,9 +112,18 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         private Project CreateProject(string title = "test Project")
         {
             var project = new Project(title);
+            project.BacklogItemTypeSchema = CreateBacklogItemTypeSchema();
             _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
             return project;
+        }
+
+        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
+        {
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
+            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
+            _DBContext.SaveChanges();
+            return backlogItemTypeSchema;
         }
     }
 }

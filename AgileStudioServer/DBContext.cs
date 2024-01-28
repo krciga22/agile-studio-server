@@ -21,6 +21,12 @@ namespace AgileStudioServer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Project>()
+                .HasOne(e => e.BacklogItemTypeSchema)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("fk_project_backlog_item_type_schema_id");
+
             modelBuilder.Entity<BacklogItem>()
                 .HasOne(e => e.BacklogItemType)
                 .WithMany()

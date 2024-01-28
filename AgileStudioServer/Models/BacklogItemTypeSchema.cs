@@ -6,8 +6,6 @@ namespace AgileStudioServer.Models
     {
         public int ID { get; set; }
 
-        public Project Project { get; set; } = null!;
-
         public string Title { get; set; }
 
         public string? Description { get; set; }

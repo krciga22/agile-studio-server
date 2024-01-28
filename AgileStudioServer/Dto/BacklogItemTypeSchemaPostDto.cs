@@ -8,16 +8,12 @@ namespace AgileStudioServer.Dto
         [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
-        [Required]
-        public int ProjectId { get; set; }
-
         [StringLength(255)]
         public string? Description { get; set; }
 
-        public BacklogItemTypeSchemaPostDto(string title, int projectId)
+        public BacklogItemTypeSchemaPostDto(string title)
         {
             Title = title;
-            ProjectId = projectId;
         }
     }
 }

@@ -12,15 +12,12 @@ namespace AgileStudioServer.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
-        public ProjectApiResource Project { get; set; }
-
         public BacklogItemTypeSchemaApiResource(BacklogItemTypeSchema backlogItemTypeSchema)
         {
             ID = backlogItemTypeSchema.ID;
             Title = backlogItemTypeSchema.Title;
             Description = backlogItemTypeSchema.Description;
             CreatedOn = backlogItemTypeSchema.CreatedOn;
-            Project = new ProjectApiResource(backlogItemTypeSchema.Project);
         }
     }
 }

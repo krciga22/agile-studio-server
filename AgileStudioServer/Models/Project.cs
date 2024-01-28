@@ -1,4 +1,6 @@
-﻿namespace AgileStudioServer.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AgileStudioServer.Models
 {
     public class Project
     {
@@ -10,12 +12,12 @@
 
         public DateTime CreatedOn { get; set; }
 
-        public ICollection<BacklogItemTypeSchema> BacklogItemTypeSchemas { get; set; }
+        [Required]
+        public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 
         public Project(string title) { 
             Title = title;
             CreatedOn = DateTime.Now;
-            BacklogItemTypeSchemas = new List<BacklogItemTypeSchema>();
         }
     }
 }
