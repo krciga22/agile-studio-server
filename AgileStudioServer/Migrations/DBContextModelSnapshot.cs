@@ -151,7 +151,7 @@ namespace AgileStudioServer.Migrations
                         .HasForeignKey("BacklogItemTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_backlog_item_backlog_item_type_backlog_item_type_id");
+                        .HasConstraintName("fk_backlog_item_backlog_item_type_id");
 
                     b.Navigation("BacklogItemType");
                 });
@@ -163,7 +163,7 @@ namespace AgileStudioServer.Migrations
                         .HasForeignKey("BacklogItemTypeSchemaID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_backlog_item_type_backlog_item_type_schemas_backlog_item_type_s");
+                        .HasConstraintName("fk_backlog_item_type_backlog_item_type_schema_id");
 
                     b.Navigation("BacklogItemTypeSchema");
                 });
