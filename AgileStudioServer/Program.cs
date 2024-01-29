@@ -35,6 +35,7 @@ namespace AgileStudioServer
                     .UseSnakeCaseNamingConvention();
             });
 
+            builder.Services.AddScoped<BacklogItemDataProvider>();
             builder.Services.AddScoped<BacklogItemTypeDataProvider>();
             builder.Services.AddScoped<BacklogItemTypeSchemaDataProvider>();
             builder.Services.AddScoped<ProjectDataProvider>();
