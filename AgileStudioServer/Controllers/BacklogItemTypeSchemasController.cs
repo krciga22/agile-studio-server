@@ -44,7 +44,7 @@ namespace AgileStudioServer.Controllers
         [HttpGet("{id}/BacklogItemTypes", Name = "ListBacklogItemTypeSchema_BacklogItemTypes")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<BacklogItemTypeApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<BacklogItemTypeApiSubResource>), StatusCodes.Status200OK)]
         public IActionResult ListBacklogItemTypes(int id)
         {
             var apiResource = _BacklogItemTypeDataProvider.ListByBacklogItemTypeSchemaId(id);

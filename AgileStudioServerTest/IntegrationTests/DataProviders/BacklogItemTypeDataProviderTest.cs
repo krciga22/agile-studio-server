@@ -45,9 +45,9 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
                 CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 2")
             };
 
-            List<BacklogItemTypeApiResource>? apiResources = _dataProvider.ListByBacklogItemTypeSchemaId(backlogItemTypeSchema.ID);
+            List<BacklogItemTypeApiSubResource>? apiResources = _dataProvider.ListByBacklogItemTypeSchemaId(backlogItemTypeSchema.ID);
 
-            Assert.IsType<List<BacklogItemTypeApiResource>>(apiResources);
+            Assert.IsType<List<BacklogItemTypeApiSubResource>>(apiResources);
             Assert.Equal(backlogItemTypes.Count, apiResources.Count);
         }
 
