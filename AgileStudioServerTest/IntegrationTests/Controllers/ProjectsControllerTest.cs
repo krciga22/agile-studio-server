@@ -58,6 +58,27 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void GetBacklogItemsForProject_WithId_ReturnsApiResources()
+        {
+            var project = CreateProject("Test Project 1");
+            var backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+            List<BacklogItem> backlogItems = new() {
+                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
+                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
+            };
+
+            List<BacklogItemSubResource>? backlogItemSubResources = null;
+            IActionResult result = _Controller.GetBacklogItemsForProject(project.ID);
+            if (result is OkObjectResult okResult)
+            {
+                backlogItemSubResources = okResult.Value as List<BacklogItemSubResource>;
+            }
+
+            Assert.IsType<List<BacklogItemSubResource>>(backlogItemSubResources);
+            Assert.Equal(backlogItems.Count, backlogItemSubResources.Count);
+        }
+
+        [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
@@ -124,6 +145,45 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
+        }
+
+        private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Backlog Item Type")
+        {
+            if (backlogItemTypeSchema is null)
+            {
+                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            }
+
+            var backlogItemType = new BacklogItemType(title)
+            {
+                BacklogItemTypeSchema = backlogItemTypeSchema
+            };
+
+            _DBContext.BacklogItemType.Add(backlogItemType);
+            _DBContext.SaveChanges();
+            return backlogItemType;
+        }
+
+        private BacklogItem CreateBacklogItem(Project? project = null, BacklogItemType? backlogItemType = null, string title = "Test Backlog Item")
+        {
+            if (project is null)
+            {
+                project = CreateProject();
+            }
+
+            if (backlogItemType is null)
+            {
+                backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+            }
+
+            var backlogItem = new BacklogItem(title)
+            {
+                Project = project,
+                BacklogItemType = backlogItemType
+            };
+            _DBContext.BacklogItem.Add(backlogItem);
+            _DBContext.SaveChanges();
+            return backlogItem;
         }
     }
 }

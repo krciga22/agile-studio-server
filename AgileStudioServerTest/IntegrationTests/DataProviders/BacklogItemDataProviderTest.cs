@@ -37,6 +37,22 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
         }
 
         [Fact]
+        public void ListForProject_ById_ReturnsApiResource()
+        {
+            var project = CreateProject();
+            var backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+            List<BacklogItem> backlogItems = new() {
+                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
+                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
+            };
+
+            var apiResources = _dataProvider.ListForProjectId(project.ID);
+
+            Assert.IsType<List<BacklogItemSubResource>>(apiResources);
+            Assert.Equal(backlogItems.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void UpdateBacklogItem_WithValidDto_ReturnsApiResource()
         {
             var backlogItem = CreateBacklogItem();

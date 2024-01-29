@@ -12,9 +12,12 @@ namespace AgileStudioServer.Controllers
     {
         private readonly ProjectDataProvider _DataProvider;
 
-        public ProjectsController(ProjectDataProvider projectDataProvider)
+        private readonly BacklogItemDataProvider _BacklogItemDataProvider;
+
+        public ProjectsController(ProjectDataProvider projectDataProvider, BacklogItemDataProvider backlogItemDataProvider)
         {
             _DataProvider = projectDataProvider;
+            _BacklogItemDataProvider = backlogItemDataProvider;
         }
 
         [HttpGet(Name = "GetProjects")]
@@ -36,6 +39,15 @@ namespace AgileStudioServer.Controllers
             }
 
             return Ok(project);
+        }
+
+        [HttpGet("{id}/BacklogItems", Name = "GetProjectBacklogItems")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<BacklogItemSubResource>), StatusCodes.Status200OK)]
+        public IActionResult GetBacklogItemsForProject(int id)
+        {
+            return Ok(_BacklogItemDataProvider.ListForProjectId(id));
         }
 
         [HttpPost(Name = "CreateProject")]
