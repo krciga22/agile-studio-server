@@ -44,7 +44,7 @@ namespace AgileStudioServer.Controllers
         [HttpGet("{id}/BacklogItems", Name = "GetProjectBacklogItems")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<BacklogItemSubResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<BacklogItemApiResource>), StatusCodes.Status200OK)]
         public IActionResult GetBacklogItemsForProject(int id)
         {
             return Ok(_BacklogItemDataProvider.ListForProjectId(id));

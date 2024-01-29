@@ -48,7 +48,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
 
             var apiResources = _dataProvider.ListForProjectId(project.ID);
 
-            Assert.IsType<List<BacklogItemSubResource>>(apiResources);
+            Assert.IsType<List<BacklogItemApiResource>>(apiResources);
             Assert.Equal(backlogItems.Count, apiResources.Count);
         }
 

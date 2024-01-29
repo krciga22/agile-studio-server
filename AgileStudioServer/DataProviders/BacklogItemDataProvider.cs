@@ -58,16 +58,16 @@ namespace AgileStudioServer.DataProviders
             return apiResources;
         }
 
-        public virtual List<BacklogItemSubResource> ListForProjectId(int projectId)
+        public virtual List<BacklogItemApiResource> ListForProjectId(int projectId)
         {
-            List<BacklogItemSubResource> apiResources = new();
+            List<BacklogItemApiResource> apiResources = new();
 
             List<BacklogItem> backlogItems = _DBContext.BacklogItem.Where(x => x.Project.ID == projectId).ToList();
             backlogItems.ForEach(backlogItem => {
                 LoadReferences(backlogItem);
 
                 apiResources.Add(
-                    new BacklogItemSubResource(backlogItem)
+                    new BacklogItemApiResource(backlogItem)
                 );
             });
 
