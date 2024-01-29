@@ -12,7 +12,7 @@ namespace AgileStudioServer.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
-        public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; }
+        public BacklogItemTypeSchemaSubResource BacklogItemTypeSchema { get; set; }
 
         public ProjectApiResource(Project project)
         {
@@ -20,7 +20,7 @@ namespace AgileStudioServer.ApiResources
             Title = project.Title;
             Description = project.Description;
             CreatedOn = project.CreatedOn;
-            BacklogItemTypeSchema = project.BacklogItemTypeSchema;
+            BacklogItemTypeSchema = new BacklogItemTypeSchemaSubResource(project.BacklogItemTypeSchema);
         }
     }
 }

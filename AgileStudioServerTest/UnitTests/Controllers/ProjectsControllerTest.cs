@@ -85,14 +85,21 @@ namespace AgileStudioServerTest.UnitTests.Controllers
             Assert.IsType<CreatedResult>(result);
         }
 
-        private static ProjectApiResource CreateTestProjectApiResource()
+        private ProjectApiResource CreateTestProjectApiResource()
         {
             return new ProjectApiResource(CreateTestProject());
         }
 
-        private static Project CreateTestProject()
+        private Project CreateTestProject(BacklogItemTypeSchema? backlogItemTypeSchema = null)
         {
-            return new Project("Test Project") { ID = 1 };
+            if(backlogItemTypeSchema is null)
+            {
+                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            }
+            return new Project("Test Project") { 
+                ID = 1,
+                BacklogItemTypeSchema = backlogItemTypeSchema
+            };
         }
 
         private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")

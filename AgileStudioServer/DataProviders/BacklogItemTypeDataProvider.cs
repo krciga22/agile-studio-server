@@ -49,16 +49,16 @@ namespace AgileStudioServer.DataProviders
             return apiResources;
         }
 
-        public virtual List<BacklogItemTypeApiSubResource> ListByBacklogItemTypeSchemaId(int backlogItemTypeSchemaId)
+        public virtual List<BacklogItemTypeSubResource> ListByBacklogItemTypeSchemaId(int backlogItemTypeSchemaId)
         {
-            List<BacklogItemTypeApiSubResource> apiResources = new();
+            List<BacklogItemTypeSubResource> apiResources = new();
 
             List<BacklogItemType> backlogItemTypes = _DBContext.BacklogItemType.Where(x => x.BacklogItemTypeSchema.ID == backlogItemTypeSchemaId).ToList();
             backlogItemTypes.ForEach(backlogItemType => {
                 LoadReferences(backlogItemType);
 
                 apiResources.Add(
-                    new BacklogItemTypeApiSubResource(backlogItemType)
+                    new BacklogItemTypeSubResource(backlogItemType)
                 );
             });
 

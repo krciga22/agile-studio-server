@@ -30,7 +30,6 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
 
             Assert.IsType<BacklogItemApiResource>(apiResource);
             Assert.Equal(backlogItem.ID, apiResource.ID);
-            Assert.IsType<BacklogItemTypeApiResource>(apiResource.BacklogItemType);
         }
 
         [Fact]

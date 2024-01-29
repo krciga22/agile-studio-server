@@ -2,7 +2,7 @@
 
 namespace AgileStudioServer.ApiResources
 {
-    public class BacklogItemTypeApiSubResource
+    public class BacklogItemTypeSubResource
     {
         public int ID { get; set; }
 
@@ -12,7 +12,7 @@ namespace AgileStudioServer.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
-        public BacklogItemTypeApiSubResource(BacklogItemType backlogItemType)
+        public BacklogItemTypeSubResource(BacklogItemType backlogItemType)
         {
             ID = backlogItemType.ID;
             Title = backlogItemType.Title;

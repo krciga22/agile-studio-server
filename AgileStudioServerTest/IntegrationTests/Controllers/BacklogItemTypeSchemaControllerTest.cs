@@ -45,13 +45,13 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
                 CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 2")
             };
 
-            List<BacklogItemTypeApiSubResource>? apiResources = null;
+            List<BacklogItemTypeSubResource>? apiResources = null;
             IActionResult result = _Controller.ListBacklogItemTypes(backlogItemTypeSchema.ID);
             if (result is OkObjectResult okResult){
-                apiResources = okResult.Value as List<BacklogItemTypeApiSubResource>;
+                apiResources = okResult.Value as List<BacklogItemTypeSubResource>;
             }
 
-            Assert.IsType<List<BacklogItemTypeApiSubResource>>(apiResources);
+            Assert.IsType<List<BacklogItemTypeSubResource>>(apiResources);
             Assert.Equal(backlogItemTypes.Count, apiResources.Count);
         }
 
