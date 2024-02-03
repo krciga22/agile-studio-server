@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
-    public class BacklogItemTypeSchemasControllerTest : AbstractControllerTest
+    public class BacklogItemTypeSchemaControllerTest : AbstractControllerTest
     {
-        private readonly BacklogItemTypeSchemasController _Controller;
+        private readonly BacklogItemTypeSchemaController _Controller;
 
-        public BacklogItemTypeSchemasControllerTest(DBContext dbContext, BacklogItemTypeSchemasController controller) : base(dbContext)
+        public BacklogItemTypeSchemaControllerTest(DBContext dbContext, BacklogItemTypeSchemaController controller) : base(dbContext)
         {
             _Controller = controller;
         }

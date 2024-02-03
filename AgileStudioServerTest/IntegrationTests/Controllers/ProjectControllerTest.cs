@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
-    public class ProjectsControllerTest : AbstractControllerTest
+    public class ProjectControllerTest : AbstractControllerTest
     {
-        private readonly ProjectsController _Controller;
+        private readonly ProjectController _Controller;
 
-        public ProjectsControllerTest(DBContext dbContext, ProjectsController controller) : base(dbContext)
+        public ProjectControllerTest(DBContext dbContext, ProjectController controller) : base(dbContext)
         {
             _Controller = controller;
         }

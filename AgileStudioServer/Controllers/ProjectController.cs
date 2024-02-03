@@ -8,13 +8,13 @@ namespace AgileStudioServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProjectsController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly ProjectDataProvider _DataProvider;
 
         private readonly BacklogItemDataProvider _BacklogItemDataProvider;
 
-        public ProjectsController(ProjectDataProvider projectDataProvider, BacklogItemDataProvider backlogItemDataProvider)
+        public ProjectController(ProjectDataProvider projectDataProvider, BacklogItemDataProvider backlogItemDataProvider)
         {
             _DataProvider = projectDataProvider;
             _BacklogItemDataProvider = backlogItemDataProvider;

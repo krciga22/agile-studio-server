@@ -7,12 +7,12 @@ namespace AgileStudioServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BacklogItemTypeSchemasController : ControllerBase
+    public class BacklogItemTypeSchemaController : ControllerBase
     {
         private readonly BacklogItemTypeSchemaDataProvider _DataProvider;
         private readonly BacklogItemTypeDataProvider _BacklogItemTypeDataProvider;
 
-        public BacklogItemTypeSchemasController(
+        public BacklogItemTypeSchemaController(
             BacklogItemTypeSchemaDataProvider dataProvider, 
             BacklogItemTypeDataProvider backlogItemTypeDataProvider)
         {
