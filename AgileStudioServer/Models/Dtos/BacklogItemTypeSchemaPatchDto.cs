@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AgileStudioServer.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace AgileStudioServer.Dtos
+namespace AgileStudioServer.Models.Dtos
 {
-    public class BacklogItemTypePatchDto
+    public class BacklogItemTypeSchemaPatchDto
     {
         [Required]
         [StringLength(60, MinimumLength = 3)]
@@ -11,7 +12,7 @@ namespace AgileStudioServer.Dtos
         [StringLength(255)]
         public string? Description { get; set; }
 
-        public BacklogItemTypePatchDto(string title)
+        public BacklogItemTypeSchemaPatchDto(string title)
         {
             Title = title;
         }

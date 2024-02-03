@@ -1,7 +1,7 @@
 ﻿
 using AgileStudioServer;
 using AgileStudioServer.Controllers;
-using AgileStudioServer.Dtos;
+using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
