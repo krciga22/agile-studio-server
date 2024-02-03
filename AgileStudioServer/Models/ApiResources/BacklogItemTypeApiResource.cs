@@ -1,8 +1,8 @@
 ﻿using AgileStudioServer.Models.Entities;
 
-namespace AgileStudioServer.ApiResources
+namespace AgileStudioServer.Models.ApiResources
 {
-    public class BacklogItemTypeSubResource
+    public class BacklogItemTypeApiResource
     {
         public int ID { get; set; }
 
@@ -12,12 +12,15 @@ namespace AgileStudioServer.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
-        public BacklogItemTypeSubResource(BacklogItemType backlogItemType)
+        public BacklogItemTypeSchemaSubResource BacklogItemTypeSchema { get; set; }
+
+        public BacklogItemTypeApiResource(BacklogItemType backlogItemType)
         {
             ID = backlogItemType.ID;
             Title = backlogItemType.Title;
             Description = backlogItemType.Description;
             CreatedOn = backlogItemType.CreatedOn;
+            BacklogItemTypeSchema = new BacklogItemTypeSchemaSubResource(backlogItemType.BacklogItemTypeSchema);
         }
     }
 }

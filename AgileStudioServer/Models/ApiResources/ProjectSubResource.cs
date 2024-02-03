@@ -1,6 +1,6 @@
 ﻿using AgileStudioServer.Models.Entities;
 
-namespace AgileStudioServer.ApiResources
+namespace AgileStudioServer.Models.ApiResources
 {
     public class ProjectSubResource
     {
