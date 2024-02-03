@@ -1,6 +1,6 @@
 ﻿using AgileStudioServer.ApiResources;
 using AgileStudioServer.Dto;
-using AgileStudioServer.Models;
+using AgileStudioServer.Models.Entities;
 
 namespace AgileStudioServer.Services.DataProviders
 {

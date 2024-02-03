@@ -3,7 +3,7 @@ using AgileStudioServer;
 using AgileStudioServer.ApiResources;
 using AgileStudioServer.Controllers;
 using AgileStudioServer.Dto;
-using AgileStudioServer.Models;
+using AgileStudioServer.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers

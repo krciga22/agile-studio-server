@@ -1,8 +1,8 @@
-﻿using AgileStudioServer.Dto;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace AgileStudioServer.Models
+namespace AgileStudioServer.Models.Entities
 {
-    public class BacklogItemTypeSchema
+    public class Project
     {
         public int ID { get; set; }
 
@@ -12,7 +12,11 @@ namespace AgileStudioServer.Models
 
         public DateTime CreatedOn { get; set; }
 
-        public BacklogItemTypeSchema(string title) { 
+        [Required]
+        public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
+
+        public Project(string title)
+        {
             Title = title;
             CreatedOn = DateTime.Now;
         }

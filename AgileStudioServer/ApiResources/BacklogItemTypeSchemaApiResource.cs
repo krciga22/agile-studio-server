@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.Models;
+﻿using AgileStudioServer.Models.Entities;
 
 namespace AgileStudioServer.ApiResources
 {

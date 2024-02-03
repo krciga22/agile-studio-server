@@ -1,6 +1,6 @@
-﻿namespace AgileStudioServer.Models
+﻿namespace AgileStudioServer.Models.Entities
 {
-    public class BacklogItem
+    public class BacklogItemType
     {
         public int ID { get; set; }
 
@@ -10,11 +10,10 @@
 
         public DateTime CreatedOn { get; set; }
 
-        public Project Project { get; set; } = null!;
+        public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 
-        public BacklogItemType BacklogItemType { get; set; } = null!;
-
-        public BacklogItem(string title) { 
+        public BacklogItemType(string title)
+        {
             Title = title;
             CreatedOn = DateTime.Now;
         }
