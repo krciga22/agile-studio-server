@@ -4,7 +4,7 @@ using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Entities;
 using AgileStudioServer.Services.DataProviders;
 
-namespace AgileStudioServerTest.IntegrationTests.DataProviders
+namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public class ProjectDataProviderTest : AbstractDataProviderTest
     {

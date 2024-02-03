@@ -5,7 +5,7 @@ using AgileStudioServer.Models.Entities;
 using AgileStudioServer.Services.DataProviders;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AgileStudioServerTest.IntegrationTests.DataProviders
+namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public class BacklogItemTypeDataProviderTest : AbstractDataProviderTest
     {
@@ -75,7 +75,7 @@ namespace AgileStudioServerTest.IntegrationTests.DataProviders
 
         private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Backlog Item Type Schema")
         {
-            if(backlogItemTypeSchema is null)
+            if (backlogItemTypeSchema is null)
             {
                 backlogItemTypeSchema = CreateBacklogItemTypeSchema();
             }

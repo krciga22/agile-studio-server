@@ -1,6 +1,6 @@
 ﻿using AgileStudioServer;
 
-namespace AgileStudioServerTest.IntegrationTests.DataProviders
+namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public abstract class AbstractDataProviderTest : IDisposable
     {
