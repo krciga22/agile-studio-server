@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.Dto;
+﻿using AgileStudioServer.Dtos;
 using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Entities;
 

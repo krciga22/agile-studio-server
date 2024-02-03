@@ -1,19 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AgileStudioServer.Dto
+namespace AgileStudioServer.Dtos
 {
-    public class BacklogItemPatchDto
+    public class ProjectPostDto
     {
         [Required]
         [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
+        [Required]
+        public int BacklogItemTypeSchemaId { get; set; }
+
         [StringLength(255)]
         public string? Description { get; set; }
 
-        public BacklogItemPatchDto(string title)
+        public ProjectPostDto(string title, int backlogItemTypeSchemaId)
         {
             Title = title;
+            BacklogItemTypeSchemaId = backlogItemTypeSchemaId;
         }
     }
 }

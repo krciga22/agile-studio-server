@@ -1,7 +1,7 @@
 ﻿using AgileStudioServer.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace AgileStudioServer.Dto
+namespace AgileStudioServer.Dtos
 {
     public class BacklogItemTypeSchemaPatchDto
     {

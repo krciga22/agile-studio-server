@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.Dto;
+﻿using AgileStudioServer.Dtos;
 
 namespace AgileStudioServer.Models.Entities
 {
