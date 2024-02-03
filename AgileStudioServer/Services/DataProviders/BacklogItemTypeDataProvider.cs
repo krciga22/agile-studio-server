@@ -2,7 +2,7 @@
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
 
-namespace AgileStudioServer.DataProviders
+namespace AgileStudioServer.Services.DataProviders
 {
     public class BacklogItemTypeDataProvider
     {
@@ -38,7 +38,8 @@ namespace AgileStudioServer.DataProviders
             List<BacklogItemTypeApiResource> apiResources = new();
 
             List<BacklogItemType> backlogItemTypes = _DBContext.BacklogItemType.ToList();
-            backlogItemTypes.ForEach(backlogItemType => {
+            backlogItemTypes.ForEach(backlogItemType =>
+            {
                 LoadReferences(backlogItemType);
 
                 apiResources.Add(
@@ -54,7 +55,8 @@ namespace AgileStudioServer.DataProviders
             List<BacklogItemTypeSubResource> apiResources = new();
 
             List<BacklogItemType> backlogItemTypes = _DBContext.BacklogItemType.Where(x => x.BacklogItemTypeSchema.ID == backlogItemTypeSchemaId).ToList();
-            backlogItemTypes.ForEach(backlogItemType => {
+            backlogItemTypes.ForEach(backlogItemType =>
+            {
                 LoadReferences(backlogItemType);
 
                 apiResources.Add(
@@ -68,7 +70,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemTypeApiResource? Get(int id)
         {
             BacklogItemType? backlogItemType = _DBContext.BacklogItemType.Find(id);
-            if(backlogItemType is null){
+            if (backlogItemType is null)
+            {
                 return null;
             }
 
@@ -80,7 +83,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemTypeApiResource? Update(int id, BacklogItemTypePatchDto dto)
         {
             var backlogItemType = _DBContext.BacklogItemType.Find(id);
-            if (backlogItemType is null){
+            if (backlogItemType is null)
+            {
                 return null;
             }
 
@@ -96,7 +100,8 @@ namespace AgileStudioServer.DataProviders
         public virtual bool Delete(int id)
         {
             var backlogItemType = _DBContext.BacklogItemType.Find(id);
-            if (backlogItemType is null){
+            if (backlogItemType is null)
+            {
                 return false;
             }
 

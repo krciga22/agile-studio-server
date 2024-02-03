@@ -1,4 +1,4 @@
-using AgileStudioServer.DataProviders;
+using AgileStudioServer.Services.DataProviders;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioServer

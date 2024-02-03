@@ -1,6 +1,6 @@
 ﻿using AgileStudioServer;
 using AgileStudioServer.Controllers;
-using AgileStudioServer.DataProviders;
+using AgileStudioServer.Services.DataProviders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;

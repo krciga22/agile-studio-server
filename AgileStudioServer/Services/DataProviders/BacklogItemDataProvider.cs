@@ -2,7 +2,7 @@
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
 
-namespace AgileStudioServer.DataProviders
+namespace AgileStudioServer.Services.DataProviders
 {
     public class BacklogItemDataProvider
     {
@@ -47,7 +47,8 @@ namespace AgileStudioServer.DataProviders
             List<BacklogItemApiResource> apiResources = new();
 
             List<BacklogItem> backlogItems = _DBContext.BacklogItem.ToList();
-            backlogItems.ForEach(backlogItem => {
+            backlogItems.ForEach(backlogItem =>
+            {
                 LoadReferences(backlogItem);
 
                 apiResources.Add(
@@ -63,7 +64,8 @@ namespace AgileStudioServer.DataProviders
             List<BacklogItemApiResource> apiResources = new();
 
             List<BacklogItem> backlogItems = _DBContext.BacklogItem.Where(x => x.Project.ID == projectId).ToList();
-            backlogItems.ForEach(backlogItem => {
+            backlogItems.ForEach(backlogItem =>
+            {
                 LoadReferences(backlogItem);
 
                 apiResources.Add(
@@ -77,7 +79,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemApiResource? Get(int id)
         {
             BacklogItem? backlogItem = _DBContext.BacklogItem.Find(id);
-            if(backlogItem is null){
+            if (backlogItem is null)
+            {
                 return null;
             }
 
@@ -89,7 +92,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemApiResource? Update(int id, BacklogItemPatchDto dto)
         {
             var backlogItem = _DBContext.BacklogItem.Find(id);
-            if (backlogItem is null){
+            if (backlogItem is null)
+            {
                 return null;
             }
 
@@ -105,7 +109,8 @@ namespace AgileStudioServer.DataProviders
         public virtual bool Delete(int id)
         {
             var backlogItem = _DBContext.BacklogItem.Find(id);
-            if (backlogItem is null){
+            if (backlogItem is null)
+            {
                 return false;
             }
 

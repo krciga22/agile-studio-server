@@ -2,7 +2,7 @@
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
 
-namespace AgileStudioServer.DataProviders
+namespace AgileStudioServer.Services.DataProviders
 {
     public class BacklogItemTypeSchemaDataProvider
     {
@@ -31,7 +31,8 @@ namespace AgileStudioServer.DataProviders
             List<BacklogItemTypeSchemaApiResource> apiResources = new();
 
             List<BacklogItemTypeSchema> backlogItemTypeSchemas = _DBContext.BacklogItemTypeSchema.ToList();
-            backlogItemTypeSchemas.ForEach(backlogItemTypeSchema => {
+            backlogItemTypeSchemas.ForEach(backlogItemTypeSchema =>
+            {
                 LoadReferences(backlogItemTypeSchema);
 
                 apiResources.Add(
@@ -45,7 +46,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemTypeSchemaApiResource? Get(int id)
         {
             BacklogItemTypeSchema? backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
-            if(backlogItemTypeSchema is null){
+            if (backlogItemTypeSchema is null)
+            {
                 return null;
             }
 
@@ -57,7 +59,8 @@ namespace AgileStudioServer.DataProviders
         public virtual BacklogItemTypeSchemaApiResource? Update(int id, BacklogItemTypeSchemaPatchDto dto)
         {
             var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
-            if (backlogItemTypeSchema is null){
+            if (backlogItemTypeSchema is null)
+            {
                 return null;
             }
 
@@ -73,7 +76,8 @@ namespace AgileStudioServer.DataProviders
         public virtual bool Delete(int id)
         {
             var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
-            if (backlogItemTypeSchema is null){
+            if (backlogItemTypeSchema is null)
+            {
                 return false;
             }
 

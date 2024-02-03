@@ -1,6 +1,6 @@
 using AgileStudioServer.ApiResources;
-using AgileStudioServer.DataProviders;
 using AgileStudioServer.Dto;
+using AgileStudioServer.Services.DataProviders;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServer.Controllers

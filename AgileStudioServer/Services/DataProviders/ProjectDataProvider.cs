@@ -2,7 +2,7 @@
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
 
-namespace AgileStudioServer.DataProviders
+namespace AgileStudioServer.Services.DataProviders
 {
     public class ProjectDataProvider
     {
@@ -18,7 +18,8 @@ namespace AgileStudioServer.DataProviders
             List<Project> projects = _DBContext.Project.ToList();
 
             List<ProjectApiResource> projectApiResources = new();
-            projects.ForEach(project => {
+            projects.ForEach(project =>
+            {
                 LoadReferences(project);
 
                 projectApiResources.Add(
@@ -32,7 +33,8 @@ namespace AgileStudioServer.DataProviders
         public virtual ProjectApiResource? Get(int id)
         {
             Project? project = _DBContext.Project.Find(id);
-            if(project is null){
+            if (project is null)
+            {
                 return null;
             }
 
@@ -49,7 +51,8 @@ namespace AgileStudioServer.DataProviders
                 throw new Exception("BacklogItemTypeSchema not found");
             }
 
-            var project = new Project(projectPostDto.Title) {
+            var project = new Project(projectPostDto.Title)
+            {
                 Description = projectPostDto.Description,
                 BacklogItemTypeSchema = backlogItemTypeSchema
             };
@@ -63,7 +66,8 @@ namespace AgileStudioServer.DataProviders
         public virtual ProjectApiResource? Update(int id, ProjectPatchDto projectPatchDto)
         {
             var project = _DBContext.Project.Find(id);
-            if(project is null){
+            if (project is null)
+            {
                 return null;
             }
 
@@ -79,7 +83,8 @@ namespace AgileStudioServer.DataProviders
         public virtual bool Delete(int id)
         {
             var project = _DBContext.Project.Find(id);
-            if(project is null){
+            if (project is null)
+            {
                 return false;
             }
 

@@ -1,8 +1,8 @@
 ﻿using AgileStudioServer;
 using AgileStudioServer.ApiResources;
-using AgileStudioServer.DataProviders;
 using AgileStudioServer.Dto;
 using AgileStudioServer.Models;
+using AgileStudioServer.Services.DataProviders;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.DataProviders
