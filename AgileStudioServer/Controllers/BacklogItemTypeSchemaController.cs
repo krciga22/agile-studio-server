@@ -73,7 +73,7 @@ namespace AgileStudioServer.Controllers
             return Created(apiResourceUrl, apiResource);
         }
 
-        [HttpPatch(Name = "UpdateBacklogItemTypeSchema")]
+        [HttpPatch("{id}", Name = "UpdateBacklogItemTypeSchema")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(BacklogItemTypeSchemaApiResource), StatusCodes.Status200OK)]
@@ -89,7 +89,7 @@ namespace AgileStudioServer.Controllers
             return new OkObjectResult(apiResource);
         }
 
-        [HttpDelete(Name = "DeleteBacklogItemTypeSchema")]
+        [HttpDelete("{id}", Name = "DeleteBacklogItemTypeSchema")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

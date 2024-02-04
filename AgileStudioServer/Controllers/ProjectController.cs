@@ -81,7 +81,7 @@ namespace AgileStudioServer.Controllers
             return Created(projectUrl, projectApiResource);
         }
 
-        [HttpPatch(Name = "UpdateProject")]
+        [HttpPatch("{id}", Name = "UpdateProject")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
@@ -97,7 +97,7 @@ namespace AgileStudioServer.Controllers
             return new OkObjectResult(projectApiResource);
         }
 
-        [HttpDelete(Name = "DeleteProject")]
+        [HttpDelete("{id}", Name = "DeleteProject")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
