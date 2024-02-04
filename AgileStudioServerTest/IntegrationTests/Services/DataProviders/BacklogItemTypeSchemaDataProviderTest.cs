@@ -10,7 +10,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
     {
         private readonly BacklogItemTypeSchemaDataProvider _dataProvider;
 
-        public BacklogItemTypeSchemaDataProviderTest(DBContext dbContext, BacklogItemTypeSchemaDataProvider backlogItemTypeSchemaDataProvider) : base(dbContext)
+        public BacklogItemTypeSchemaDataProviderTest(
+            DBContext dbContext,
+            Fixtures fixtures,
+            BacklogItemTypeSchemaDataProvider backlogItemTypeSchemaDataProvider) : base(dbContext, fixtures)
         {
             _dataProvider = backlogItemTypeSchemaDataProvider;
         }
@@ -30,8 +33,8 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItemTypeSchemas = new List<BacklogItemTypeSchema>
             {
-                CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 1"),
-                CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 2")
+                _Fixtures.CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 1"),
+                _Fixtures.CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 2")
             };
 
             List<BacklogItemTypeSchemaApiResource> apiResources = _dataProvider.List();
@@ -42,7 +45,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void GetBacklogItemTypeSchema_ById_ReturnsApiResource()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
             var apiResource = _dataProvider.Get(backlogItemTypeSchema.ID);
 
@@ -52,7 +55,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void UpdateBacklogItemTypeSchema_WithValidDto_ReturnsApiResource()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
@@ -65,26 +68,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void DeleteBacklogItemTypeSchema_WithValidId_ReturnsTrue()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
             bool result = _dataProvider.Delete(backlogItemTypeSchema.ID);
             Assert.True(result);
-        }
-
-        private Project CreateProject(string title = "test Project")
-        {
-            var project = new Project(title);
-            _DBContext.Project.Add(project);
-            _DBContext.SaveChanges();
-            return project;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
-            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
-            _DBContext.SaveChanges();
-            return backlogItemTypeSchema;
         }
     }
 }

@@ -2,20 +2,13 @@
 
 namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
-    public abstract class AbstractDataProviderTest : IDisposable
+    public abstract class AbstractDataProviderTest : DBTest
     {
-        protected readonly DBContext _DBContext;
+        protected readonly Fixtures _Fixtures;
 
-        public AbstractDataProviderTest(DBContext dbContext)
+        public AbstractDataProviderTest(DBContext dbContext, Fixtures fixtures) : base(dbContext)
         {
-            _DBContext = dbContext;
-            _DBContext.Database.BeginTransaction();
-        }
-
-        public void Dispose()
-        {
-            _DBContext.Database.RollbackTransaction();
-            GC.SuppressFinalize(this);
+            _Fixtures = fixtures;
         }
     }
 }

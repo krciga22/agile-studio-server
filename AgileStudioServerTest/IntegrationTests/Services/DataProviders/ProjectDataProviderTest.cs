@@ -10,7 +10,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
     {
         private readonly ProjectDataProvider _ProjectDataProvider;
 
-        public ProjectDataProviderTest(DBContext dbContext, ProjectDataProvider projectDataProvider) : base(dbContext)
+        public ProjectDataProviderTest(
+            DBContext dbContext,
+            Fixtures fixtures,
+            ProjectDataProvider projectDataProvider) : base(dbContext, fixtures)
         {
             _ProjectDataProvider = projectDataProvider;
         }
@@ -18,7 +21,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void CreateProject_WithProjectPostDto_ReturnsProjectApiResource()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
             var projectApiResource = _ProjectDataProvider.Create(projectPostDto);
@@ -29,7 +32,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void GetProject_ById_ReturnsProjectApiResource()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
             var projectApiResource = _ProjectDataProvider.Get(project.ID);
 
@@ -41,8 +44,8 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var projects = new List<Project>
             {
-                CreateProject("Test Project 1"),
-                CreateProject("Test Project 2")
+                _Fixtures.CreateProject("Test Project 1"),
+                _Fixtures.CreateProject("Test Project 2")
             };
 
             List<ProjectApiResource> projectApiResources = _ProjectDataProvider.List();
@@ -53,7 +56,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void UpdateProject_WithValidProjectPatchDto_ReturnsProjectApiResource()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
             var title = $"{project.Title} Updated";
             var projectPatchDto = new ProjectPatchDto(title);
 
@@ -65,27 +68,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void DeleteProject_WithValidId_ReturnsTrue()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
             bool result = _ProjectDataProvider.Delete(project.ID);
             Assert.True(result);
-        }
-
-        private Project CreateProject(string title = "test Project")
-        {
-            var project = new Project(title);
-            project.BacklogItemTypeSchema = CreateBacklogItemTypeSchema();
-            _DBContext.Project.Add(project);
-            _DBContext.SaveChanges();
-            return project;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
-            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
-            _DBContext.SaveChanges();
-            return backlogItemTypeSchema;
         }
     }
 }
