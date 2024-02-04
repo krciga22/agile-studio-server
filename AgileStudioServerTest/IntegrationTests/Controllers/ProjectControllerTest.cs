@@ -24,8 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithNoArguments_ReturnsApiResources()
         {
             List<Project> projects = new () {
-                _Fixtures.CreateProject("Test Project 1"),
-                _Fixtures.CreateProject("Test Project 2")
+                _Fixtures.CreateProject(null, "Test Project 1"),
+                _Fixtures.CreateProject(null, "Test Project 2")
             };
 
             List<ProjectApiResource>? projectApiResources = null;

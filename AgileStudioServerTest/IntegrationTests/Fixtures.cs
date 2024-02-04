@@ -15,11 +15,16 @@ namespace AgileStudioServerTest.IntegrationTests
             _DBContext = _dbContext;
         }
 
-        public Project CreateProject(string title = "Test Project")
+        public Project CreateProject(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Project")
         {
+            if (backlogItemTypeSchema is null)
+            {
+                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            }
+
             var project = new Project(title)
             {
-                BacklogItemTypeSchema = CreateBacklogItemTypeSchema()
+                BacklogItemTypeSchema = backlogItemTypeSchema
             };
             _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
