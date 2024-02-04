@@ -42,10 +42,18 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         public void ListForProject_ById_ReturnsApiResource()
         {
             var project = _Fixtures.CreateProject();
-            var backlogItemType = _Fixtures.CreateBacklogItemType(project.BacklogItemTypeSchema);
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                backlogItemTypeSchema: project.BacklogItemTypeSchema);
+
             List<BacklogItem> backlogItems = new() {
-                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
-                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
+                _Fixtures.CreateBacklogItem(
+                    title: "Test Backlog Item 1",
+                    project: project,
+                    backlogItemType: backlogItemType),
+                _Fixtures.CreateBacklogItem(
+                    title: "Test Backlog Item 2",
+                    project: project,
+                    backlogItemType: backlogItemType)
             };
 
             var apiResources = _dataProvider.ListForProjectId(project.ID);

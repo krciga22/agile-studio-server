@@ -24,8 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithNoArguments_ReturnsApiResources()
         {
             List<Project> projects = new () {
-                _Fixtures.CreateProject(null, "Test Project 1"),
-                _Fixtures.CreateProject(null, "Test Project 2")
+                _Fixtures.CreateProject("Test Project 1"),
+                _Fixtures.CreateProject("Test Project 2")
             };
 
             List<ProjectApiResource>? projectApiResources = null;
@@ -64,10 +64,18 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void GetBacklogItemsForProject_WithId_ReturnsApiResources()
         {
             var project = _Fixtures.CreateProject();
-            var backlogItemType = _Fixtures.CreateBacklogItemType(project.BacklogItemTypeSchema);
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                backlogItemTypeSchema: project.BacklogItemTypeSchema);
+
             List<BacklogItem> backlogItems = new() {
-                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
-                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
+                _Fixtures.CreateBacklogItem(
+                    title: "Test Backlog Item 1",
+                    project: project,
+                    backlogItemType: backlogItemType),
+                _Fixtures.CreateBacklogItem(
+                    title: "Test Backlog Item 2",
+                    project: project,
+                    backlogItemType: backlogItemType)
             };
 
             List<BacklogItemApiResource>? apiResources = null;

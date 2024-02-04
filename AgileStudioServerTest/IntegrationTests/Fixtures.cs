@@ -15,8 +15,16 @@ namespace AgileStudioServerTest.IntegrationTests
             _DBContext = _dbContext;
         }
 
-        public Project CreateProject(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Project")
+        public Project CreateProject(
+            string? title = null, 
+            BacklogItemTypeSchema? 
+            backlogItemTypeSchema = null)
         {
+            if (title is null)
+            {
+                title = "Test Project";
+            }
+
             if (backlogItemTypeSchema is null)
             {
                 backlogItemTypeSchema = CreateBacklogItemTypeSchema();
@@ -31,8 +39,16 @@ namespace AgileStudioServerTest.IntegrationTests
             return project;
         }
 
-        public BacklogItem CreateBacklogItem(Project? project = null, BacklogItemType? backlogItemType = null, string title = "Test BacklogItem")
+        public BacklogItem CreateBacklogItem(
+            string? title = null, 
+            Project? project = null, 
+            BacklogItemType? backlogItemType = null)
         {
+            if (title is null)
+            {
+                title = "Test BacklogItem";
+            }
+
             if (project is null)
             {
                 project = CreateProject();
@@ -40,7 +56,8 @@ namespace AgileStudioServerTest.IntegrationTests
 
             if (backlogItemType is null)
             {
-                backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+                backlogItemType = CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
             }
 
             var backlogItem = new BacklogItem(title)
@@ -53,16 +70,28 @@ namespace AgileStudioServerTest.IntegrationTests
             return backlogItem;
         }
 
-        public BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test BacklogItemTypeSchema")
+        public BacklogItemTypeSchema CreateBacklogItemTypeSchema(string? title = null)
         {
+            if(title is null)
+            {
+                title = "Test BacklogItemTypeSchema";
+            }
+
             var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
         }
 
-        public BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test BacklogItemType")
+        public BacklogItemType CreateBacklogItemType(
+            string? title = null, 
+            BacklogItemTypeSchema? backlogItemTypeSchema = null)
         {
+            if (title is null)
+            {
+                title = "Test BacklogItemType";
+            }
+
             if (backlogItemTypeSchema is null)
             {
                 backlogItemTypeSchema = CreateBacklogItemTypeSchema();

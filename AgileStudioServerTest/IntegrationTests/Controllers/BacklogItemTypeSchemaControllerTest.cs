@@ -44,8 +44,12 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
             List<BacklogItemType> backlogItemTypes = new() {
-                _Fixtures.CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 1"),
-                _Fixtures.CreateBacklogItemType(backlogItemTypeSchema, "Test Backlog Item Type Schema 2")
+                _Fixtures.CreateBacklogItemType(
+                    title: "Test Backlog Item Type Schema 1",
+                    backlogItemTypeSchema: backlogItemTypeSchema),
+                _Fixtures.CreateBacklogItemType(
+                    title: "Test Backlog Item Type Schema 2",
+                    backlogItemTypeSchema: backlogItemTypeSchema)
             };
 
             List<BacklogItemTypeSubResource>? apiResources = null;

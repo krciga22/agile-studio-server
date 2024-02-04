@@ -44,8 +44,8 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var projects = new List<Project>
             {
-                _Fixtures.CreateProject(null, "Test Project 1"),
-                _Fixtures.CreateProject(null, "Test Project 2")
+                _Fixtures.CreateProject("Test Project 1"),
+                _Fixtures.CreateProject("Test Project 2")
             };
 
             List<ProjectApiResource> projectApiResources = _ProjectDataProvider.List();

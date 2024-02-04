@@ -24,7 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         public void BacklogItemTypeId_ForProjectId_IsValid()
         {
             var project = _Fixtures.CreateProject();
-            var backlogItemType = _Fixtures.CreateBacklogItemType(project.BacklogItemTypeSchema);
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
 
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
             var backlogItem = new BacklogItemPostDto("Valid Backlog Item", project.ID, backlogItemType.ID);
@@ -38,7 +39,8 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project = _Fixtures.CreateProject();
 
             var otherBacklogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-            var backlogItemTypeInvalid = _Fixtures.CreateBacklogItemType(otherBacklogItemTypeSchema);
+            var backlogItemTypeInvalid = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: otherBacklogItemTypeSchema);
 
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
             var backlogItem = new BacklogItemPostDto("Invalid Backlog Item", project.ID, backlogItemTypeInvalid.ID);
