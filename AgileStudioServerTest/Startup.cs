@@ -1,6 +1,7 @@
 ﻿using AgileStudioServer;
 using AgileStudioServer.Controllers;
 using AgileStudioServer.Services.DataProviders;
+using AgileStudioServerTest.IntegrationTests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -45,6 +46,8 @@ namespace AgileStudioServerTest
             services.AddScoped<BacklogItemTypeDataProvider>();
             services.AddScoped<BacklogItemTypeSchemaDataProvider>();
             services.AddScoped<ProjectDataProvider>();
+
+            services.AddScoped<Fixtures>();
         }
     }
 }

@@ -1,25 +1,30 @@
 ﻿using AgileStudioServer;
-using AgileStudioServer.Models.Dtos;
-using AgileStudioServer.Models.Entities;
 using AgileStudioServer.Attributes.Validation;
+using AgileStudioServer.Models.Dtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace AgileStudioServerTest.IntegrationTests.Attributes
 {
     public class ValidationTest : DBTest
     {
+        private readonly Fixtures _Fixtures;
+
         private readonly IServiceProvider? _ServiceProvider;
 
-        public ValidationTest(DBContext dbContext, IServiceProvider? serviceProvider) : base(dbContext)
+        public ValidationTest(
+            DBContext dbContext, 
+            Fixtures fixtures, 
+            IServiceProvider? serviceProvider) : base(dbContext)
         {
-            this._ServiceProvider = serviceProvider;
+            _Fixtures = fixtures;
+            _ServiceProvider = serviceProvider;
         }
 
         [Fact]
         public void BacklogItemTypeId_ForProjectId_IsValid()
         {
-            var project = CreateProject();
-            var backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+            var project = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(project.BacklogItemTypeSchema);
 
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
             var backlogItem = new BacklogItemPostDto("Valid Backlog Item", project.ID, backlogItemType.ID);
@@ -30,10 +35,10 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         [Fact]
         public void BacklogItemTypeId_ForProjectId_IsInvalid()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
-            var otherBacklogItemTypeSchema = CreateBacklogItemTypeSchema();
-            var backlogItemTypeInvalid = CreateBacklogItemType(otherBacklogItemTypeSchema);
+            var otherBacklogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
+            var backlogItemTypeInvalid = _Fixtures.CreateBacklogItemType(otherBacklogItemTypeSchema);
 
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
             var backlogItem = new BacklogItemPostDto("Invalid Backlog Item", project.ID, backlogItemTypeInvalid.ID);
@@ -53,40 +58,6 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
                 serviceProvider: _ServiceProvider,
                 items: null
             );
-        }
-
-        private Project CreateProject(string title = "test Project")
-        {
-            var project = new Project(title);
-            project.BacklogItemTypeSchema = CreateBacklogItemTypeSchema();
-            _DBContext.Project.Add(project);
-            _DBContext.SaveChanges();
-            return project;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
-            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
-            _DBContext.SaveChanges();
-            return backlogItemTypeSchema;
-        }
-
-        private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Backlog Item Type")
-        {
-            if (backlogItemTypeSchema is null)
-            {
-                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
-            }
-
-            var backlogItemType = new BacklogItemType(title)
-            {
-                BacklogItemTypeSchema = backlogItemTypeSchema
-            };
-
-            _DBContext.BacklogItemType.Add(backlogItemType);
-            _DBContext.SaveChanges();
-            return backlogItemType;
         }
     }
 }
