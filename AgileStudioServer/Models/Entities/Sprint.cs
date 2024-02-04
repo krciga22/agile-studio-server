@@ -1,10 +1,15 @@
-﻿namespace AgileStudioServer.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AgileStudioServer.Models.Entities
 {
     public class Sprint
     {
         public int ID { get; set; }
 
         public int SprintNumber { get; set; }
+
+        [Required]
+        public Project Project { get; set; } = null!;
 
         public string? Description { get; set; }
 
