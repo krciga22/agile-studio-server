@@ -14,6 +14,8 @@ namespace AgileStudioServer
 
         public DbSet<BacklogItemTypeSchema> BacklogItemTypeSchema { get; set; }
 
+        public DbSet<Sprint> Sprints { get; set; }
+
         public DBContext(DbContextOptions contextOptions) : base(contextOptions)
         {
 
