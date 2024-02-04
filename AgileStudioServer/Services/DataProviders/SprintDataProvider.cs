@@ -14,7 +14,7 @@ namespace AgileStudioServer.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<SprintApiResource> ListForProject(int projectId)
+        public virtual List<SprintApiResource> ListForProjectId(int projectId)
         {
             List<Sprint> sprints = _DBContext.Sprints.Where(sprint => sprint.Project.ID == projectId).ToList();
 

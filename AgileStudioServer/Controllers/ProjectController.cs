@@ -14,10 +14,16 @@ namespace AgileStudioServer.Controllers
 
         private readonly BacklogItemDataProvider _BacklogItemDataProvider;
 
-        public ProjectController(ProjectDataProvider projectDataProvider, BacklogItemDataProvider backlogItemDataProvider)
+        private readonly SprintDataProvider _SprintDataProvider;
+
+        public ProjectController(
+            ProjectDataProvider projectDataProvider, 
+            BacklogItemDataProvider backlogItemDataProvider,
+            SprintDataProvider sprintDataProvider)
         {
             _DataProvider = projectDataProvider;
             _BacklogItemDataProvider = backlogItemDataProvider;
+            _SprintDataProvider = sprintDataProvider;
         }
 
         [HttpGet(Name = "GetProjects")]
@@ -48,6 +54,15 @@ namespace AgileStudioServer.Controllers
         public IActionResult GetBacklogItemsForProject(int id)
         {
             return Ok(_BacklogItemDataProvider.ListForProjectId(id));
+        }
+
+        [HttpGet("{id}/Sprints", Name = "GetProjectSprints")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<SprintApiResource>), StatusCodes.Status200OK)]
+        public IActionResult GetSprintsForProject(int id)
+        {
+            return Ok(_SprintDataProvider.ListForProjectId(id));
         }
 
         [HttpPost(Name = "CreateProject")]

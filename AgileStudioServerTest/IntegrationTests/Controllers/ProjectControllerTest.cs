@@ -90,6 +90,31 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void GetSprintsForProject_WithId_ReturnsApiResources()
+        {
+            var project = _Fixtures.CreateProject();
+
+            List<Sprint> sprints = new() {
+                _Fixtures.CreateSprint(
+                    sprintNumber: 1,
+                    project: project),
+                _Fixtures.CreateSprint(
+                    sprintNumber: 2,
+                    project: project)
+            };
+
+            List<SprintApiResource>? apiResources = null;
+            IActionResult result = _Controller.GetSprintsForProject(project.ID);
+            if (result is OkObjectResult okResult)
+            {
+                apiResources = okResult.Value as List<SprintApiResource>;
+            }
+
+            Assert.IsType<List<SprintApiResource>>(apiResources);
+            Assert.Equal(sprints.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();

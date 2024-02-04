@@ -50,7 +50,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
                 _Fixtures.CreateSprint(2, project)
             };
 
-            List<SprintApiResource> sprintApiResources = _SprintDataProvider.ListForProject(project.ID);
+            List<SprintApiResource> sprintApiResources = _SprintDataProvider.ListForProjectId(project.ID);
 
             Assert.Equal(sprints.Count, sprintApiResources.Count);
         }
