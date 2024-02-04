@@ -2,20 +2,13 @@
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
 {
-    public abstract class AbstractControllerTest : IDisposable
+    public abstract class AbstractControllerTest : DBTest
     {
-        protected readonly DBContext _DBContext;
+        protected readonly Fixtures _Fixtures;
 
-        public AbstractControllerTest(DBContext dbContext)
+        public AbstractControllerTest(DBContext dbContext, Fixtures fixtures) : base(dbContext)
         {
-            _DBContext = dbContext;
-            _DBContext.Database.BeginTransaction();
-        }
-
-        public void Dispose()
-        {
-            _DBContext.Database.RollbackTransaction();
-            GC.SuppressFinalize(this);
+            _Fixtures = fixtures;
         }
     }
 }

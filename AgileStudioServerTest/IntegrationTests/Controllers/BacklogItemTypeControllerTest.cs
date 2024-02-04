@@ -3,7 +3,6 @@ using AgileStudioServer;
 using AgileStudioServer.Controllers;
 using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Models.ApiResources;
-using AgileStudioServer.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServerTest.IntegrationTests.Controllers
@@ -12,7 +11,10 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
     {
         private readonly BacklogItemTypeController _Controller;
 
-        public BacklogItemTypeControllerTest(DBContext dbContext, BacklogItemTypeController controller) : base(dbContext)
+        public BacklogItemTypeControllerTest(
+            DBContext dbContext,
+            Fixtures fixtures, 
+            BacklogItemTypeController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;
         }
@@ -20,7 +22,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Get_WithId_ReturnsApiResource()
         {
-            var backlogItemType = CreateBacklogItemType();
+            var backlogItemType = _Fixtures.CreateBacklogItemType();
 
             BacklogItemTypeApiResource? apiResource = null;
             IActionResult result = _Controller.Get(backlogItemType.ID);
@@ -35,7 +37,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var dto = new BacklogItemTypePostDto("Test Backlog Item Type Schema", backlogItemTypeSchema.ID);
 
             BacklogItemTypeApiResource? apiResource = null;
@@ -51,7 +53,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
-            var backlogItemType = CreateBacklogItemType();
+            var backlogItemType = _Fixtures.CreateBacklogItemType();
 
             var title = $"{backlogItemType.Title} Updated";
             var dto = new BacklogItemTypePatchDto(title);
@@ -71,7 +73,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Delete_WithId_ReturnsOkResult()
         {
-            var backlogItemType = CreateBacklogItemType();
+            var backlogItemType = _Fixtures.CreateBacklogItemType();
 
             IActionResult result = _Controller.Delete(backlogItemType.ID);
 
@@ -84,24 +86,6 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             IActionResult result = _Controller.Delete(Constants.NonExistantId);
 
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
-        }
-
-        private BacklogItemType CreateBacklogItemType(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
-            var backlogItemType = new BacklogItemType(title);
-            backlogItemType.BacklogItemTypeSchema = backlogItemTypeSchema;
-            _DBContext.BacklogItemType.Add(backlogItemType);
-            _DBContext.SaveChanges();
-            return backlogItemType;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
-            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
-            _DBContext.SaveChanges();
-            return backlogItemTypeSchema;
         }
     }
 }

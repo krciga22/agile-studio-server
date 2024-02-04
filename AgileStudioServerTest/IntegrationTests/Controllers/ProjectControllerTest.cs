@@ -12,7 +12,10 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
     {
         private readonly ProjectController _Controller;
 
-        public ProjectControllerTest(DBContext dbContext, ProjectController controller) : base(dbContext)
+        public ProjectControllerTest(
+            DBContext dbContext,
+            Fixtures fixtures,
+            ProjectController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;
         }
@@ -21,8 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithNoArguments_ReturnsApiResources()
         {
             List<Project> projects = new () {
-                CreateProject("Test Project 1"),
-                CreateProject("Test Project 2")
+                _Fixtures.CreateProject("Test Project 1"),
+                _Fixtures.CreateProject("Test Project 2")
             };
 
             List<ProjectApiResource>? projectApiResources = null;
@@ -38,7 +41,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Get_WithId_ReturnsApiResource()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
             ProjectApiResource? projectApiResource = null;
             IActionResult result = _Controller.Get(project.ID);
@@ -60,11 +63,11 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void GetBacklogItemsForProject_WithId_ReturnsApiResources()
         {
-            var project = CreateProject("Test Project 1");
-            var backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
+            var project = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(project.BacklogItemTypeSchema);
             List<BacklogItem> backlogItems = new() {
-                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
-                CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
+                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 1"),
+                _Fixtures.CreateBacklogItem(project, backlogItemType, "Test Backlog Item 2")
             };
 
             List<BacklogItemApiResource>? apiResources = null;
@@ -81,7 +84,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
-            var backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
             ProjectApiResource? projectApiResource = null;
@@ -97,7 +100,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
             var title = $"{project.Title} Updated";
             var projectPatchDto = new ProjectPatchDto(title);
@@ -115,7 +118,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         [Fact]
         public void Delete_WithId_ReturnsOkResult()
         {
-            var project = CreateProject();
+            var project = _Fixtures.CreateProject();
 
             IActionResult result = _Controller.Delete(project.ID);
 
@@ -128,62 +131,6 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             IActionResult result = _Controller.Delete(Constants.NonExistantId);
 
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
-        }
-
-        private Project CreateProject(string title = "test Project")
-        {
-            var project = new Project(title);
-            project.BacklogItemTypeSchema = CreateBacklogItemTypeSchema();
-            _DBContext.Project.Add(project);
-            _DBContext.SaveChanges();
-            return project;
-        }
-
-        private BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test Backlog Item Type Schema")
-        {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
-            _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
-            _DBContext.SaveChanges();
-            return backlogItemTypeSchema;
-        }
-
-        private BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test Backlog Item Type")
-        {
-            if (backlogItemTypeSchema is null)
-            {
-                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
-            }
-
-            var backlogItemType = new BacklogItemType(title)
-            {
-                BacklogItemTypeSchema = backlogItemTypeSchema
-            };
-
-            _DBContext.BacklogItemType.Add(backlogItemType);
-            _DBContext.SaveChanges();
-            return backlogItemType;
-        }
-
-        private BacklogItem CreateBacklogItem(Project? project = null, BacklogItemType? backlogItemType = null, string title = "Test Backlog Item")
-        {
-            if (project is null)
-            {
-                project = CreateProject();
-            }
-
-            if (backlogItemType is null)
-            {
-                backlogItemType = CreateBacklogItemType(project.BacklogItemTypeSchema);
-            }
-
-            var backlogItem = new BacklogItem(title)
-            {
-                Project = project,
-                BacklogItemType = backlogItemType
-            };
-            _DBContext.BacklogItem.Add(backlogItem);
-            _DBContext.SaveChanges();
-            return backlogItem;
         }
     }
 }

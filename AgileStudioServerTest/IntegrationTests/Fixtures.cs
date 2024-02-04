@@ -48,17 +48,22 @@ namespace AgileStudioServerTest.IntegrationTests
             return backlogItem;
         }
 
-        public BacklogItemTypeSchema CreateBacklogItemTypeSchema()
+        public BacklogItemTypeSchema CreateBacklogItemTypeSchema(string title = "Test BacklogItemTypeSchema")
         {
-            var backlogItemTypeSchema = new BacklogItemTypeSchema("Test BacklogItemTypeSchema");
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
         }
 
-        public BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema backlogItemTypeSchema)
+        public BacklogItemType CreateBacklogItemType(BacklogItemTypeSchema? backlogItemTypeSchema = null, string title = "Test BacklogItemType")
         {
-            var backlogItemType = new BacklogItemType("Test BacklogItemType")
+            if (backlogItemTypeSchema is null)
+            {
+                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
+            }
+
+            var backlogItemType = new BacklogItemType(title)
             {
                 BacklogItemTypeSchema = backlogItemTypeSchema
             };
