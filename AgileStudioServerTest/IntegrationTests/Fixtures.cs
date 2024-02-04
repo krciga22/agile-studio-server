@@ -106,6 +106,26 @@ namespace AgileStudioServerTest.IntegrationTests
             return backlogItemType;
         }
 
+        public Sprint CreateSprint(
+            int? sprintNumber = null,
+            Project? project = null)
+        {
+            int nextSprintNumber = sprintNumber ?? 1;
+
+            if (project is null)
+            {
+                project = CreateProject();
+            }
+
+            var sprint = new Sprint(nextSprintNumber)
+            {
+                Project = project
+            };
+            _DBContext.Sprints.Add(sprint);
+            _DBContext.SaveChanges();
+            return sprint;
+        }
+
         /// <summary>
         /// Save any changes made to entity fixtures to the database.
         /// </summary>
