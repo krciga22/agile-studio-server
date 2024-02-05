@@ -55,7 +55,13 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, BacklogItemTypePatchDto dto)
         {
-            var apiResource = _DataProvider.Update(id, dto);
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
+                return NotFound();
+            }
+
+            apiResource = _DataProvider.Update(id, dto);
             if (apiResource is null){
                 return NotFound();
             }

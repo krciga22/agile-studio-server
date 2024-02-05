@@ -47,13 +47,13 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(List<BacklogItemTypeSubResource>), StatusCodes.Status200OK)]
         public IActionResult ListBacklogItemTypes(int id)
         {
-            var apiResource = _BacklogItemTypeDataProvider.ListByBacklogItemTypeSchemaId(id);
+            var apiResource = _DataProvider.Get(id);
             if (apiResource == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            return Ok(_BacklogItemTypeDataProvider.ListByBacklogItemTypeSchemaId(id));
         }
 
         [HttpPost(Name = "CreateBacklogItemTypeSchema")]
@@ -81,9 +81,15 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto dto)
         {
-            var apiResource = _DataProvider.Update(id, dto);
-            if (apiResource is null){
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
                 return NotFound();
+            }
+
+            apiResource = _DataProvider.Update(id, dto);
+            if (apiResource is null){
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return new OkObjectResult(apiResource);

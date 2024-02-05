@@ -39,12 +39,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var project = _DataProvider.Get(id);
-            if (project == null){
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource == null){
                 return NotFound();
             }
 
-            return Ok(project);
+            return Ok(apiResource);
         }
 
         [HttpGet("{id}/BacklogItems", Name = "GetProjectBacklogItems")]
@@ -53,6 +53,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(List<BacklogItemApiResource>), StatusCodes.Status200OK)]
         public IActionResult GetBacklogItemsForProject(int id)
         {
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
+                return NotFound();
+            }
+
             return Ok(_BacklogItemDataProvider.ListForProjectId(id));
         }
 
@@ -62,6 +68,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(List<SprintApiResource>), StatusCodes.Status200OK)]
         public IActionResult GetSprintsForProject(int id)
         {
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
+                return NotFound();
+            }
+
             return Ok(_SprintDataProvider.ListForProjectId(id));
         }
 
@@ -72,13 +84,13 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(ProjectPostDto projectPostDto)
         {
-            var projectApiResource = _DataProvider.Create(projectPostDto);
+            var apiResource = _DataProvider.Create(projectPostDto);
 
             var projectUrl = "";
             if (Url != null){
-                projectUrl = Url.Action(nameof(Get), new { id = projectApiResource.ID }) ?? projectUrl;
+                projectUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? projectUrl;
             }
-            return Created(projectUrl, projectApiResource);
+            return Created(projectUrl, apiResource);
         }
 
         [HttpPatch("{id}", Name = "UpdateProject")]
@@ -89,12 +101,18 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ProjectPatchDto projectPatchDto)
         {
-            var projectApiResource = _DataProvider.Update(id, projectPatchDto);
-            if(projectApiResource is null){
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
                 return NotFound();
             }
+
+            apiResource = _DataProvider.Update(id, projectPatchDto);
+            if(apiResource is null){
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             
-            return new OkObjectResult(projectApiResource);
+            return new OkObjectResult(apiResource);
         }
 
         [HttpDelete("{id}", Name = "DeleteProject")]
