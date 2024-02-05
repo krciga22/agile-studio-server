@@ -25,12 +25,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ReleaseApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var release = _DataProvider.Get(id);
-            if (release == null){
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource == null){
                 return NotFound();
             }
 
-            return Ok(release);
+            return Ok(apiResource);
         }
 
         [HttpPost(Name = "CreateRelease")]
@@ -40,17 +40,17 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(ReleasePostDto releasePostDto)
         {
-            var releaseApiResource = _DataProvider.Create(releasePostDto);
-            if (releaseApiResource is null)
+            var apiResource = _DataProvider.Create(releasePostDto);
+            if (apiResource is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var releaseUrl = "";
+            var apiResourceUrl = "";
             if (Url != null){
-                releaseUrl = Url.Action(nameof(Get), new { id = releaseApiResource.ID }) ?? releaseUrl;
+                apiResourceUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? apiResourceUrl;
             }
-            return Created(releaseUrl, releaseApiResource);
+            return Created(apiResourceUrl, apiResource);
         }
 
         [HttpPatch("{id}", Name = "UpdateRelease")]
@@ -61,19 +61,19 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ReleasePatchDto releasePatchDto)
         {
-            var release = _DataProvider.Get(id);
-            if (release is null)
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
             {
                 return NotFound();
             }
 
-            var releaseApiResource = _DataProvider.Update(id, releasePatchDto);
-            if (releaseApiResource is null)
+            apiResource = _DataProvider.Update(id, releasePatchDto);
+            if (apiResource is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return new OkObjectResult(releaseApiResource);
+            return new OkObjectResult(apiResource);
         }
 
         [HttpDelete("{id}", Name = "DeleteRelease")]
@@ -82,8 +82,8 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var release = _DataProvider.Get(id);
-            if (release is null)
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
             {
                 return NotFound();
             } 

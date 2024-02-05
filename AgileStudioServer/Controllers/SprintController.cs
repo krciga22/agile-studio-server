@@ -25,12 +25,12 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(SprintApiResource), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var sprint = _DataProvider.Get(id);
-            if (sprint == null){
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource == null){
                 return NotFound();
             }
 
-            return Ok(sprint);
+            return Ok(apiResource);
         }
 
         [HttpPost(Name = "CreateSprint")]
@@ -40,17 +40,17 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(SprintPostDto sprintPostDto)
         {
-            var sprintApiResource = _DataProvider.Create(sprintPostDto);
-            if (sprintApiResource is null)
+            var apiResource = _DataProvider.Create(sprintPostDto);
+            if (apiResource is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var sprintUrl = "";
+            var apiResourceUrl = "";
             if (Url != null){
-                sprintUrl = Url.Action(nameof(Get), new { id = sprintApiResource.ID }) ?? sprintUrl;
+                apiResourceUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? apiResourceUrl;
             }
-            return Created(sprintUrl, sprintApiResource);
+            return Created(apiResourceUrl, apiResource);
         }
 
         [HttpPatch("{id}", Name = "UpdateSprint")]
@@ -61,19 +61,19 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, SprintPatchDto sprintPatchDto)
         {
-            var sprint = _DataProvider.Get(id);
-            if (sprint is null)
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
             {
                 return NotFound();
             }
 
-            var sprintApiResource = _DataProvider.Update(id, sprintPatchDto);
-            if (sprintApiResource is null)
+            apiResource = _DataProvider.Update(id, sprintPatchDto);
+            if (apiResource is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return new OkObjectResult(sprintApiResource);
+            return new OkObjectResult(apiResource);
         }
 
         [HttpDelete("{id}", Name = "DeleteSprint")]
@@ -82,8 +82,8 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var sprint = _DataProvider.Get(id);
-            if (sprint is null)
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
             {
                 return NotFound();
             } 

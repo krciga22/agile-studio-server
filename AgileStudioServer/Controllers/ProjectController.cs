@@ -140,8 +140,8 @@ namespace AgileStudioServer.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var project = _DataProvider.Get(id);
-            if(project is null){
+            var apiResource = _DataProvider.Get(id);
+            if(apiResource is null){
                 return NotFound();
             }
 
