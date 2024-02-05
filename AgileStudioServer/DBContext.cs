@@ -16,6 +16,8 @@ namespace AgileStudioServer
 
         public DbSet<Sprint> Sprints { get; set; }
 
+        public DbSet<Release> Releases { get; set; }
+
         public DBContext(DbContextOptions contextOptions) : base(contextOptions)
         {
 
