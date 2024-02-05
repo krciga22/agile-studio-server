@@ -61,6 +61,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var projectPatchDto = new ProjectPatchDto(title);
 
             var projectApiResource = _ProjectDataProvider.Update(project.ID, projectPatchDto);
+
             Assert.IsType<ProjectApiResource>(projectApiResource);
             Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
         }
@@ -71,6 +72,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var project = _Fixtures.CreateProject();
 
             bool result = _ProjectDataProvider.Delete(project.ID);
+
             Assert.True(result);
         }
     }

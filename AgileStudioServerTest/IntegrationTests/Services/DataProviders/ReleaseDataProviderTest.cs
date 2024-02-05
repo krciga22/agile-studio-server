@@ -73,6 +73,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var release = _Fixtures.CreateRelease();
 
             bool result = _ReleaseDataProvider.Delete(release.ID);
+
             Assert.True(result);
         }
     }

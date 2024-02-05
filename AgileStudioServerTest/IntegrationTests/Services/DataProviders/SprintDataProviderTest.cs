@@ -65,6 +65,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             };
 
             var sprintApiResource = _SprintDataProvider.Update(sprint.ID, sprintPatchDto);
+
             Assert.IsType<SprintApiResource>(sprintApiResource);
             Assert.Equal(sprintPatchDto.Description, sprintApiResource.Description);
         }
@@ -75,6 +76,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var sprint = _Fixtures.CreateSprint();
 
             bool result = _SprintDataProvider.Delete(sprint.ID);
+
             Assert.True(result);
         }
     }

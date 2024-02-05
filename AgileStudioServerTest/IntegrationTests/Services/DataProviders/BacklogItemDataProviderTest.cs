@@ -24,7 +24,9 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType();
             var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID);
+
             var apiResource = _dataProvider.Create(dto);
+
             Assert.IsType<BacklogItemApiResource>(apiResource);
         }
 
@@ -66,11 +68,11 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         public void UpdateBacklogItem_WithValidDto_ReturnsApiResource()
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
-
             var title = $"{backlogItem.Title} Updated";
             var dto = new BacklogItemPatchDto(title);
 
             var apiResource = _dataProvider.Update(backlogItem.ID, dto);
+
             Assert.IsType<BacklogItemApiResource>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
         }
@@ -81,6 +83,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var backlogItem = _Fixtures.CreateBacklogItem();
 
             bool result = _dataProvider.Delete(backlogItem.ID);
+
             Assert.True(result);
         }
     }

@@ -38,6 +38,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithInvalidId_ReturnsNotFoundResult()
         {
             IActionResult result = _Controller.Get(Constants.NonExistantId);
+
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
@@ -62,16 +63,13 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var sprint = _Fixtures.CreateSprint();
-
             var description = $"Test Sprint {sprint.SprintNumber} Updated";
-
             var sprintPatchDto = new SprintPatchDto()
             {
                 Description = description
             };
 
             IActionResult result = _Controller.Patch(sprint.ID, sprintPatchDto);
-
             SprintApiResource? sprintApiResource = null;
             if (result is OkObjectResult okObjectResult){
                 sprintApiResource = okObjectResult.Value as SprintApiResource;

@@ -56,11 +56,11 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         public void UpdateBacklogItemTypeSchema_WithValidDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
 
             var apiResource = _dataProvider.Update(backlogItemTypeSchema.ID, dto);
+
             Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
         }
@@ -71,6 +71,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
             bool result = _dataProvider.Delete(backlogItemTypeSchema.ID);
+
             Assert.True(result);
         }
     }

@@ -96,12 +96,10 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-
             var title = $"{backlogItemTypeSchema.Title} Updated";
             var dto = new BacklogItemTypeSchemaPatchDto(title);
 
             IActionResult result = _Controller.Patch(backlogItemTypeSchema.ID, dto);
-
             BacklogItemTypeSchemaApiResource? apiResource = null;
             if (result is OkObjectResult okObjectResult)
             {

@@ -57,6 +57,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Get_WithInvalidId_ReturnsNotFoundResult()
         {
             IActionResult result = _Controller.Get(Constants.NonExistantId);
+
             Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
@@ -159,11 +160,10 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var project = _Fixtures.CreateProject();
-
             var title = $"{project.Title} Updated";
             var projectPatchDto = new ProjectPatchDto(title);
-            IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
 
+            IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
             ProjectApiResource? projectApiResource = null;
             if (result is OkObjectResult okObjectResult){
                 projectApiResource = okObjectResult.Value as ProjectApiResource;
