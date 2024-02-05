@@ -1,5 +1,4 @@
-﻿using AgileStudioServer.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AgileStudioServer.Models.Dtos
 {

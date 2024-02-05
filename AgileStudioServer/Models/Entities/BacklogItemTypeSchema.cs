@@ -1,6 +1,4 @@
-﻿using AgileStudioServer.Models.Dtos;
-
-namespace AgileStudioServer.Models.Entities
+﻿namespace AgileStudioServer.Models.Entities
 {
     public class BacklogItemTypeSchema
     {
