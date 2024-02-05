@@ -20,15 +20,8 @@ namespace AgileStudioServerTest.IntegrationTests
             BacklogItemTypeSchema? 
             backlogItemTypeSchema = null)
         {
-            if (title is null)
-            {
-                title = "Test Project";
-            }
-
-            if (backlogItemTypeSchema is null)
-            {
-                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
-            }
+            title ??= "Test Project";
+            backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
 
             var project = new Project(title)
             {
@@ -44,21 +37,10 @@ namespace AgileStudioServerTest.IntegrationTests
             Project? project = null, 
             BacklogItemType? backlogItemType = null)
         {
-            if (title is null)
-            {
-                title = "Test BacklogItem";
-            }
-
-            if (project is null)
-            {
-                project = CreateProject();
-            }
-
-            if (backlogItemType is null)
-            {
-                backlogItemType = CreateBacklogItemType(
+            title ??= "Test BacklogItem";
+            project ??= CreateProject();
+            backlogItemType ??= CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
-            }
 
             var backlogItem = new BacklogItem(title)
             {
@@ -72,10 +54,7 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public BacklogItemTypeSchema CreateBacklogItemTypeSchema(string? title = null)
         {
-            if(title is null)
-            {
-                title = "Test BacklogItemTypeSchema";
-            }
+            title ??= "Test BacklogItemTypeSchema";
 
             var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
@@ -87,15 +66,8 @@ namespace AgileStudioServerTest.IntegrationTests
             string? title = null, 
             BacklogItemTypeSchema? backlogItemTypeSchema = null)
         {
-            if (title is null)
-            {
-                title = "Test BacklogItemType";
-            }
-
-            if (backlogItemTypeSchema is null)
-            {
-                backlogItemTypeSchema = CreateBacklogItemTypeSchema();
-            }
+            title ??= "Test BacklogItemType";
+            backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
 
             var backlogItemType = new BacklogItemType(title)
             {
@@ -111,11 +83,7 @@ namespace AgileStudioServerTest.IntegrationTests
             Project? project = null)
         {
             int nextSprintNumber = sprintNumber ?? 1;
-
-            if (project is null)
-            {
-                project = CreateProject();
-            }
+            project ??= CreateProject();
 
             var sprint = new Sprint(nextSprintNumber)
             {
