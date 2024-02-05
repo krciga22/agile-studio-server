@@ -16,14 +16,18 @@ namespace AgileStudioServer.Controllers
 
         private readonly SprintDataProvider _SprintDataProvider;
 
+        private readonly ReleaseDataProvider _ReleaseDataProvider;
+
         public ProjectController(
             ProjectDataProvider projectDataProvider, 
             BacklogItemDataProvider backlogItemDataProvider,
-            SprintDataProvider sprintDataProvider)
+            SprintDataProvider sprintDataProvider,
+            ReleaseDataProvider releaseDataProvider)
         {
             _DataProvider = projectDataProvider;
             _BacklogItemDataProvider = backlogItemDataProvider;
             _SprintDataProvider = sprintDataProvider;
+            _ReleaseDataProvider = releaseDataProvider;
         }
 
         [HttpGet(Name = "GetProjects")]
@@ -75,6 +79,21 @@ namespace AgileStudioServer.Controllers
             }
 
             return Ok(_SprintDataProvider.ListForProjectId(id));
+        }
+
+        [HttpGet("{id}/Releases", Name = "GetProjectReleases")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<ReleaseApiResource>), StatusCodes.Status200OK)]
+        public IActionResult GetReleasesForProject(int id)
+        {
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_ReleaseDataProvider.ListForProjectId(id));
         }
 
         [HttpPost(Name = "CreateProject")]

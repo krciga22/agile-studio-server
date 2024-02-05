@@ -115,6 +115,31 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void GetReleasesForProject_WithId_ReturnsApiResources()
+        {
+            var project = _Fixtures.CreateProject();
+
+            List<Release> releases = new() {
+                _Fixtures.CreateRelease(
+                    title: "v1.0.0",
+                    project: project),
+                _Fixtures.CreateRelease(
+                    title: "v1.0.1",
+                    project: project)
+            };
+
+            List<ReleaseApiResource>? apiResources = null;
+            IActionResult result = _Controller.GetReleasesForProject(project.ID);
+            if (result is OkObjectResult okResult)
+            {
+                apiResources = okResult.Value as List<ReleaseApiResource>;
+            }
+
+            Assert.IsType<List<ReleaseApiResource>>(apiResources);
+            Assert.Equal(releases.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
