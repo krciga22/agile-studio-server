@@ -47,6 +47,7 @@ namespace AgileStudioServerTest
             services.AddScoped<BacklogItemTypeDataProvider>();
             services.AddScoped<BacklogItemTypeSchemaDataProvider>();
             services.AddScoped<ProjectDataProvider>();
+            services.AddScoped<ReleaseDataProvider>();
             services.AddScoped<SprintDataProvider>();
 
             services.AddScoped<Fixtures>();

@@ -126,6 +126,22 @@ namespace AgileStudioServerTest.IntegrationTests
             return sprint;
         }
 
+        public Release CreateRelease(
+            string? title = null,
+            Project? project = null)
+        {
+            title ??= "v1.0.0";
+            project ??= CreateProject();
+
+            var release = new Release(title)
+            {
+                Project = project
+            };
+            _DBContext.Releases.Add(release);
+            _DBContext.SaveChanges();
+            return release;
+        }
+
         /// <summary>
         /// Save any changes made to entity fixtures to the database.
         /// </summary>
