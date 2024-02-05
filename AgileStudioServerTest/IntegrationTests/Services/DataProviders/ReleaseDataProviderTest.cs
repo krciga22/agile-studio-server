@@ -58,7 +58,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         [Fact]
         public void UpdateRelease_WithValidReleasePatchDto_ReturnsReleaseApiResource()
         {
-            var release = _Fixtures.CreateRelease("v1.0.0");
+            var release = _Fixtures.CreateRelease();
             var releasePatchDto = new ReleasePatchDto("v1.0.1");
 
             var releaseApiResource = _ReleaseDataProvider.Update(release.ID, releasePatchDto);
