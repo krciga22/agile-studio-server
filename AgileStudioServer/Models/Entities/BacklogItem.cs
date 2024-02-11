@@ -14,6 +14,8 @@
 
         public Sprint? Sprint { get; set; } = null;
 
+        public Release? Release { get; set; } = null;
+
         public BacklogItemType BacklogItemType { get; set; } = null!;
 
         public BacklogItem(string title)
