@@ -36,19 +36,22 @@ namespace AgileStudioServerTest.IntegrationTests
             string? title = null, 
             Project? project = null, 
             BacklogItemType? backlogItemType = null,
-            Sprint? sprint = null)
+            Sprint? sprint = null,
+            Release? release = null)
         {
             title ??= "Test BacklogItem";
             project ??= CreateProject();
             backlogItemType ??= CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
             sprint ??= CreateSprint(project: project);
+            release ??= CreateRelease(project: project);
 
             var backlogItem = new BacklogItem(title)
             {
                 Project = project,
                 BacklogItemType = backlogItemType,
-                Sprint = sprint
+                Sprint = sprint,
+                Release = release
             };
             _DBContext.BacklogItem.Add(backlogItem);
             _DBContext.SaveChanges();

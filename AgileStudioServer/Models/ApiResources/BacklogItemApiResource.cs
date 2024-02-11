@@ -18,6 +18,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public SprintSubResource? Sprint { get; set; } = null;
 
+        public ReleaseSubResource? Release { get; set; } = null;
+
         public BacklogItemApiResource(BacklogItem backlogItem)
         {
             ID = backlogItem.ID;
@@ -29,6 +31,10 @@ namespace AgileStudioServer.Models.ApiResources
 
             if (backlogItem.Sprint != null) {
                 Sprint = new SprintSubResource(backlogItem.Sprint);
+            }
+
+            if (backlogItem.Release != null) {
+                Release = new ReleaseSubResource(backlogItem.Release);
             }
         }
     }

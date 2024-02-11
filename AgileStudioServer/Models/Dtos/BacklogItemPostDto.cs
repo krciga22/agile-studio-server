@@ -19,15 +19,18 @@ namespace AgileStudioServer.Models.Dtos
 
         public int? SprintId { get; set; } = null;
 
+        public int? ReleaseId { get; set; } = null;
+
         [StringLength(255)]
         public string? Description { get; set; }
 
-        public BacklogItemPostDto(string title, int projectId, int backlogItemTypeId, int? sprintId = null)
+        public BacklogItemPostDto(string title, int projectId, int backlogItemTypeId, int? sprintId = null, int? releaseId = null)
         {
             Title = title;
             ProjectId = projectId;
             BacklogItemTypeId = backlogItemTypeId;
             SprintId = sprintId;
+            ReleaseId = releaseId;
         }
     }
 }

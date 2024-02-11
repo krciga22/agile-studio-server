@@ -37,12 +37,23 @@ namespace AgileStudioServer.Services.DataProviders
                 }
             }
 
+            Release? release = null;
+            if (dto.ReleaseId.HasValue)
+            {
+                release = _DBContext.Release.Find(dto.ReleaseId);
+                if (release is null)
+                {
+                    return null;
+                }
+            }
+
             var backlogItem = new BacklogItem(dto.Title)
             {
                 Description = dto.Description,
                 Project = project,
                 BacklogItemType = backlogItemType,
                 Sprint = sprint,
+                Release = release,
             };
 
             _DBContext.Add(backlogItem);
@@ -112,11 +123,26 @@ namespace AgileStudioServer.Services.DataProviders
             if (dto.SprintId.HasValue)
             {
                 sprint = _DBContext.Sprint.Find(dto.SprintId);
+                if (sprint is null)
+                {
+                    return null;
+                }
+            }
+
+            Release? release = null;
+            if (dto.ReleaseId.HasValue)
+            {
+                release = _DBContext.Release.Find(dto.ReleaseId);
+                if (release is null)
+                {
+                    return null;
+                }
             }
 
             backlogItem.Title = dto.Title;
             backlogItem.Description = dto.Description;
             backlogItem.Sprint = sprint;
+            backlogItem.Release = release;
             _DBContext.SaveChanges();
 
             LoadReferences(backlogItem);
@@ -144,6 +170,7 @@ namespace AgileStudioServer.Services.DataProviders
             _DBContext.Entry(backlogItem).Reference("Project").Load();
             _DBContext.Entry(backlogItem).Reference("BacklogItemType").Load();
             _DBContext.Entry(backlogItem).Reference("Sprint").Load();
+            _DBContext.Entry(backlogItem).Reference("Release").Load();
         }
     }
 }
