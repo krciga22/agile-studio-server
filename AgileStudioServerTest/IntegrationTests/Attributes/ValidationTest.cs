@@ -21,7 +21,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         }
 
         [Fact]
-        public void BacklogItemTypeId_ForProjectId_IsValid()
+        public void PostBacklogItem_WithBacklogItemTypeFromSameProjectsSchema_IsValid()
         {
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
@@ -35,7 +35,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         }
 
         [Fact]
-        public void BacklogItemTypeId_ForProjectId_IsInvalid()
+        public void PostBacklogItem_WithBacklogItemTypeFromDifferentProjectsSchema_IsInvalid()
         {
             var project = _Fixtures.CreateProject();
             var otherBacklogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
@@ -46,7 +46,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
 
             var result = attribute.GetValidationResult(backlogItem, CreateValidationContext(backlogItem));
 
-            Assert.NotNull(result);
+            Assert.IsType<ValidationResult>(result);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         }
 
         [Fact]
-        public void PatchBacklogItem_WithSprintForDifferentProject_IsValid()
+        public void PatchBacklogItem_WithSprintForDifferentProject_IsInvalid()
         {
             var project1 = _Fixtures.CreateProject();
             var project2 = _Fixtures.CreateProject();
