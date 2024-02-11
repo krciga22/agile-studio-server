@@ -70,7 +70,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
             var title = $"{backlogItem.Title} Updated";
-            var dto = new BacklogItemPatchDto(title);
+            var dto = new BacklogItemPatchDto(backlogItem.ID, title);
 
             var apiResource = _dataProvider.Update(backlogItem.ID, dto);
 

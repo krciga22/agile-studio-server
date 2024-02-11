@@ -7,6 +7,9 @@ namespace AgileStudioServer.Models.Dtos
     public class BacklogItemPatchDto
     {
         [Required]
+        public int ID;
+
+        [Required]
         [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
@@ -15,8 +18,9 @@ namespace AgileStudioServer.Models.Dtos
 
         public int? SprintId { get; set; } = null;
 
-        public BacklogItemPatchDto(string title, int? sprintId = null)
+        public BacklogItemPatchDto(int id, string title, int? sprintId = null)
         {
+            ID = id;
             Title = title;
             SprintId = sprintId;
         }

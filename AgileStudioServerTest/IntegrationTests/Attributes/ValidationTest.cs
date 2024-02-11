@@ -95,8 +95,13 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         {
             var project = _Fixtures.CreateProject();
             var sprint = _Fixtures.CreateSprint(project: project);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project,
+                sprint: sprint
+            );
 
             var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
                 title: "Test Backlog Item",
                 sprintId: sprint.ID);
 
@@ -109,8 +114,6 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
         [Fact]
         public void PatchBacklogItem_WithSprintForDifferentProject_IsValid()
         {
-            // todo update this test to IsInvalid after specifying a backlogItemId in BacklogItemPatchDto
-
             var project1 = _Fixtures.CreateProject();
             var project2 = _Fixtures.CreateProject();
             var sprint1 = _Fixtures.CreateSprint(project: project1);
@@ -121,13 +124,14 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             );
 
             var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
                 title: "Test Backlog Item",
                 sprintId: sprint2.ID);
 
             var attribute = new ValidSprintForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
 
-            Assert.Null(result);
+            Assert.IsType<ValidationResult>(result);
         }
 
         private ValidationContext CreateValidationContext(object instance)

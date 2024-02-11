@@ -38,8 +38,18 @@ namespace AgileStudioServer.Attributes.Validation
             }
             else if (value is BacklogItemPatchDto)
             {
-                // todo - validate sprint for patch dto after specifying a backlogItemId in BacklogItemPatchDto
-                return ValidationResult.Success;
+                var patchDto = (BacklogItemPatchDto)value;
+                if (patchDto.SprintId is null)
+                {
+                    return ValidationResult.Success;
+                }
+
+                sprintId = (int)patchDto.SprintId;
+
+                var backlogItem = dbContext.BacklogItem.Find(patchDto.ID) ??
+                    throw new EntityNotFoundException(nameof(Project), patchDto.ID.ToString());
+
+                projectId = backlogItem.Project.ID;
             }
             else
             {
@@ -54,12 +64,12 @@ namespace AgileStudioServer.Attributes.Validation
             var project = dbContext.Project.Find(projectId) ??
                 throw new EntityNotFoundException(nameof(Project), projectId.ToString());
 
-            if(sprint.Project.ID != project.ID)
+            if(sprint.Project.ID == project.ID)
             {
-                return new ValidationResult(GetErrorMessage());
+                return ValidationResult.Success;
             }
 
-            return ValidationResult.Success;
+            return new ValidationResult(GetErrorMessage());
         }
     }
 }

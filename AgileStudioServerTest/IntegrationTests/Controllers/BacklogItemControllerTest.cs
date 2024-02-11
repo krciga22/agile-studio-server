@@ -57,7 +57,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
             var title = $"{backlogItem.Title} Updated";
-            var dto = new BacklogItemPatchDto(title);
+            var dto = new BacklogItemPatchDto(backlogItem.ID, title);
 
             IActionResult result = _Controller.Patch(backlogItem.ID, dto);
             BacklogItemApiResource? apiResource = null;
