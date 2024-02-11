@@ -8,14 +8,14 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public class BacklogItemDataProviderTest : AbstractDataProviderTest
     {
-        private readonly BacklogItemDataProvider _dataProvider;
+        private readonly BacklogItemDataProvider _DataProvider;
 
         public BacklogItemDataProviderTest(
             DBContext dbContext,
             Fixtures fixtures,
             BacklogItemDataProvider backlogItemDataProvider) : base(dbContext, fixtures)
         {
-            _dataProvider = backlogItemDataProvider;
+            _DataProvider = backlogItemDataProvider;
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var release = _Fixtures.CreateRelease(project: project);
             var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID, sprint.ID, release.ID);
 
-            var apiResource = _dataProvider.Create(dto);
+            var apiResource = _DataProvider.Create(dto);
 
             Assert.IsType<BacklogItemApiResource>(apiResource);
         }
@@ -37,7 +37,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
 
-            var apiResource = _dataProvider.Get(backlogItem.ID);
+            var apiResource = _DataProvider.Get(backlogItem.ID);
 
             Assert.IsType<BacklogItemApiResource>(apiResource);
         }
@@ -60,7 +60,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
                     backlogItemType: backlogItemType)
             };
 
-            var apiResources = _dataProvider.ListForProjectId(project.ID);
+            var apiResources = _DataProvider.ListForProjectId(project.ID);
 
             Assert.IsType<List<BacklogItemApiResource>>(apiResources);
             Assert.Equal(backlogItems.Count, apiResources.Count);
@@ -73,7 +73,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var title = $"{backlogItem.Title} Updated";
             var dto = new BacklogItemPatchDto(backlogItem.ID, title);
 
-            var apiResource = _dataProvider.Update(backlogItem.ID, dto);
+            var apiResource = _DataProvider.Update(backlogItem.ID, dto);
 
             Assert.IsType<BacklogItemApiResource>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
@@ -84,9 +84,9 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
 
-            _dataProvider.Delete(backlogItem.ID);
+            _DataProvider.Delete(backlogItem.ID);
 
-            var result = _dataProvider.Get(backlogItem.ID);
+            var result = _DataProvider.Get(backlogItem.ID);
             Assert.Null(result);
         }
     }
