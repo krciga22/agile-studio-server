@@ -8,14 +8,14 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public class ProjectDataProviderTest : AbstractDataProviderTest
     {
-        private readonly ProjectDataProvider _ProjectDataProvider;
+        private readonly ProjectDataProvider _DataProvider;
 
         public ProjectDataProviderTest(
             DBContext dbContext,
             Fixtures fixtures,
             ProjectDataProvider projectDataProvider) : base(dbContext, fixtures)
         {
-            _ProjectDataProvider = projectDataProvider;
+            _DataProvider = projectDataProvider;
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
-            var projectApiResource = _ProjectDataProvider.Create(projectPostDto);
+            var projectApiResource = _DataProvider.Create(projectPostDto);
 
             Assert.IsType<ProjectApiResource>(projectApiResource);
         }
@@ -34,7 +34,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var project = _Fixtures.CreateProject();
 
-            var projectApiResource = _ProjectDataProvider.Get(project.ID);
+            var projectApiResource = _DataProvider.Get(project.ID);
 
             Assert.IsType<ProjectApiResource>(projectApiResource);
         }
@@ -48,7 +48,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
                 _Fixtures.CreateProject("Test Project 2")
             };
 
-            List<ProjectApiResource> projectApiResources = _ProjectDataProvider.List();
+            List<ProjectApiResource> projectApiResources = _DataProvider.List();
 
             Assert.Equal(projects.Count, projectApiResources.Count);
         }
@@ -60,7 +60,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var title = $"{project.Title} Updated";
             var projectPatchDto = new ProjectPatchDto(title);
 
-            var projectApiResource = _ProjectDataProvider.Update(project.ID, projectPatchDto);
+            var projectApiResource = _DataProvider.Update(project.ID, projectPatchDto);
 
             Assert.IsType<ProjectApiResource>(projectApiResource);
             Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
@@ -71,9 +71,9 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var project = _Fixtures.CreateProject();
 
-            _ProjectDataProvider.Delete(project.ID);
+            _DataProvider.Delete(project.ID);
 
-            var result = _ProjectDataProvider.Get(project.ID);
+            var result = _DataProvider.Get(project.ID);
             Assert.Null(result);
         }
     }

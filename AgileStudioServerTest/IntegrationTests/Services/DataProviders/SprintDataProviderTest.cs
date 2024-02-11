@@ -8,14 +8,14 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
 {
     public class SprintDataProviderTest : AbstractDataProviderTest
     {
-        private readonly SprintDataProvider _SprintDataProvider;
+        private readonly SprintDataProvider _DataProvider;
 
         public SprintDataProviderTest(
             DBContext dbContext,
             Fixtures fixtures,
             SprintDataProvider sprintDataProvider) : base(dbContext, fixtures)
         {
-            _SprintDataProvider = sprintDataProvider;
+            _DataProvider = sprintDataProvider;
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
             var project = _Fixtures.CreateProject();
             var sprintPostDto = new SprintPostDto(project.ID);
 
-            var sprintApiResource = _SprintDataProvider.Create(sprintPostDto);
+            var sprintApiResource = _DataProvider.Create(sprintPostDto);
 
             Assert.IsType<SprintApiResource>(sprintApiResource);
         }
@@ -34,7 +34,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var sprint = _Fixtures.CreateSprint();
 
-            var sprintApiResource = _SprintDataProvider.Get(sprint.ID);
+            var sprintApiResource = _DataProvider.Get(sprint.ID);
 
             Assert.IsType<SprintApiResource>(sprintApiResource);
         }
@@ -50,7 +50,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
                 _Fixtures.CreateSprint(2, project)
             };
 
-            List<SprintApiResource> sprintApiResources = _SprintDataProvider.ListForProjectId(project.ID);
+            List<SprintApiResource> sprintApiResources = _DataProvider.ListForProjectId(project.ID);
 
             Assert.Equal(sprints.Count, sprintApiResources.Count);
         }
@@ -64,7 +64,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
                 Description = $"Sprint {sprint.SprintNumber} Description Updated"
             };
 
-            var sprintApiResource = _SprintDataProvider.Update(sprint.ID, sprintPatchDto);
+            var sprintApiResource = _DataProvider.Update(sprint.ID, sprintPatchDto);
 
             Assert.IsType<SprintApiResource>(sprintApiResource);
             Assert.Equal(sprintPatchDto.Description, sprintApiResource.Description);
@@ -75,9 +75,9 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var sprint = _Fixtures.CreateSprint();
 
-            _SprintDataProvider.Delete(sprint.ID);
+            _DataProvider.Delete(sprint.ID);
 
-            var result = _SprintDataProvider.Get(sprint.ID);
+            var result = _DataProvider.Get(sprint.ID);
             Assert.Null(result);
         }
     }
