@@ -12,6 +12,8 @@
 
         public Project Project { get; set; } = null!;
 
+        public Sprint? Sprint { get; set; } = null;
+
         public BacklogItemType BacklogItemType { get; set; } = null!;
 
         public BacklogItem(string title)
