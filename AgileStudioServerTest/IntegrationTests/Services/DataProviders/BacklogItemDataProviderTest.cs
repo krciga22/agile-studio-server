@@ -23,7 +23,8 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType();
-            var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID);
+            var sprint = _Fixtures.CreateSprint(project: project);
+            var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID, sprint.ID);
 
             var apiResource = _dataProvider.Create(dto);
 

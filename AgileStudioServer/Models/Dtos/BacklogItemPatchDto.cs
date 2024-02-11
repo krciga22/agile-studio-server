@@ -11,9 +11,12 @@ namespace AgileStudioServer.Models.Dtos
         [StringLength(255)]
         public string? Description { get; set; }
 
-        public BacklogItemPatchDto(string title)
+        public int? SprintId { get; set; } = null;
+
+        public BacklogItemPatchDto(string title, int? sprintId = null)
         {
             Title = title;
+            SprintId = sprintId;
         }
     }
 }

@@ -27,11 +27,22 @@ namespace AgileStudioServer.Services.DataProviders
                 return null;
             }
 
+            Sprint? sprint = null;
+            if (dto.SprintId.HasValue)
+            {
+                sprint = _DBContext.Sprints.Find(dto.SprintId);
+                if (sprint is null)
+                {
+                    return null;
+                }
+            }
+
             var backlogItem = new BacklogItem(dto.Title)
             {
                 Description = dto.Description,
                 Project = project,
                 BacklogItemType = backlogItemType,
+                Sprint = sprint,
             };
 
             _DBContext.Add(backlogItem);
@@ -97,8 +108,15 @@ namespace AgileStudioServer.Services.DataProviders
                 return null;
             }
 
+            Sprint? sprint = null;
+            if (dto.SprintId.HasValue)
+            {
+                sprint = _DBContext.Sprints.Find(dto.SprintId);
+            }
+
             backlogItem.Title = dto.Title;
             backlogItem.Description = dto.Description;
+            backlogItem.Sprint = sprint;
             _DBContext.SaveChanges();
 
             LoadReferences(backlogItem);
@@ -125,6 +143,7 @@ namespace AgileStudioServer.Services.DataProviders
         {
             _DBContext.Entry(backlogItem).Reference("Project").Load();
             _DBContext.Entry(backlogItem).Reference("BacklogItemType").Load();
+            _DBContext.Entry(backlogItem).Reference("Sprint").Load();
         }
     }
 }

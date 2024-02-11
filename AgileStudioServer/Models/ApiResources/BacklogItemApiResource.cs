@@ -16,6 +16,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public BacklogItemTypeSubResource BacklogItemType { get; set; }
 
+        public SprintSubResource? Sprint { get; set; } = null;
+
         public BacklogItemApiResource(BacklogItem backlogItem)
         {
             ID = backlogItem.ID;
@@ -24,6 +26,10 @@ namespace AgileStudioServer.Models.ApiResources
             CreatedOn = backlogItem.CreatedOn;
             Project = new ProjectSubResource(backlogItem.Project);
             BacklogItemType = new BacklogItemTypeSubResource(backlogItem.BacklogItemType);
+
+            if (backlogItem.Sprint != null) {
+                Sprint = new SprintSubResource(backlogItem.Sprint);
+            }
         }
     }
 }
