@@ -49,6 +49,87 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             Assert.NotNull(result);
         }
 
+        [Fact]
+        public void PostBacklogItem_WithSprintForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var sprint = _Fixtures.CreateSprint(project: project);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item", 
+                projectId: project.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                sprintId: sprint.ID);
+
+            var attribute = new ValidSprintForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PostBacklogItem_WithSprintForDifferentProject_IsInvalid()
+        {
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project1.BacklogItemTypeSchema);
+            var sprint = _Fixtures.CreateSprint(project: project2);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item", 
+                projectId: project1.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                sprintId: sprint.ID);
+
+            var attribute = new ValidSprintForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+            
+            Assert.IsType<ValidationResult>(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithSprintForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var sprint = _Fixtures.CreateSprint(project: project);
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                title: "Test Backlog Item",
+                sprintId: sprint.ID);
+
+            var attribute = new ValidSprintForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithSprintForDifferentProject_IsValid()
+        {
+            // todo update this test to IsInvalid after specifying a backlogItemId in BacklogItemPatchDto
+
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+            var sprint1 = _Fixtures.CreateSprint(project: project1);
+            var sprint2 = _Fixtures.CreateSprint(project: project2);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project1,
+                sprint: sprint1
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                title: "Test Backlog Item",
+                sprintId: sprint2.ID);
+
+            var attribute = new ValidSprintForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.Null(result);
+        }
+
         private ValidationContext CreateValidationContext(object instance)
         {
             if (_ServiceProvider is null)

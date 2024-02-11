@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AgileStudioServer.Attributes.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace AgileStudioServer.Models.Dtos
 {
+    [ValidSprintForBacklogItem]
     public class BacklogItemPatchDto
     {
         [Required]
