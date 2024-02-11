@@ -30,7 +30,7 @@ namespace AgileStudioServer.Services.DataProviders
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
-                sprint = _DBContext.Sprints.Find(dto.SprintId);
+                sprint = _DBContext.Sprint.Find(dto.SprintId);
                 if (sprint is null)
                 {
                     return null;
@@ -111,7 +111,7 @@ namespace AgileStudioServer.Services.DataProviders
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
-                sprint = _DBContext.Sprints.Find(dto.SprintId);
+                sprint = _DBContext.Sprint.Find(dto.SprintId);
             }
 
             backlogItem.Title = dto.Title;

@@ -92,7 +92,7 @@ namespace AgileStudioServerTest.IntegrationTests
             {
                 Project = project
             };
-            _DBContext.Sprints.Add(sprint);
+            _DBContext.Sprint.Add(sprint);
             _DBContext.SaveChanges();
             return sprint;
         }
@@ -108,7 +108,7 @@ namespace AgileStudioServerTest.IntegrationTests
             {
                 Project = project
             };
-            _DBContext.Releases.Add(release);
+            _DBContext.Release.Add(release);
             _DBContext.SaveChanges();
             return release;
         }

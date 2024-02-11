@@ -16,7 +16,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual List<ReleaseApiResource> ListForProjectId(int projectId)
         {
-            List<Release> releases = _DBContext.Releases.Where(release => release.Project.ID == projectId).ToList();
+            List<Release> releases = _DBContext.Release.Where(release => release.Project.ID == projectId).ToList();
 
             List<ReleaseApiResource> releaseApiResources = new();
             releases.ForEach(release =>
@@ -33,7 +33,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual ReleaseApiResource? Get(int id)
         {
-            Release? release = _DBContext.Releases.Find(id);
+            Release? release = _DBContext.Release.Find(id);
             if (release is null)
             {
                 return null;
@@ -65,7 +65,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual ReleaseApiResource? Update(int id, ReleasePatchDto releasePatchDto)
         {
-            var release = _DBContext.Releases.Find(id);
+            var release = _DBContext.Release.Find(id);
             if (release is null)
             {
                 return null;
@@ -84,13 +84,13 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual bool Delete(int id)
         {
-            var release = _DBContext.Releases.Find(id);
+            var release = _DBContext.Release.Find(id);
             if (release is null)
             {
                 return false;
             }
 
-            _DBContext.Releases.Remove(release);
+            _DBContext.Release.Remove(release);
             _DBContext.SaveChanges();
             return true;
         }

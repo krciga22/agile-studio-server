@@ -16,7 +16,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual List<SprintApiResource> ListForProjectId(int projectId)
         {
-            List<Sprint> sprints = _DBContext.Sprints.Where(sprint => sprint.Project.ID == projectId).ToList();
+            List<Sprint> sprints = _DBContext.Sprint.Where(sprint => sprint.Project.ID == projectId).ToList();
 
             List<SprintApiResource> sprintApiResources = new();
             sprints.ForEach(sprint =>
@@ -33,7 +33,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual SprintApiResource? Get(int id)
         {
-            Sprint? sprint = _DBContext.Sprints.Find(id);
+            Sprint? sprint = _DBContext.Sprint.Find(id);
             if (sprint is null)
             {
                 return null;
@@ -70,7 +70,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual SprintApiResource? Update(int id, SprintPatchDto sprintPatchDto)
         {
-            var sprint = _DBContext.Sprints.Find(id);
+            var sprint = _DBContext.Sprint.Find(id);
             if (sprint is null)
             {
                 return null;
@@ -88,13 +88,13 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual bool Delete(int id)
         {
-            var sprint = _DBContext.Sprints.Find(id);
+            var sprint = _DBContext.Sprint.Find(id);
             if (sprint is null)
             {
                 return false;
             }
 
-            _DBContext.Sprints.Remove(sprint);
+            _DBContext.Sprint.Remove(sprint);
             _DBContext.SaveChanges();
             return true;
         }
@@ -106,7 +106,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         private int GetLastSprintNumber()
         {
-            var lastSprint = _DBContext.Sprints
+            var lastSprint = _DBContext.Sprint
                 .OrderByDescending(sprint => sprint.SprintNumber)
                 .FirstOrDefault();
 

@@ -58,7 +58,7 @@ namespace AgileStudioServer.Attributes.Validation
             }
 
             // make sure the sprint belongs to the same project as the backlog item
-            var sprint = dbContext.Sprints.Find(sprintId) ?? 
+            var sprint = dbContext.Sprint.Find(sprintId) ?? 
                 throw new EntityNotFoundException(nameof(Sprint), sprintId.ToString());
 
             var project = dbContext.Project.Find(projectId) ??
