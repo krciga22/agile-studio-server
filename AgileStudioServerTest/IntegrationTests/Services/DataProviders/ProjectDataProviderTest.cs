@@ -71,9 +71,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var project = _Fixtures.CreateProject();
 
-            bool result = _ProjectDataProvider.Delete(project.ID);
+            _ProjectDataProvider.Delete(project.ID);
 
-            Assert.True(result);
+            var result = _ProjectDataProvider.Get(project.ID);
+            Assert.Null(result);
         }
     }
 }

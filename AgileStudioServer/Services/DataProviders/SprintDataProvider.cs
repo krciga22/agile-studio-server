@@ -46,11 +46,8 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual SprintApiResource Create(SprintPostDto sprintPostDto)
         {
-            var project = _DBContext.Project.Find(sprintPostDto.ProjectId);
-            if (project is null)
-            {
+            var project = _DBContext.Project.Find(sprintPostDto.ProjectId) ??
                 throw new EntityNotFoundException(nameof(Project), sprintPostDto.ProjectId.ToString());
-            }
 
             var nextSprintNumber = GetNextSprintNumber();
 
@@ -68,13 +65,10 @@ namespace AgileStudioServer.Services.DataProviders
             return new SprintApiResource(sprint);
         }
 
-        public virtual SprintApiResource? Update(int id, SprintPatchDto sprintPatchDto)
+        public virtual SprintApiResource Update(int id, SprintPatchDto sprintPatchDto)
         {
-            var sprint = _DBContext.Sprint.Find(id);
-            if (sprint is null)
-            {
-                return null;
-            }
+            var sprint = _DBContext.Sprint.Find(id) ??
+                throw new EntityNotFoundException(nameof(Sprint), id.ToString());
 
             sprint.Description = sprintPatchDto.Description;
             sprint.StartDate = sprintPatchDto.StartDate;
@@ -86,17 +80,13 @@ namespace AgileStudioServer.Services.DataProviders
             return new SprintApiResource(sprint);
         }
 
-        public virtual bool Delete(int id)
+        public virtual void Delete(int id)
         {
-            var sprint = _DBContext.Sprint.Find(id);
-            if (sprint is null)
-            {
-                return false;
-            }
+            var sprint = _DBContext.Sprint.Find(id) ??
+                throw new EntityNotFoundException(nameof(Sprint), id.ToString());
 
             _DBContext.Sprint.Remove(sprint);
             _DBContext.SaveChanges();
-            return true;
         }
 
         private int GetNextSprintNumber()

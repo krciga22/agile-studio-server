@@ -1,4 +1,5 @@
-﻿using AgileStudioServer.Models.ApiResources;
+﻿using AgileStudioServer.Exceptions;
+using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Models.Entities;
 
@@ -13,38 +14,26 @@ namespace AgileStudioServer.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual BacklogItemApiResource? Create(BacklogItemPostDto dto)
+        public virtual BacklogItemApiResource Create(BacklogItemPostDto dto)
         {
-            Project? project = _DBContext.Project.Find(dto.ProjectId);
-            if (project is null)
-            {
-                return null;
-            }
+            Project project = _DBContext.Project.Find(dto.ProjectId) ??
+                throw new EntityNotFoundException(nameof(Project), dto.ProjectId.ToString());
 
-            BacklogItemType? backlogItemType = _DBContext.BacklogItemType.Find(dto.BacklogItemTypeId);
-            if (backlogItemType is null)
-            {
-                return null;
-            }
+            BacklogItemType backlogItemType = _DBContext.BacklogItemType.Find(dto.BacklogItemTypeId) ??
+                throw new EntityNotFoundException(nameof(BacklogItemType), dto.BacklogItemTypeId.ToString());
 
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
-                sprint = _DBContext.Sprint.Find(dto.SprintId);
-                if (sprint is null)
-                {
-                    return null;
-                }
+                sprint = _DBContext.Sprint.Find(dto.SprintId) ??
+                    throw new EntityNotFoundException(nameof(Sprint), ((int)dto.SprintId).ToString());
             }
 
             Release? release = null;
             if (dto.ReleaseId.HasValue)
             {
-                release = _DBContext.Release.Find(dto.ReleaseId);
-                if (release is null)
-                {
-                    return null;
-                }
+                release = _DBContext.Release.Find(dto.ReleaseId) ??
+                    throw new EntityNotFoundException(nameof(Release), ((int)dto.ReleaseId).ToString());
             }
 
             var backlogItem = new BacklogItem(dto.Title)
@@ -111,32 +100,23 @@ namespace AgileStudioServer.Services.DataProviders
             return new BacklogItemApiResource(backlogItem);
         }
 
-        public virtual BacklogItemApiResource? Update(int id, BacklogItemPatchDto dto)
+        public virtual BacklogItemApiResource Update(int id, BacklogItemPatchDto dto)
         {
-            var backlogItem = _DBContext.BacklogItem.Find(id);
-            if (backlogItem is null)
-            {
-                return null;
-            }
+            var backlogItem = _DBContext.BacklogItem.Find(id) ??
+                throw new EntityNotFoundException(nameof(BacklogItem), id.ToString());
 
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
-                sprint = _DBContext.Sprint.Find(dto.SprintId);
-                if (sprint is null)
-                {
-                    return null;
-                }
+                sprint = _DBContext.Sprint.Find(dto.SprintId) ??
+                    throw new EntityNotFoundException(nameof(Sprint), ((int)dto.SprintId).ToString());
             }
 
             Release? release = null;
             if (dto.ReleaseId.HasValue)
             {
-                release = _DBContext.Release.Find(dto.ReleaseId);
-                if (release is null)
-                {
-                    return null;
-                }
+                release = _DBContext.Release.Find(dto.ReleaseId) ??
+                    throw new EntityNotFoundException(nameof(Release), ((int)dto.ReleaseId).ToString());
             }
 
             backlogItem.Title = dto.Title;
@@ -150,19 +130,15 @@ namespace AgileStudioServer.Services.DataProviders
             return new BacklogItemApiResource(backlogItem);
         }
 
-        public virtual bool Delete(int id)
+        public virtual void Delete(int id)
         {
-            var backlogItem = _DBContext.BacklogItem.Find(id);
-            if (backlogItem is null)
-            {
-                return false;
-            }
+            var backlogItem = _DBContext.BacklogItem.Find(id) ??
+                throw new EntityNotFoundException(nameof(BacklogItem), id.ToString());
 
             LoadReferences(backlogItem);
 
             _DBContext.BacklogItem.Remove(backlogItem);
             _DBContext.SaveChanges();
-            return true;
         }
 
         private void LoadReferences(BacklogItem backlogItem)

@@ -63,13 +63,10 @@ namespace AgileStudioServer.Services.DataProviders
             return new ReleaseApiResource(release);
         }
 
-        public virtual ReleaseApiResource? Update(int id, ReleasePatchDto releasePatchDto)
+        public virtual ReleaseApiResource Update(int id, ReleasePatchDto releasePatchDto)
         {
-            var release = _DBContext.Release.Find(id);
-            if (release is null)
-            {
-                return null;
-            }
+            var release = _DBContext.Release.Find(id) ??
+                throw new EntityNotFoundException(nameof(Release), id.ToString());
 
             release.Title = releasePatchDto.Title;
             release.Description = releasePatchDto.Description;
@@ -82,17 +79,13 @@ namespace AgileStudioServer.Services.DataProviders
             return new ReleaseApiResource(release);
         }
 
-        public virtual bool Delete(int id)
+        public virtual void Delete(int id)
         {
-            var release = _DBContext.Release.Find(id);
-            if (release is null)
-            {
-                return false;
-            }
+            var release = _DBContext.Release.Find(id) ??
+                throw new EntityNotFoundException(nameof(Release), id.ToString());
 
             _DBContext.Release.Remove(release);
             _DBContext.SaveChanges();
-            return true;
         }
 
         private void LoadReferences(Release release)

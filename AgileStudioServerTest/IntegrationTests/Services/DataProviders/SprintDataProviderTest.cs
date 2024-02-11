@@ -75,9 +75,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var sprint = _Fixtures.CreateSprint();
 
-            bool result = _SprintDataProvider.Delete(sprint.ID);
+            _SprintDataProvider.Delete(sprint.ID);
 
-            Assert.True(result);
+            var result = _SprintDataProvider.Get(sprint.ID);
+            Assert.Null(result);
         }
     }
 }

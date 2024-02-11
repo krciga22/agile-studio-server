@@ -70,9 +70,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
-            bool result = _dataProvider.Delete(backlogItemTypeSchema.ID);
+            _dataProvider.Delete(backlogItemTypeSchema.ID);
 
-            Assert.True(result);
+            var result = _dataProvider.Get(backlogItemTypeSchema.ID);
+            Assert.Null(result);
         }
     }
 }

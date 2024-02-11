@@ -68,10 +68,6 @@ namespace AgileStudioServer.Controllers
             }
 
             apiResource = _DataProvider.Update(id, releasePatchDto);
-            if (apiResource is null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
 
             return new OkObjectResult(apiResource);
         }
@@ -88,11 +84,7 @@ namespace AgileStudioServer.Controllers
                 return NotFound();
             } 
 
-            var result = _DataProvider.Delete(id);
-            if (!result)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            _DataProvider.Delete(id);
 
             return new OkResult();
         }

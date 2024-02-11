@@ -1,4 +1,5 @@
-﻿using AgileStudioServer.Models.ApiResources;
+﻿using AgileStudioServer.Exceptions;
+using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Models.Entities;
 
@@ -45,11 +46,8 @@ namespace AgileStudioServer.Services.DataProviders
 
         public virtual ProjectApiResource Create(ProjectPostDto projectPostDto)
         {
-            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(projectPostDto.BacklogItemTypeSchemaId);
-            if (backlogItemTypeSchema is null)
-            {
-                throw new Exception("BacklogItemTypeSchema not found");
-            }
+            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(projectPostDto.BacklogItemTypeSchemaId) ??
+                throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), projectPostDto.BacklogItemTypeSchemaId.ToString());
 
             var project = new Project(projectPostDto.Title)
             {
@@ -63,13 +61,10 @@ namespace AgileStudioServer.Services.DataProviders
             return new ProjectApiResource(project);
         }
 
-        public virtual ProjectApiResource? Update(int id, ProjectPatchDto projectPatchDto)
+        public virtual ProjectApiResource Update(int id, ProjectPatchDto projectPatchDto)
         {
-            var project = _DBContext.Project.Find(id);
-            if (project is null)
-            {
-                return null;
-            }
+            var project = _DBContext.Project.Find(id) ??
+                throw new EntityNotFoundException(nameof(Project), id.ToString());
 
             project.Title = projectPatchDto.Title;
             project.Description = projectPatchDto.Description;
@@ -80,17 +75,13 @@ namespace AgileStudioServer.Services.DataProviders
             return new ProjectApiResource(project);
         }
 
-        public virtual bool Delete(int id)
+        public virtual void Delete(int id)
         {
-            var project = _DBContext.Project.Find(id);
-            if (project is null)
-            {
-                return false;
-            }
+            var project = _DBContext.Project.Find(id) ??
+                throw new EntityNotFoundException(nameof(Project), id.ToString());
 
             _DBContext.Project.Remove(project);
             _DBContext.SaveChanges();
-            return true;
         }
 
         private void LoadReferences(Project project)

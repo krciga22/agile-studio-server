@@ -1,4 +1,5 @@
-﻿using AgileStudioServer.Models.ApiResources;
+﻿using AgileStudioServer.Exceptions;
+using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Models.Entities;
 
@@ -13,7 +14,7 @@ namespace AgileStudioServer.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? Create(BacklogItemTypeSchemaPostDto dto)
+        public virtual BacklogItemTypeSchemaApiResource Create(BacklogItemTypeSchemaPostDto dto)
         {
             var backlogItemTypeSchema = new BacklogItemTypeSchema(dto.Title)
             {
@@ -56,13 +57,10 @@ namespace AgileStudioServer.Services.DataProviders
             return backlogItemTypeSchema != null ? new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema) : null;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? Update(int id, BacklogItemTypeSchemaPatchDto dto)
+        public virtual BacklogItemTypeSchemaApiResource Update(int id, BacklogItemTypeSchemaPatchDto dto)
         {
-            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
-            if (backlogItemTypeSchema is null)
-            {
-                return null;
-            }
+            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id) ??
+                throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), id.ToString());
 
             backlogItemTypeSchema.Title = dto.Title;
             backlogItemTypeSchema.Description = dto.Description;
@@ -73,17 +71,13 @@ namespace AgileStudioServer.Services.DataProviders
             return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
         }
 
-        public virtual bool Delete(int id)
+        public virtual void Delete(int id)
         {
-            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
-            if (backlogItemTypeSchema is null)
-            {
-                return false;
-            }
+            var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id) ??
+                throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), id.ToString());
 
             _DBContext.BacklogItemTypeSchema.Remove(backlogItemTypeSchema);
             _DBContext.SaveChanges();
-            return true;
         }
 
         private void LoadReferences(BacklogItemTypeSchema backlogItemTypeSchema)
