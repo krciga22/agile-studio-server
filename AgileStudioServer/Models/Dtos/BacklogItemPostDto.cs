@@ -5,6 +5,7 @@ namespace AgileStudioServer.Models.Dtos
 {
     [ValidBacklogItemTypeForBacklogItemPostDto]
     [ValidSprintForBacklogItem]
+    [ValidReleaseForBacklogItem]
     public class BacklogItemPostDto
     {
         [Required]

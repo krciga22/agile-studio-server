@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace AgileStudioServer.Models.Dtos
 {
     [ValidSprintForBacklogItem]
+    [ValidReleaseForBacklogItem]
     public class BacklogItemPatchDto
     {
         [Required]

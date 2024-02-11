@@ -134,6 +134,93 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             Assert.IsType<ValidationResult>(result);
         }
 
+        // ------------------------------------------------------------------
+
+        [Fact]
+        public void PostBacklogItem_WithReleaseForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var release = _Fixtures.CreateRelease(project: project);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                releaseId: release.ID);
+
+            var attribute = new ValidReleaseForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PostBacklogItem_WithReleaseForDifferentProject_IsInvalid()
+        {
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project1.BacklogItemTypeSchema);
+            var release = _Fixtures.CreateRelease(project: project2);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project1.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                releaseId: release.ID);
+
+            var attribute = new ValidReleaseForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithReleaseForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var release = _Fixtures.CreateRelease(project: project);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project,
+                release: release
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: "Test Backlog Item",
+                releaseId: release.ID);
+
+            var attribute = new ValidReleaseForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithReleaseForDifferentProject_IsInvalid()
+        {
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+            var release1 = _Fixtures.CreateRelease(project: project1);
+            var release2 = _Fixtures.CreateRelease(project: project2);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project1,
+                release: release1
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: "Test Backlog Item",
+                releaseId: release2.ID);
+
+            var attribute = new ValidReleaseForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
         private ValidationContext CreateValidationContext(object instance)
         {
             if (_ServiceProvider is null)
