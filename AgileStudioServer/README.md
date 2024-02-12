@@ -20,6 +20,53 @@ Backlog Item Types are created within a Backlog Item Type Schema which can be as
 ### Backlog Item Type Schemas
 Backlog Item Type Schemas are used to group backlog item types, so that they can be reused accross different projects.
 
+### Workflows
+Workflows are used to define sets of states and transitions, and can be assigned to specific backlog item types.
+
+Example workflows:
+
+| Workflow | Backlog Item Type |
+| --- | --- |
+| Story & Defect Workflow | Story |
+| Story & Defect Workflow | Defect |
+| Hotfix Workflow | Hotstory |
+| Hotfix Workflow | Hotfix |
+| Task Workflow | Task |
+| Test Workflow | Test |
+| Sub-Task Workflow | Sub-Task |
+| Sub-Test Workflow | Sub-Test |
+
+### Workflow States
+A workflow can have as many states as needed, and each state must be categorized as either: `Not Started`, `In Progress`, `Complete`.
+
+Example states for a Story & Defect Workflow:
+
+| State | Category |
+| --- | --- |
+| In Backlog | Not Started |
+| In Planning | Not Started |
+| In Development | In Progress |
+| In Testing | In Progress |
+| In Release | Complete |
+| Cancelled | Complete |
+
+### Workflow Transitions
+Workflow transitions define which states can transition `to` or `from` other states.
+
+Example transitions for a Story & Defect Workflow:
+
+| From State | To State |
+| --- | --- |
+| In Backlog | In Planning |
+| In Planning | In Backlog |
+| In Planning | In Development |
+| In Development | In Planning |
+| In Development | In Testing |
+| In Testing | In Development |
+| In Testing | In Release |
+| In Release | In Testing |
+| Any | Cancelled |
+
 ### Releases
 Releases represent versions or deployments of software. Backlog items can be assigned to specific releases.
 and when all items assigned are completed, the release can then be deployed.
