@@ -70,14 +70,17 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public BacklogItemType CreateBacklogItemType(
             string? title = null, 
-            BacklogItemTypeSchema? backlogItemTypeSchema = null)
+            BacklogItemTypeSchema? backlogItemTypeSchema = null,
+            Workflow? workflow = null)
         {
             title ??= "Test BacklogItemType";
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
+            workflow ??= CreateWorkflow();
 
             var backlogItemType = new BacklogItemType(title)
             {
-                BacklogItemTypeSchema = backlogItemTypeSchema
+                BacklogItemTypeSchema = backlogItemTypeSchema,
+                Workflow = workflow
             };
             _DBContext.BacklogItemType.Add(backlogItemType);
             _DBContext.SaveChanges();

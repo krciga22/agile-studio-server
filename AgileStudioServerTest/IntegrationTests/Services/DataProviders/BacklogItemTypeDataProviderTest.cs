@@ -22,7 +22,8 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         public void CreateBacklogItemType_WithPostDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-            var dto = new BacklogItemTypePostDto("Test Schema", backlogItemTypeSchema.ID);
+            var workflow = _Fixtures.CreateWorkflow();
+            var dto = new BacklogItemTypePostDto("Test Schema", backlogItemTypeSchema.ID, workflow.ID);
 
             var apiResource = _DataProvider.Create(dto);
 

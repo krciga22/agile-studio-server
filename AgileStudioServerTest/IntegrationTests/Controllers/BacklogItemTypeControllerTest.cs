@@ -38,7 +38,9 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         public void Post_WithDto_ReturnsApiResource()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-            var dto = new BacklogItemTypePostDto("Test Backlog Item Type Schema", backlogItemTypeSchema.ID);
+            var workflow = _Fixtures.CreateWorkflow();
+            var dto = new BacklogItemTypePostDto("Test Backlog Item Type Schema", 
+                backlogItemTypeSchema.ID, workflow.ID);
 
             BacklogItemTypeApiResource? apiResource = null;
             IActionResult result = _Controller.Post(dto);

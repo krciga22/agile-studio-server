@@ -14,6 +14,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public BacklogItemTypeSchemaSubResource BacklogItemTypeSchema { get; set; }
 
+        public WorkflowSubResource Workflow { get; set; }
+
         public BacklogItemTypeApiResource(BacklogItemType backlogItemType)
         {
             ID = backlogItemType.ID;
@@ -21,6 +23,7 @@ namespace AgileStudioServer.Models.ApiResources
             Description = backlogItemType.Description;
             CreatedOn = backlogItemType.CreatedOn;
             BacklogItemTypeSchema = new BacklogItemTypeSchemaSubResource(backlogItemType.BacklogItemTypeSchema);
+            Workflow = new WorkflowSubResource(backlogItemType.Workflow);
         }
     }
 }

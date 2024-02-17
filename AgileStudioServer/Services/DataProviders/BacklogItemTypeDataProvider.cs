@@ -19,10 +19,14 @@ namespace AgileStudioServer.Services.DataProviders
             var schema = _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
                 throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), dto.BacklogItemTypeSchemaId.ToString());
 
+            var workflow = _DBContext.Workflow.Find(dto.WorkflowId) ??
+                throw new EntityNotFoundException(nameof(Workflow), dto.WorkflowId.ToString());
+
             var backlogItemType = new BacklogItemType(dto.Title)
             {
                 Description = dto.Description,
                 BacklogItemTypeSchema = schema,
+                Workflow = workflow,
             };
 
             _DBContext.Add(backlogItemType);
@@ -104,6 +108,7 @@ namespace AgileStudioServer.Services.DataProviders
         private void LoadReferences(BacklogItemType backlogItemType)
         {
             _DBContext.Entry(backlogItemType).Reference("BacklogItemTypeSchema").Load();
+            _DBContext.Entry(backlogItemType).Reference("Workflow").Load();
         }
     }
 }

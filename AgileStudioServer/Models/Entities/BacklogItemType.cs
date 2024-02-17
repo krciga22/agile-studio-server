@@ -12,6 +12,8 @@
 
         public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 
+        public Workflow Workflow { get; set; } = null!;
+
         public BacklogItemType(string title)
         {
             Title = title;
