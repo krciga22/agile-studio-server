@@ -19,6 +19,8 @@ namespace AgileStudioServer
 
         public DbSet<Workflow> Workflow { get; set; }
 
+        public DbSet<WorkflowState> WorkflowState { get; set; }
+
         public DBContext(DbContextOptions contextOptions) : base(contextOptions)
         {
 
