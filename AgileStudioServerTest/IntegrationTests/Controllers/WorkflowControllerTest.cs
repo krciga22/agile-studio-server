@@ -62,6 +62,31 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         }
 
         [Fact]
+        public void GetWorkflowStatesForWorkflow_WithId_ReturnsApiResources()
+        {
+            var workflow = _Fixtures.CreateWorkflow();
+
+            List<WorkflowState> workflowStates = new() {
+                _Fixtures.CreateWorkflowState(
+                    title: "Test Workflow State 1",
+                    workflow: workflow),
+                _Fixtures.CreateWorkflowState(
+                    title: "Test Workflow State 2",
+                    workflow: workflow)
+            };
+
+            List<WorkflowStateApiResource>? apiResources = null;
+            IActionResult result = _Controller.GetWorkflowStatesForWorkflow(workflow.ID);
+            if (result is OkObjectResult okResult)
+            {
+                apiResources = okResult.Value as List<WorkflowStateApiResource>;
+            }
+
+            Assert.IsType<List<WorkflowStateApiResource>>(apiResources);
+            Assert.Equal(workflowStates.Count, apiResources.Count);
+        }
+
+        [Fact]
         public void Post_WithDto_ReturnsApiResource()
         {
             var workflowPostDto = new WorkflowPostDto("Test Workflow");

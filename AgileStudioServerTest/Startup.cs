@@ -44,6 +44,7 @@ namespace AgileStudioServerTest
             services.AddScoped<ReleaseController>();
             services.AddScoped<SprintController>();
             services.AddScoped<WorkflowController>();
+            services.AddScoped<WorkflowStateController>();
 
             services.AddScoped<BacklogItemDataProvider>();
             services.AddScoped<BacklogItemTypeDataProvider>();

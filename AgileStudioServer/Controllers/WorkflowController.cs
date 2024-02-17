@@ -10,10 +10,14 @@ namespace AgileStudioServer.Controllers
     public class WorkflowController : ControllerBase
     {
         private readonly WorkflowDataProvider _DataProvider;
+        private readonly WorkflowStateDataProvider _WorkflowStateDataProvider;
 
-        public WorkflowController(WorkflowDataProvider workflowDataProvider)
+        public WorkflowController(
+            WorkflowDataProvider workflowDataProvider, 
+            WorkflowStateDataProvider workflowStateDataProvider)
         {
             _DataProvider = workflowDataProvider;
+            _WorkflowStateDataProvider = workflowStateDataProvider;
         }
 
         [HttpGet(Name = "GetWorkflows")]
@@ -35,6 +39,21 @@ namespace AgileStudioServer.Controllers
             }
 
             return Ok(apiResource);
+        }
+
+        [HttpGet("{id}/WorkflowStates", Name = "GetWorkflowWorkflowStates")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<WorkflowStateApiResource>), StatusCodes.Status200OK)]
+        public IActionResult GetWorkflowStatesForWorkflow(int id)
+        {
+            var apiResource = _DataProvider.Get(id);
+            if (apiResource is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_WorkflowStateDataProvider.ListForWorkflowId(id));
         }
 
         [HttpPost(Name = "CreateWorkflow")]
