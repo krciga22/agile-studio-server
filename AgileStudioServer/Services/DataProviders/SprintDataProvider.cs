@@ -7,7 +7,7 @@ namespace AgileStudioServer.Services.DataProviders
 {
     public class SprintDataProvider
     {
-        private DBContext _DBContext;
+        private readonly DBContext _DBContext;
 
         public SprintDataProvider(DBContext dbContext)
         {

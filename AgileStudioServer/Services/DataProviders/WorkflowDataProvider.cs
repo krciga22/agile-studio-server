@@ -7,7 +7,7 @@ namespace AgileStudioServer.Services.DataProviders
 {
     public class WorkflowDataProvider
     {
-        private DBContext _DBContext;
+        private readonly DBContext _DBContext;
 
         public WorkflowDataProvider(DBContext dbContext)
         {

@@ -7,7 +7,7 @@ namespace AgileStudioServer.Services.DataProviders
 {
     public class ProjectDataProvider
     {
-        private DBContext _DBContext;
+        private readonly DBContext _DBContext;
 
         public ProjectDataProvider(DBContext dbContext)
         {

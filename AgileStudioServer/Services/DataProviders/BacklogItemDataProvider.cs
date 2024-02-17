@@ -7,7 +7,7 @@ namespace AgileStudioServer.Services.DataProviders
 {
     public class BacklogItemDataProvider
     {
-        private DBContext _DBContext;
+        private readonly DBContext _DBContext;
 
         public BacklogItemDataProvider(DBContext dbContext)
         {
