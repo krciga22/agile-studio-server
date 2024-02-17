@@ -17,6 +17,8 @@ namespace AgileStudioServer
 
         public DbSet<Release> Release { get; set; }
 
+        public DbSet<Workflow> Workflow { get; set; }
+
         public DBContext(DbContextOptions contextOptions) : base(contextOptions)
         {
 
