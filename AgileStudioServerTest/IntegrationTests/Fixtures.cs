@@ -130,6 +130,22 @@ namespace AgileStudioServerTest.IntegrationTests
             return workflow;
         }
 
+        public WorkflowState CreateWorkflowState(
+            string? title = null,
+            Workflow? workflow = null)
+        {
+            title ??= "Test Workflow";
+            workflow ??= CreateWorkflow();
+
+            var workflowState = new WorkflowState(title)
+            {
+                Workflow = workflow
+            };
+            _DBContext.WorkflowState.Add(workflowState);
+            _DBContext.SaveChanges();
+            return workflowState;
+        }
+
         /// <summary>
         /// Save any changes made to entity fixtures to the database.
         /// </summary>
