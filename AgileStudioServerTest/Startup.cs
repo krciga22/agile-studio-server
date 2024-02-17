@@ -50,6 +50,7 @@ namespace AgileStudioServerTest
             services.AddScoped<ProjectDataProvider>();
             services.AddScoped<ReleaseDataProvider>();
             services.AddScoped<SprintDataProvider>();
+            services.AddScoped<WorkflowDataProvider>();
 
             services.AddScoped<Fixtures>();
         }
