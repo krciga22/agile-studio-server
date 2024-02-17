@@ -40,7 +40,8 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
-            var dto = new BacklogItemPostDto("Test Backlog Item Type Schema", project.ID, backlogItemType.ID);
+            var workflowState = _Fixtures.CreateWorkflowState();
+            var dto = new BacklogItemPostDto("Test Backlog Item Type Schema", project.ID, backlogItemType.ID, workflowState.ID);
 
             BacklogItemApiResource? apiResource = null;
             IActionResult result = _Controller.Post(dto);
@@ -57,7 +58,7 @@ namespace AgileStudioServerTest.IntegrationTests.Controllers
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
             var title = $"{backlogItem.Title} Updated";
-            var dto = new BacklogItemPatchDto(backlogItem.ID, title);
+            var dto = new BacklogItemPatchDto(backlogItem.ID, title, backlogItem.WorkflowState.ID);
 
             IActionResult result = _Controller.Patch(backlogItem.ID, dto);
             BacklogItemApiResource? apiResource = null;

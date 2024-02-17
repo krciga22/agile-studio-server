@@ -23,9 +23,10 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType();
+            var workflowState = _Fixtures.CreateWorkflowState();
             var sprint = _Fixtures.CreateSprint(project: project);
             var release = _Fixtures.CreateRelease(project: project);
-            var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID, sprint.ID, release.ID);
+            var dto = new BacklogItemPostDto("Test Backlog Item", project.ID, backlogItemType.ID, workflowState.ID, sprint.ID, release.ID);
 
             var apiResource = _DataProvider.Create(dto);
 
@@ -71,7 +72,7 @@ namespace AgileStudioServerTest.IntegrationTests.Services.DataProviders
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
             var title = $"{backlogItem.Title} Updated";
-            var dto = new BacklogItemPatchDto(backlogItem.ID, title);
+            var dto = new BacklogItemPatchDto(backlogItem.ID, title, backlogItem.WorkflowState.ID);
 
             var apiResource = _DataProvider.Update(backlogItem.ID, dto);
 

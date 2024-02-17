@@ -22,6 +22,9 @@ namespace AgileStudioServer.Services.DataProviders
             BacklogItemType backlogItemType = _DBContext.BacklogItemType.Find(dto.BacklogItemTypeId) ??
                 throw new EntityNotFoundException(nameof(BacklogItemType), dto.BacklogItemTypeId.ToString());
 
+            WorkflowState workflowState = _DBContext.WorkflowState.Find(dto.WorkflowStateId) ??
+                throw new EntityNotFoundException(nameof(WorkflowState), dto.WorkflowStateId.ToString());
+
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
@@ -41,6 +44,7 @@ namespace AgileStudioServer.Services.DataProviders
                 Description = dto.Description,
                 Project = project,
                 BacklogItemType = backlogItemType,
+                WorkflowState = workflowState,
                 Sprint = sprint,
                 Release = release,
             };
@@ -105,6 +109,9 @@ namespace AgileStudioServer.Services.DataProviders
             var backlogItem = _DBContext.BacklogItem.Find(id) ??
                 throw new EntityNotFoundException(nameof(BacklogItem), id.ToString());
 
+            var workflowState = _DBContext.WorkflowState.Find(dto.WorkflowStateId) ??
+                throw new EntityNotFoundException(nameof(WorkflowState), dto.WorkflowStateId.ToString());
+
             Sprint? sprint = null;
             if (dto.SprintId.HasValue)
             {
@@ -121,6 +128,7 @@ namespace AgileStudioServer.Services.DataProviders
 
             backlogItem.Title = dto.Title;
             backlogItem.Description = dto.Description;
+            backlogItem.WorkflowState = workflowState;
             backlogItem.Sprint = sprint;
             backlogItem.Release = release;
             _DBContext.SaveChanges();
@@ -145,6 +153,7 @@ namespace AgileStudioServer.Services.DataProviders
         {
             _DBContext.Entry(backlogItem).Reference("Project").Load();
             _DBContext.Entry(backlogItem).Reference("BacklogItemType").Load();
+            _DBContext.Entry(backlogItem).Reference("WorkflowState").Load();
             _DBContext.Entry(backlogItem).Reference("Sprint").Load();
             _DBContext.Entry(backlogItem).Reference("Release").Load();
         }

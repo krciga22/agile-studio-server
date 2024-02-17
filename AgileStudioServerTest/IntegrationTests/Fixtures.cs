@@ -36,6 +36,7 @@ namespace AgileStudioServerTest.IntegrationTests
             string? title = null, 
             Project? project = null, 
             BacklogItemType? backlogItemType = null,
+            WorkflowState? workflowState = null,
             Sprint? sprint = null,
             Release? release = null)
         {
@@ -43,6 +44,7 @@ namespace AgileStudioServerTest.IntegrationTests
             project ??= CreateProject();
             backlogItemType ??= CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            workflowState ??= CreateWorkflowState();
             sprint ??= CreateSprint(project: project);
             release ??= CreateRelease(project: project);
 
@@ -50,6 +52,7 @@ namespace AgileStudioServerTest.IntegrationTests
             {
                 Project = project,
                 BacklogItemType = backlogItemType,
+                WorkflowState = workflowState,
                 Sprint = sprint,
                 Release = release
             };

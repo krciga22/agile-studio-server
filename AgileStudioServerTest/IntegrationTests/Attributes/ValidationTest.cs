@@ -26,8 +26,9 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
-            var backlogItem = new BacklogItemPostDto("Valid Backlog Item", project.ID, backlogItemType.ID);
+            var backlogItem = new BacklogItemPostDto("Valid Backlog Item", project.ID, backlogItemType.ID, workflowState.ID);
 
             var result = attribute.GetValidationResult(backlogItem, CreateValidationContext(backlogItem));
 
@@ -41,8 +42,9 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var otherBacklogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var backlogItemTypeInvalid = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: otherBacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var attribute = new ValidBacklogItemTypeForBacklogItemPostDto();
-            var backlogItem = new BacklogItemPostDto("Invalid Backlog Item", project.ID, backlogItemTypeInvalid.ID);
+            var backlogItem = new BacklogItemPostDto("Invalid Backlog Item", project.ID, backlogItemTypeInvalid.ID, workflowState.ID);
 
             var result = attribute.GetValidationResult(backlogItem, CreateValidationContext(backlogItem));
 
@@ -55,12 +57,14 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var sprint = _Fixtures.CreateSprint(project: project);
 
             var backlogItemPostDto = new BacklogItemPostDto(
                 title: "Test Backlog Item", 
                 projectId: project.ID,
                 backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID,
                 sprintId: sprint.ID);
 
             var attribute = new ValidSprintForBacklogItem();
@@ -76,12 +80,14 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project2 = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project1.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var sprint = _Fixtures.CreateSprint(project: project2);
 
             var backlogItemPostDto = new BacklogItemPostDto(
                 title: "Test Backlog Item", 
                 projectId: project1.ID,
                 backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID,
                 sprintId: sprint.ID);
 
             var attribute = new ValidSprintForBacklogItem();
@@ -103,6 +109,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
+                workflowStateId: backlogItem.WorkflowState.ID,
                 sprintId: sprint.ID);
 
             var attribute = new ValidSprintForBacklogItem();
@@ -126,6 +133,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
+                workflowStateId: backlogItem.WorkflowState.ID,
                 sprintId: sprint2.ID);
 
             var attribute = new ValidSprintForBacklogItem();
@@ -142,12 +150,14 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var release = _Fixtures.CreateRelease(project: project);
 
             var backlogItemPostDto = new BacklogItemPostDto(
                 title: "Test Backlog Item",
                 projectId: project.ID,
                 backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID,
                 releaseId: release.ID);
 
             var attribute = new ValidReleaseForBacklogItem();
@@ -163,12 +173,14 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var project2 = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project1.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState();
             var release = _Fixtures.CreateRelease(project: project2);
 
             var backlogItemPostDto = new BacklogItemPostDto(
                 title: "Test Backlog Item",
                 projectId: project1.ID,
                 backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID,
                 releaseId: release.ID);
 
             var attribute = new ValidReleaseForBacklogItem();
@@ -190,6 +202,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
+                workflowStateId: backlogItem.WorkflowState.ID,
                 releaseId: release.ID);
 
             var attribute = new ValidReleaseForBacklogItem();
@@ -213,6 +226,7 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
+                workflowStateId: backlogItem.WorkflowState.ID,
                 releaseId: release2.ID);
 
             var attribute = new ValidReleaseForBacklogItem();

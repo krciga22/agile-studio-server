@@ -18,6 +18,8 @@
 
         public BacklogItemType BacklogItemType { get; set; } = null!;
 
+        public WorkflowState WorkflowState { get; set; } = null!;
+
         public BacklogItem(string title)
         {
             Title = title;
