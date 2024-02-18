@@ -5,6 +5,7 @@ namespace AgileStudioServer.Models.Dtos
 {
     [ValidSprintForBacklogItem]
     [ValidReleaseForBacklogItem]
+    [ValidWorkflowStateForBacklogItem]
     public class BacklogItemPatchDto
     {
         [Required]

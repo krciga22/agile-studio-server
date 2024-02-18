@@ -142,8 +142,6 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
             Assert.IsType<ValidationResult>(result);
         }
 
-        // ------------------------------------------------------------------
-
         [Fact]
         public void PostBacklogItem_WithReleaseForSameProject_IsValid()
         {
@@ -230,6 +228,107 @@ namespace AgileStudioServerTest.IntegrationTests.Attributes
                 releaseId: release2.ID);
 
             var attribute = new ValidReleaseForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
+        [Fact]
+        public void PostBacklogItem_WithWorkflowStateForSameWorkflow_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState(
+                    workflow: backlogItemType.Workflow);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID);
+
+            var attribute = new ValidWorkflowStateForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PostBacklogItem_WithWorkflowStateForDiferentWorkflow_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var backlogItemType1 = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var backlogItemType2 = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+            var workflowState = _Fixtures.CreateWorkflowState(
+                    workflow: backlogItemType1.Workflow);
+
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project.ID,
+                backlogItemTypeId: backlogItemType2.ID,
+                workflowStateId: workflowState.ID);
+
+            var attribute = new ValidWorkflowStateForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithWorkflowStateForSameWorkflow_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var workflow = _Fixtures.CreateWorkflow();
+            var workflowState1 = _Fixtures.CreateWorkflowState(
+                    workflow: workflow);
+            var workflowState2 = _Fixtures.CreateWorkflowState(
+                    workflow: workflow);
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    workflow: workflow);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project,
+                backlogItemType: backlogItemType,
+                workflowState: workflowState1
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: "Test Backlog Item",
+                workflowStateId: workflowState2.ID);
+
+            var attribute = new ValidWorkflowStateForBacklogItem();
+            var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithWorkflowStateForDiferentWorkflow_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+            var workflow1 = _Fixtures.CreateWorkflow();
+            var workflow2 = _Fixtures.CreateWorkflow();
+            var workflowState1 = _Fixtures.CreateWorkflowState(
+                    workflow: workflow1);
+            var workflowState2 = _Fixtures.CreateWorkflowState(
+                    workflow: workflow2);
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    workflow: workflow1);
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project,
+                backlogItemType: backlogItemType,
+                workflowState: workflowState1
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: "Test Backlog Item",
+                workflowStateId: workflowState2.ID);
+
+            var attribute = new ValidWorkflowStateForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
 
             Assert.IsType<ValidationResult>(result);
