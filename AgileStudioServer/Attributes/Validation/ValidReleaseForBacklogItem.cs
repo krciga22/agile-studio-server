@@ -25,9 +25,8 @@ namespace AgileStudioServer.Attributes.Validation
             int releaseId;
             int projectId;
 
-            if (value is BacklogItemPostDto)
+            if (value is BacklogItemPostDto postDto)
             {
-                var postDto = (BacklogItemPostDto)value;
                 if (postDto.ReleaseId is null)
                 {
                     return ValidationResult.Success;
@@ -36,9 +35,8 @@ namespace AgileStudioServer.Attributes.Validation
                 releaseId = (int)postDto.ReleaseId;
                 projectId = postDto.ProjectId;
             }
-            else if (value is BacklogItemPatchDto)
+            else if (value is BacklogItemPatchDto patchDto)
             {
-                var patchDto = (BacklogItemPatchDto)value;
                 if (patchDto.ReleaseId is null)
                 {
                     return ValidationResult.Success;
