@@ -4,11 +4,9 @@ using AgileStudioServer.Services.DataProviders;
 using AgileStudioServerTest.IntegrationTests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-[assembly: UserSecretsId("458c7384-b3de-4f95-8b07-128aa520c896")]
 namespace AgileStudioServerTest
 {
     public class Startup
