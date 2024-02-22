@@ -22,8 +22,11 @@ namespace AgileStudioServer
             builder.Services.AddScoped<BacklogItemDataProvider>();
             builder.Services.AddScoped<BacklogItemTypeDataProvider>();
             builder.Services.AddScoped<BacklogItemTypeSchemaDataProvider>();
-            builder.Services.AddScoped<ReleaseDataProvider>();
             builder.Services.AddScoped<ProjectDataProvider>();
+            builder.Services.AddScoped<ReleaseDataProvider>();
+            builder.Services.AddScoped<SprintDataProvider>();
+            builder.Services.AddScoped<WorkflowDataProvider>();
+            builder.Services.AddScoped<WorkflowStateDataProvider>();
 
             var app = builder.Build();
 
