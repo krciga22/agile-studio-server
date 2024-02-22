@@ -1,26 +1,25 @@
 ﻿using AgileStudioCLI.FixtureSets;
 using AgileStudioServer;
-using System.Windows.Input;
 
 namespace AgileStudioCLI.Commands
 {
-    internal class LoadFixturesCommand : ICommand
+    internal class LoadFixturesCommand : AbstractCommand
     {
         private readonly DBContext _DBContext;
-
-        public event EventHandler? CanExecuteChanged;
 
         public LoadFixturesCommand(DBContext dbContext)
         {
             _DBContext = dbContext;
+
+            SetName("LoadFixtures");
         }
 
-        public bool CanExecute(object? parameter)
+        public override bool CanExecute(object? parameter)
         {
             return true;
         }
 
-        public void Execute(object? parameter)
+        public override void Execute(object? parameter)
         {
             // todo - ask user which fixtures they want to load
 

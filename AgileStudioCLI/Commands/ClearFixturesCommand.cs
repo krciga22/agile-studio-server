@@ -1,26 +1,30 @@
 ﻿using AgileStudioServer;
 using Microsoft.EntityFrameworkCore;
-using System.Windows.Input;
 
 namespace AgileStudioCLI.Commands
 {
-    internal class ClearFixtures : ICommand
+    internal class ClearFixturesCommand : AbstractCommand
     {
         private readonly DBContext _DBContext;
 
-        public event EventHandler? CanExecuteChanged;
-
-        public ClearFixtures(DBContext dbContext)
+        public ClearFixturesCommand(DBContext dbContext)
         {
             _DBContext = dbContext;
+
+            SetName("ClearFixtures");
         }
 
-        public bool CanExecute(object? parameter)
+        public override bool CanExecute(object? parameter)
         {
             return true;
         }
 
-        public async void Execute(object? parameter)
+        public override void Execute(object? parameter)
+        {
+            RemoveAllFixtures();
+        }
+
+        private async void RemoveAllFixtures()
         {
             await _DBContext.Project.ForEachAsync(x => _DBContext.Project.Remove(x));
             await _DBContext.BacklogItem.ForEachAsync(x => _DBContext.BacklogItem.Remove(x));
