@@ -1,6 +1,6 @@
 ﻿
 using AgileStudioCLI.Commands;
-using AgileStudioCLI.Services;
+using AgileStudioServer;
 
 namespace AgileStudioCLI
 {

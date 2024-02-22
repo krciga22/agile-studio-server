@@ -1,5 +1,4 @@
 using AgileStudioServer.Services.DataProviders;
-using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioServer
 {
@@ -17,22 +16,7 @@ namespace AgileStudioServer
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<DBContext>(optionsBuilder => {
-                var dbHost = builder.Configuration.GetValue<string>("DB:Host");
-                var dbName = builder.Configuration.GetValue<string>("DB:Name");
-                var dbUser = builder.Configuration.GetValue<string>("DB:User");
-                var dbPass = builder.Configuration.GetValue<string>("DB:Pass");
-
-                var connectionString = String.Format("server={0};database={1};user={2};password={3}", dbHost, dbName, dbUser, dbPass);
-                var mysqlVersion = new Version("8.0");
-                optionsBuilder
-                    .UseMySql(
-                        connectionString,
-                        MySqlServerVersion.Create(
-                            mysqlVersion,
-                            Pomelo.EntityFrameworkCore.MySql.Infrastructure.ServerType.MySql
-                        )
-                    )
-                    .UseSnakeCaseNamingConvention();
+                DBContextFactory.ConfigureDefaultOptions(ref optionsBuilder);
             });
 
             builder.Services.AddScoped<BacklogItemDataProvider>();
