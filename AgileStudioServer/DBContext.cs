@@ -17,6 +17,8 @@ namespace AgileStudioServer
 
         public DbSet<Release> Release { get; set; }
 
+        public DbSet<User> User { get; set; }
+
         public DbSet<Workflow> Workflow { get; set; }
 
         public DbSet<WorkflowState> WorkflowState { get; set; }
