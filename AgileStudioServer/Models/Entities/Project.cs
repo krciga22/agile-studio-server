@@ -12,6 +12,8 @@ namespace AgileStudioServer.Models.Entities
 
         public DateTime CreatedOn { get; set; }
 
+        public User? CreatedBy { get; set; } = null!;
+
         [Required]
         public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 

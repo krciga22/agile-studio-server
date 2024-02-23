@@ -12,6 +12,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
+        public UserSubResource? CreatedBy { get; set; }
+
         public BacklogItemTypeSchemaSubResource BacklogItemTypeSchema { get; set; }
 
         public ProjectApiResource(Project project)
@@ -20,6 +22,7 @@ namespace AgileStudioServer.Models.ApiResources
             Title = project.Title;
             Description = project.Description;
             CreatedOn = project.CreatedOn;
+            CreatedBy = project.CreatedBy is null ? null : new UserSubResource(project.CreatedBy);
             BacklogItemTypeSchema = new BacklogItemTypeSchemaSubResource(project.BacklogItemTypeSchema);
         }
     }
