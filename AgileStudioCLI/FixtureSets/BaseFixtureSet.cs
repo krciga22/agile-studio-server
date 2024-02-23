@@ -26,7 +26,13 @@ namespace AgileStudioCLI.FixtureSets
             var backlogItemTypeStory = fixtures.CreateBacklogItemType("Story", backlogItemTypeSchema, workflow);
             fixtures.CreateBacklogItemType("Defect", backlogItemTypeSchema, workflow);
 
-            var project = fixtures.CreateProject("Agile Studio", backlogItemTypeSchema);
+            var user = fixtures.CreateUser();
+
+            var project = fixtures.CreateProject(
+                title: "Agile Studio", 
+                backlogItemTypeSchema: backlogItemTypeSchema,
+                user: user);
+
             var sprint1 = fixtures.CreateSprint(1, project);
             var release1_0_0 = fixtures.CreateRelease("1.0.0", project);
 

@@ -17,15 +17,17 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public Project CreateProject(
             string? title = null, 
-            BacklogItemTypeSchema? 
-            backlogItemTypeSchema = null)
+            BacklogItemTypeSchema? backlogItemTypeSchema = null,
+            User? user = null)
         {
             title ??= "Test Project";
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
+            user ??= CreateUser();
 
             var project = new Project(title)
             {
-                BacklogItemTypeSchema = backlogItemTypeSchema
+                BacklogItemTypeSchema = backlogItemTypeSchema,
+                CreatedBy = user
             };
             _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
@@ -147,6 +149,21 @@ namespace AgileStudioServerTest.IntegrationTests
             _DBContext.WorkflowState.Add(workflowState);
             _DBContext.SaveChanges();
             return workflowState;
+        }
+
+        public User CreateUser(
+            string? email = null,
+            string? firstName = null,
+            string? lastName = null)
+        {
+            firstName ??= "Test";
+            lastName ??= "User";
+            email ??= "testuser@local.agilestudio.dev";
+
+            var user = new User(email, firstName, lastName);
+            _DBContext.User.Add(user);
+            _DBContext.SaveChanges();
+            return user;
         }
 
         /// <summary>
