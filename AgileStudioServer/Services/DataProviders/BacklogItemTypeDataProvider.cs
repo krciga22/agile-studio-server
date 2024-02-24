@@ -107,6 +107,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         private void LoadReferences(BacklogItemType backlogItemType)
         {
+            _DBContext.Entry(backlogItemType).Reference("CreatedBy").Load();
             _DBContext.Entry(backlogItemType).Reference("BacklogItemTypeSchema").Load();
             _DBContext.Entry(backlogItemType).Reference("Workflow").Load();
         }

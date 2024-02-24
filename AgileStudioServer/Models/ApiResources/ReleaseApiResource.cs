@@ -14,6 +14,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
+        public UserSubResource? CreatedBy { get; set; }
+
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
@@ -25,6 +27,7 @@ namespace AgileStudioServer.Models.ApiResources
             Project = new ProjectSubResource(release.Project);
             Description = release.Description;
             CreatedOn = release.CreatedOn;
+            CreatedBy = release.CreatedBy is null ? null : new UserSubResource(release.CreatedBy);
             StartDate = release.StartDate;
             EndDate = release.EndDate;
         }

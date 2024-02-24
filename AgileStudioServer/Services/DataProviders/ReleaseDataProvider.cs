@@ -91,6 +91,7 @@ namespace AgileStudioServer.Services.DataProviders
         private void LoadReferences(Release release)
         {
             _DBContext.Entry(release).Reference("Project").Load();
+            _DBContext.Entry(release).Reference("CreatedBy").Load();
         }
     }
 }

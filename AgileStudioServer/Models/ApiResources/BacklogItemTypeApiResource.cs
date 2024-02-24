@@ -12,6 +12,8 @@ namespace AgileStudioServer.Models.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
+        public UserSubResource? CreatedBy { get; set; }
+
         public BacklogItemTypeSchemaSubResource BacklogItemTypeSchema { get; set; }
 
         public WorkflowSubResource Workflow { get; set; }
@@ -22,6 +24,7 @@ namespace AgileStudioServer.Models.ApiResources
             Title = backlogItemType.Title;
             Description = backlogItemType.Description;
             CreatedOn = backlogItemType.CreatedOn;
+            CreatedBy = backlogItemType.CreatedBy is null ? null : new UserSubResource(backlogItemType.CreatedBy);
             BacklogItemTypeSchema = new BacklogItemTypeSchemaSubResource(backlogItemType.BacklogItemTypeSchema);
             Workflow = new WorkflowSubResource(backlogItemType.Workflow);
         }

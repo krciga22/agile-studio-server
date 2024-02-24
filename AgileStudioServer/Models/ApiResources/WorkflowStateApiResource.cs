@@ -14,12 +14,15 @@ namespace AgileStudioServer.Models.ApiResources
 
         public DateTime CreatedOn { get; set; }
 
+        public UserSubResource? CreatedBy { get; set; }
+
         public WorkflowStateApiResource(WorkflowState workflowState)
         {
             ID = workflowState.ID;
             Title = workflowState.Title;
             Description = workflowState.Description;
             CreatedOn = workflowState.CreatedOn;
+            CreatedBy = workflowState.CreatedBy is null ? null : new UserSubResource(workflowState.CreatedBy);
             Workflow = new WorkflowSubResource(workflowState.Workflow);
         }
     }

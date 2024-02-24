@@ -106,6 +106,7 @@ namespace AgileStudioServer.Services.DataProviders
         private void LoadReferences(Sprint sprint)
         {
             _DBContext.Entry(sprint).Reference("Project").Load();
+            _DBContext.Entry(sprint).Reference("CreatedBy").Load();
         }
     }
 }

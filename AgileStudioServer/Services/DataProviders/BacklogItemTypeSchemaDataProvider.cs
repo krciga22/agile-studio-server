@@ -82,7 +82,7 @@ namespace AgileStudioServer.Services.DataProviders
 
         private void LoadReferences(BacklogItemTypeSchema backlogItemTypeSchema)
         {
-            // stub
+            _DBContext.Entry(backlogItemTypeSchema).Reference("CreatedBy").Load();
         }
     }
 }

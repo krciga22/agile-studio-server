@@ -89,6 +89,7 @@ namespace AgileStudioServer.Services.DataProviders
         private void LoadReferences(WorkflowState workflowState)
         {
             _DBContext.Entry(workflowState).Reference("Workflow").Load();
+            _DBContext.Entry(workflowState).Reference("CreatedBy").Load();
         }
     }
 }

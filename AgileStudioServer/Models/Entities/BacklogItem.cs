@@ -10,6 +10,8 @@
 
         public DateTime CreatedOn { get; set; }
 
+        public User? CreatedBy { get; set; } = null!;
+
         public Project Project { get; set; } = null!;
 
         public Sprint? Sprint { get; set; } = null;

@@ -10,6 +10,8 @@
 
         public DateTime CreatedOn { get; set; }
 
+        public User? CreatedBy { get; set; } = null!;
+
         public Workflow(string title)
         {
             Title = title;
