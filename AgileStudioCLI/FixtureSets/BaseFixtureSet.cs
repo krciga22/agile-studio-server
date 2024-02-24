@@ -14,27 +14,67 @@ namespace AgileStudioCLI.FixtureSets
         {
             var fixtures = new Fixtures(dbContext);
 
-            var workflow = fixtures.CreateWorkflow("Story & Defect Workflow");
-            var workflowStateInBacklog = fixtures.CreateWorkflowState("In Backlog", workflow);
-            fixtures.CreateWorkflowState("In Planning", workflow);
-            fixtures.CreateWorkflowState("In Development", workflow);
-            fixtures.CreateWorkflowState("In Testing", workflow);
-            fixtures.CreateWorkflowState("In Release", workflow);
-            fixtures.CreateWorkflowState("Cancelled", workflow);
-
-            var backlogItemTypeSchema = fixtures.CreateBacklogItemTypeSchema("Agile Studio Backlog Item Type Schema");
-            var backlogItemTypeStory = fixtures.CreateBacklogItemType("Story", backlogItemTypeSchema, workflow);
-            fixtures.CreateBacklogItemType("Defect", backlogItemTypeSchema, workflow);
-
             var user = fixtures.CreateUser();
+
+            var workflow = fixtures.CreateWorkflow(
+                title: "Story & Defect Workflow",
+                createdBy: user);
+
+            var workflowStateInBacklog = fixtures.CreateWorkflowState(
+                title: "In Backlog", 
+                workflow: workflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "In Planning",
+                workflow: workflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "In Development",
+                workflow: workflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "In Testing",
+                workflow: workflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "In Release",
+                workflow: workflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "Cancelled",
+                workflow: workflow,
+                createdBy: user);
+
+            var backlogItemTypeSchema = fixtures.CreateBacklogItemTypeSchema(
+                title: "Agile Studio Backlog Item Type Schema",
+                createdBy: user);
+
+            var backlogItemTypeStory = fixtures.CreateBacklogItemType(
+                title: "Story",
+                createdBy: user,
+                backlogItemTypeSchema: backlogItemTypeSchema,
+                workflow: workflow);
+
+            fixtures.CreateBacklogItemType(
+                title: "Defect",
+                createdBy: user,
+                backlogItemTypeSchema: backlogItemTypeSchema,
+                workflow: workflow);
 
             var project = fixtures.CreateProject(
                 title: "Agile Studio", 
                 backlogItemTypeSchema: backlogItemTypeSchema,
-                user: user);
+                createdBy: user);
 
-            var sprint1 = fixtures.CreateSprint(1, project);
-            var release1_0_0 = fixtures.CreateRelease("1.0.0", project);
+            var sprint1 = fixtures.CreateSprint(
+                sprintNumber: 1, 
+                project: project,
+                createdBy: user);
+
+            var release1_0_0 = fixtures.CreateRelease(
+                title: "1.0.0",
+                project: project,
+                createdBy: user);
 
             fixtures.CreateBacklogItem(
                 title: "Test Story", 
@@ -42,7 +82,8 @@ namespace AgileStudioCLI.FixtureSets
                 backlogItemType: backlogItemTypeStory,
                 workflowState: workflowStateInBacklog, 
                 sprint: sprint1, 
-                release: release1_0_0);
+                release: release1_0_0,
+                createdBy: user);
         }
     }
 }

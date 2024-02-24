@@ -18,16 +18,16 @@ namespace AgileStudioServerTest.IntegrationTests
         public Project CreateProject(
             string? title = null, 
             BacklogItemTypeSchema? backlogItemTypeSchema = null,
-            User? user = null)
+            User? createdBy = null)
         {
             title ??= "Test Project";
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
-            user ??= CreateUser();
+            createdBy ??= CreateUser();
 
             var project = new Project(title)
             {
                 BacklogItemTypeSchema = backlogItemTypeSchema,
-                CreatedBy = user
+                CreatedBy = createdBy
             };
             _DBContext.Project.Add(project);
             _DBContext.SaveChanges();
@@ -35,7 +35,8 @@ namespace AgileStudioServerTest.IntegrationTests
         }
 
         public BacklogItem CreateBacklogItem(
-            string? title = null, 
+            string? title = null,
+            User? createdBy = null, 
             Project? project = null, 
             BacklogItemType? backlogItemType = null,
             WorkflowState? workflowState = null,
@@ -43,6 +44,7 @@ namespace AgileStudioServerTest.IntegrationTests
             Release? release = null)
         {
             title ??= "Test BacklogItem";
+            createdBy ??= CreateUser();
             project ??= CreateProject();
             backlogItemType ??= CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
@@ -52,6 +54,7 @@ namespace AgileStudioServerTest.IntegrationTests
 
             var backlogItem = new BacklogItem(title)
             {
+                CreatedBy = createdBy,
                 Project = project,
                 BacklogItemType = backlogItemType,
                 WorkflowState = workflowState,
@@ -63,27 +66,36 @@ namespace AgileStudioServerTest.IntegrationTests
             return backlogItem;
         }
 
-        public BacklogItemTypeSchema CreateBacklogItemTypeSchema(string? title = null)
+        public BacklogItemTypeSchema CreateBacklogItemTypeSchema(
+            string? title = null,
+            User? createdBy = null)
         {
             title ??= "Test BacklogItemTypeSchema";
+            createdBy ??= CreateUser();
 
-            var backlogItemTypeSchema = new BacklogItemTypeSchema(title);
+            var backlogItemTypeSchema = new BacklogItemTypeSchema(title)
+            {
+                CreatedBy = createdBy
+            };
             _DBContext.BacklogItemTypeSchema.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
             return backlogItemTypeSchema;
         }
 
         public BacklogItemType CreateBacklogItemType(
-            string? title = null, 
+            string? title = null,
+            User? createdBy = null,
             BacklogItemTypeSchema? backlogItemTypeSchema = null,
             Workflow? workflow = null)
         {
             title ??= "Test BacklogItemType";
+            createdBy ??= CreateUser();
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
             workflow ??= CreateWorkflow();
 
             var backlogItemType = new BacklogItemType(title)
             {
+                CreatedBy = createdBy,
                 BacklogItemTypeSchema = backlogItemTypeSchema,
                 Workflow = workflow
             };
@@ -94,14 +106,17 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public Sprint CreateSprint(
             int? sprintNumber = null,
-            Project? project = null)
+            Project? project = null,
+            User? createdBy = null)
         {
             int nextSprintNumber = sprintNumber ?? 1;
             project ??= CreateProject();
+            createdBy ??= CreateUser();
 
             var sprint = new Sprint(nextSprintNumber)
             {
-                Project = project
+                Project = project,
+                CreatedBy = createdBy
             };
             _DBContext.Sprint.Add(sprint);
             _DBContext.SaveChanges();
@@ -110,14 +125,17 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public Release CreateRelease(
             string? title = null,
-            Project? project = null)
+            Project? project = null,
+            User? createdBy = null)
         {
             title ??= "v1.0.0";
             project ??= CreateProject();
+            createdBy ??= CreateUser();
 
             var release = new Release(title)
             {
-                Project = project
+                Project = project,
+                CreatedBy = createdBy
             };
             _DBContext.Release.Add(release);
             _DBContext.SaveChanges();
@@ -125,11 +143,16 @@ namespace AgileStudioServerTest.IntegrationTests
         }
 
         public Workflow CreateWorkflow(
-            string? title = null)
+            string? title = null,
+            User? createdBy = null)
         {
             title ??= "Test Workflow";
+            createdBy ??= CreateUser();
 
-            var workflow = new Workflow(title);
+            var workflow = new Workflow(title) 
+            {
+                CreatedBy = createdBy
+            };
             _DBContext.Workflow.Add(workflow);
             _DBContext.SaveChanges();
             return workflow;
@@ -137,14 +160,17 @@ namespace AgileStudioServerTest.IntegrationTests
 
         public WorkflowState CreateWorkflowState(
             string? title = null,
-            Workflow? workflow = null)
+            Workflow? workflow = null,
+            User? createdBy = null)
         {
             title ??= "Test Workflow";
             workflow ??= CreateWorkflow();
+            createdBy ??= CreateUser();
 
             var workflowState = new WorkflowState(title)
             {
-                Workflow = workflow
+                Workflow = workflow,
+                CreatedBy = createdBy
             };
             _DBContext.WorkflowState.Add(workflowState);
             _DBContext.SaveChanges();
