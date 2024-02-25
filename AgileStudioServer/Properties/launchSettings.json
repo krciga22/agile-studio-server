@@ -20,14 +20,14 @@
     },
     "Docker": {
       "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "launchBrowser": false,
+      "launchUrl": "{Scheme}://api.agilestudio.dev.local:{ServicePort}/swagger",
       "environmentVariables": {
         "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
       "publishAllPorts": true,
       "useSSL": true,
-      "DockerfileRunArguments": "-p 3306"
+      "sslPort": 44360
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
