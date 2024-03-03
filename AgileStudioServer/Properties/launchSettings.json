@@ -8,7 +8,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7153;http://localhost:5235"
+      "applicationUrl": "https://api.agilestudio.dev.local:44360/",
+      "useSSL": true,
+      "sslPort": 44360
     },
     "IIS Express": {
       "commandName": "IISExpress",
