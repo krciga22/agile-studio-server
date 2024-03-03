@@ -1,12 +1,14 @@
 using AgileStudioServer.Models.ApiResources;
 using AgileStudioServer.Models.Dtos;
 using AgileStudioServer.Services.DataProviders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgileStudioServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class BacklogItemTypeSchemaController : ControllerBase
     {
         private readonly BacklogItemTypeSchemaDataProvider _DataProvider;
