@@ -1,5 +1,5 @@
 ﻿using AgileStudioCLI.FixtureSets;
-using AgileStudioServer;
+using AgileStudioServer.Data;
 
 namespace AgileStudioCLI.Commands
 {

@@ -1,5 +1,5 @@
-﻿using AgileStudioServer;
-using AgileStudioServer.Models.Entities;
+﻿using AgileStudioServer.Data;
+using AgileStudioServer.Data.Entities;
 
 namespace AgileStudioServerTest.IntegrationTests
 {

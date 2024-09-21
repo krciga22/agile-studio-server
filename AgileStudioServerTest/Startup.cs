@@ -1,6 +1,6 @@
-﻿using AgileStudioServer;
-using AgileStudioServer.Controllers;
-using AgileStudioServer.Services.DataProviders;
+﻿using AgileStudioServer.API.Controllers;
+using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.Data;
 using AgileStudioServerTest.IntegrationTests;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

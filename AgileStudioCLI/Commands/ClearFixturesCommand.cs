@@ -1,4 +1,4 @@
-﻿using AgileStudioServer;
+﻿using AgileStudioServer.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioCLI.Commands

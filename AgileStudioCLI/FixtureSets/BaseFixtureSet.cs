@@ -1,4 +1,4 @@
-﻿using AgileStudioServer;
+﻿using AgileStudioServer.Data;
 using AgileStudioServerTest.IntegrationTests;
 
 namespace AgileStudioCLI.FixtureSets

@@ -1,4 +1,5 @@
-using AgileStudioServer.Services.DataProviders;
+using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.Data;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -1,4 +1,4 @@
-﻿using AgileStudioServer;
+﻿using AgileStudioServer.Data;
 
 namespace AgileStudioServerTest.IntegrationTests
 {
