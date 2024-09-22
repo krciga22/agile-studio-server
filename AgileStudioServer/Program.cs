@@ -1,3 +1,4 @@
+using AgileStudioServer.Application.Models.ModelEntityConverters;
 using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
 using Auth0.AspNetCore.Authentication;
@@ -32,6 +33,15 @@ namespace AgileStudioServer
             builder.Services.AddScoped<SprintDataProvider>();
             builder.Services.AddScoped<WorkflowDataProvider>();
             builder.Services.AddScoped<WorkflowStateDataProvider>();
+
+            builder.Services.AddScoped<BacklogItemConverter>();
+            builder.Services.AddScoped<BacklogItemTypeConverter>();
+            builder.Services.AddScoped<BacklogItemTypeSchemaConverter>();
+            builder.Services.AddScoped<ProjectConverter>();
+            builder.Services.AddScoped<ReleaseConverter>();
+            builder.Services.AddScoped<SprintConverter>();
+            builder.Services.AddScoped<WorkflowConverter>();
+            builder.Services.AddScoped<WorkflowStateConverter>();
 
             string auth0Domain = builder.Configuration.GetValue<string>("Auth0:Domain");
             string auth0ClientId = builder.Configuration.GetValue<string>("Auth0:ClientId");
