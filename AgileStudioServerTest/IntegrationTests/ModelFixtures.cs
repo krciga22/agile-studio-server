@@ -86,7 +86,7 @@ namespace AgileStudioServerTest.IntegrationTests
                 Sprint = sprint,
                 Release = release
             };
-            _backlogItemService.Create(backlogItem);
+            backlogItem = _backlogItemService.Create(backlogItem);
             return backlogItem;
         }
 
@@ -101,7 +101,7 @@ namespace AgileStudioServerTest.IntegrationTests
             {
                 CreatedBy = createdBy
             };
-            _backlogItemTypeSchemaService.Create(backlogItemTypeSchema);
+            backlogItemTypeSchema = _backlogItemTypeSchemaService.Create(backlogItemTypeSchema);
             return backlogItemTypeSchema;
         }
 
@@ -122,7 +122,7 @@ namespace AgileStudioServerTest.IntegrationTests
                 BacklogItemTypeSchema = backlogItemTypeSchema,
                 Workflow = workflow
             };
-            _backlogItemTypeService.Create(backlogItemType);
+            backlogItemType = _backlogItemTypeService.Create(backlogItemType);
             return backlogItemType;
         }
 
@@ -140,7 +140,7 @@ namespace AgileStudioServerTest.IntegrationTests
                 Project = project,
                 CreatedBy = createdBy
             };
-            _sprintService.Create(sprint);
+            sprint = _sprintService.Create(sprint);
             return sprint;
         }
 
@@ -158,7 +158,7 @@ namespace AgileStudioServerTest.IntegrationTests
                 Project = project,
                 CreatedBy = createdBy
             };
-            _releaseService.Create(release);
+            release = _releaseService.Create(release);
             return release;
         }
 
@@ -173,7 +173,7 @@ namespace AgileStudioServerTest.IntegrationTests
             {
                 CreatedBy = createdBy
             };
-            _workflowService.Create(workflow);
+            workflow = _workflowService.Create(workflow);
             return workflow;
         }
 
@@ -191,7 +191,7 @@ namespace AgileStudioServerTest.IntegrationTests
                 Workflow = workflow,
                 CreatedBy = createdBy
             };
-            _workflowStateService.Create(workflowState);
+            workflowState = _workflowStateService.Create(workflowState);
             return workflowState;
         }
 
@@ -205,7 +205,7 @@ namespace AgileStudioServerTest.IntegrationTests
             email ??= "testuser@local.agilestudio.dev";
 
             var user = new User(email, firstName, lastName);
-            _userService.Create(user);
+            user = _userService.Create(user);
             return user;
         }
     }
