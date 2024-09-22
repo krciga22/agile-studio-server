@@ -1,8 +1,26 @@
 ﻿
+using AgileStudioServer.Data;
+using AgileStudioServer.Data.Exceptions;
+
 namespace AgileStudioServer.Application.Models.ModelEntityConverters
 {
-    public class BacklogItemTypeConverter : IModelEntityConverter<BacklogItemType, Data.Entities.BacklogItemType>
+    public class BacklogItemTypeConverter : AbstractModelEntityConverter, IModelEntityConverter<BacklogItemType, Data.Entities.BacklogItemType>
     {
+        private BacklogItemTypeSchemaConverter _backlogItemTypeSchemaConverter;
+        private WorkflowConverter _workflowConverter;
+        private UserConverter _userConverter;
+
+        public BacklogItemTypeConverter(
+            DBContext _dbContext,
+            BacklogItemTypeSchemaConverter backlogItemTypeSchemaConverter,
+            WorkflowConverter workflowConverter,
+            UserConverter userConverter) : base(_dbContext)
+        {
+            _backlogItemTypeSchemaConverter = backlogItemTypeSchemaConverter;
+            _workflowConverter = workflowConverter;
+            _userConverter = userConverter;
+        }
+
         public bool CanConvert(Type model, Type entity)
         {
             return model == typeof(BacklogItemType) && 
@@ -11,23 +29,40 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public Data.Entities.BacklogItemType ConvertToEntity(BacklogItemType model)
         {
-            var entity = new Data.Entities.BacklogItemType(model.Title);
+            Data.Entities.BacklogItemType? entity = null;
+
+            if (model.ID > 0)
+            {
+                entity = _DBContext.BacklogItemType.Find(model.ID);
+                if (entity == null)
+                {
+                    throw new EntityNotFoundException(
+                        nameof(Data.Entities.BacklogItemType),
+                        model.ID.ToString()
+                    );
+                }
+
+                entity.Title = model.Title;
+            }
+            else
+            {
+                entity = new Data.Entities.BacklogItemType(model.Title);
+            }
 
             if (model.BacklogItemTypeSchema != null)
             {
-                entity.BacklogItemTypeSchema = new BacklogItemTypeSchemaConverter()
+                entity.BacklogItemTypeSchema = _backlogItemTypeSchemaConverter
                     .ConvertToEntity(model.BacklogItemTypeSchema);
             }
 
             if (model.Workflow != null)
             {
-                entity.Workflow = new WorkflowConverter()
-                    .ConvertToEntity(model.Workflow);
+                entity.Workflow = _workflowConverter.ConvertToEntity(model.Workflow);
             }
 
             if (model.CreatedBy != null)
             {
-                entity.CreatedBy = new UserConverter().ConvertToEntity(model.CreatedBy);
+                entity.CreatedBy = _userConverter.ConvertToEntity(model.CreatedBy);
             }
 
             return entity;
@@ -35,23 +70,25 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public BacklogItemType ConvertToModel(Data.Entities.BacklogItemType entity)
         {
-            var model = new BacklogItemType(entity.Title);
+            var model = new BacklogItemType(entity.Title)
+            {
+                ID = entity.ID
+            };
 
             if (entity.BacklogItemTypeSchema != null)
             {
-                model.BacklogItemTypeSchema = new BacklogItemTypeSchemaConverter()
+                model.BacklogItemTypeSchema = _backlogItemTypeSchemaConverter
                     .ConvertToModel(entity.BacklogItemTypeSchema);
             }
 
             if (entity.Workflow != null)
             {
-                model.Workflow = new WorkflowConverter()
-                    .ConvertToModel(entity.Workflow);
+                model.Workflow = _workflowConverter.ConvertToModel(entity.Workflow);
             }
 
             if (entity.CreatedBy != null)
             {
-                model.CreatedBy = new UserConverter().ConvertToModel(entity.CreatedBy);
+                model.CreatedBy = _userConverter.ConvertToModel(entity.CreatedBy);
             }
 
             return model;

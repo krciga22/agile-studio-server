@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
         public WorkflowDataProviderTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             WorkflowDataProvider workflowDataProvider) : base(dbContext, fixtures)
         {
             _DataProvider = workflowDataProvider;

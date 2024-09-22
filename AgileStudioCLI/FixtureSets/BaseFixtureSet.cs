@@ -12,7 +12,7 @@ namespace AgileStudioCLI.FixtureSets
 
         private void LoadAgileStudioProject(DBContext dbContext)
         {
-            var fixtures = new Fixtures(dbContext);
+            var fixtures = new EntityFixtures(dbContext);
 
             var user = fixtures.CreateUser();
 

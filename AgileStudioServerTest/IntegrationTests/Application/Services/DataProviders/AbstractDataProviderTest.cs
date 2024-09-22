@@ -4,9 +4,9 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 {
     public abstract class AbstractDataProviderTest : DBTest
     {
-        protected readonly Fixtures _Fixtures;
+        protected readonly EntityFixtures _Fixtures;
 
-        public AbstractDataProviderTest(DBContext dbContext, Fixtures fixtures) : base(dbContext)
+        public AbstractDataProviderTest(DBContext dbContext, EntityFixtures fixtures) : base(dbContext)
         {
             _Fixtures = fixtures;
         }

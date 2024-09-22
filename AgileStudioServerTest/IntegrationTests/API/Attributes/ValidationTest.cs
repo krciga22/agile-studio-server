@@ -7,13 +7,13 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
 {
     public class ValidationTest : DBTest
     {
-        private readonly Fixtures _Fixtures;
+        private readonly EntityFixtures _Fixtures;
 
         private readonly IServiceProvider? _ServiceProvider;
 
         public ValidationTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             IServiceProvider? serviceProvider) : base(dbContext)
         {
             _Fixtures = fixtures;

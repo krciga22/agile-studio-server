@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
         public ReleaseControllerTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             ReleaseController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;

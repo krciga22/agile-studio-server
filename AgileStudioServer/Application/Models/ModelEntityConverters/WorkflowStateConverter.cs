@@ -1,8 +1,23 @@
 ﻿
+using AgileStudioServer.Data;
+using AgileStudioServer.Data.Exceptions;
+
 namespace AgileStudioServer.Application.Models.ModelEntityConverters
 {
-    public class WorkflowStateConverter : IModelEntityConverter<WorkflowState, Data.Entities.WorkflowState>
+    public class WorkflowStateConverter : AbstractModelEntityConverter, IModelEntityConverter<WorkflowState, Data.Entities.WorkflowState>
     {
+        private WorkflowConverter _workflowConverter;
+        private UserConverter _userConverter;
+
+        public WorkflowStateConverter(
+            DBContext dBContext,
+            WorkflowConverter workflowConverter,
+            UserConverter userConverter) : base(dBContext)
+        {
+            _workflowConverter = workflowConverter;
+            _userConverter = userConverter;
+        }
+
         public bool CanConvert(Type model, Type entity)
         {
             return model == typeof(WorkflowState) && entity == typeof(Data.Entities.WorkflowState);
@@ -10,16 +25,33 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public Data.Entities.WorkflowState ConvertToEntity(WorkflowState model)
         {
-            var entity = new Data.Entities.WorkflowState(model.Title);
+            Data.Entities.WorkflowState? entity = null;
+
+            if (model.ID > 0)
+            {
+                entity = _DBContext.WorkflowState.Find(model.ID);
+                if (entity == null)
+                {
+                    throw new EntityNotFoundException(
+                        nameof(Data.Entities.WorkflowState),
+                        model.ID.ToString()
+                    );
+                }
+
+                entity.Title = model.Title;
+            }
+            else
+            {
+                entity = new Data.Entities.WorkflowState(model.Title);
+            }
 
             if (model.Workflow != null)
             {
-                entity.Workflow = new WorkflowConverter()
-                    .ConvertToEntity(model.Workflow);
+                entity.Workflow = _workflowConverter.ConvertToEntity(model.Workflow);
             }
 
             if (model.CreatedBy != null){
-                entity.CreatedBy = new UserConverter().ConvertToEntity(model.CreatedBy);
+                entity.CreatedBy = _userConverter.ConvertToEntity(model.CreatedBy);
             }
 
             return entity;
@@ -27,17 +59,19 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public WorkflowState ConvertToModel(Data.Entities.WorkflowState entity)
         {
-            var model = new WorkflowState(entity.Title);
+            var model = new WorkflowState(entity.Title)
+            {
+                ID = entity.ID
+            };
 
             if (entity.Workflow != null)
             {
-                model.Workflow = new WorkflowConverter()
-                    .ConvertToModel(entity.Workflow);
+                model.Workflow = _workflowConverter.ConvertToModel(entity.Workflow);
             }
 
             if (entity.CreatedBy != null)
             {
-                model.CreatedBy = new UserConverter().ConvertToModel(entity.CreatedBy);
+                model.CreatedBy = _userConverter.ConvertToModel(entity.CreatedBy);
             }
 
             return model;

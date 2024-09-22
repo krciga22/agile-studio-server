@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
         public ProjectRepositoryTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             ProjectDataProvider projectDataProvider) : base(dbContext, fixtures)
         {
             _DataProvider = projectDataProvider;

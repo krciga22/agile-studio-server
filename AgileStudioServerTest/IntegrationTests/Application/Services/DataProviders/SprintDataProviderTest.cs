@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
         public SprintDataProviderTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             SprintDataProvider sprintDataProvider) : base(dbContext, fixtures)
         {
             _DataProvider = sprintDataProvider;

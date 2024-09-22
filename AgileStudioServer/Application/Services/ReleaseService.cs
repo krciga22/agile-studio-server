@@ -46,7 +46,7 @@ namespace AgileStudioServer.Application.Services
         {
             Data.Entities.Release entity = _converter.ConvertToEntity(release);
 
-            _DBContext.Add(release);
+            _DBContext.Add(entity);
             _DBContext.SaveChanges();
 
             return _converter.ConvertToModel(entity);

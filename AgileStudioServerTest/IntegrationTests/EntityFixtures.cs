@@ -6,11 +6,11 @@ namespace AgileStudioServerTest.IntegrationTests
     /// <summary>
     /// Service to help create test data.
     /// </summary>
-    public class Fixtures
+    public class EntityFixtures
     {
         private readonly DBContext _DBContext;
 
-        public Fixtures(DBContext _dbContext)
+        public EntityFixtures(DBContext _dbContext)
         {
             _DBContext = _dbContext;
         }

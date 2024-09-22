@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
         public BacklogItemTypeDataProviderTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             BacklogItemTypeDataProvider backlogItemTypeDataProvider) : base(dbContext, fixtures)
         {
             _DataProvider = backlogItemTypeDataProvider;

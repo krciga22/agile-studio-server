@@ -13,7 +13,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
         public WorkflowStateControllerTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             WorkflowStateController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;

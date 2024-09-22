@@ -45,22 +45,6 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        public virtual List<Project> GetByUserId(int userId)
-        {
-            List<Data.Entities.Project> entities = _DBContext.Project.Where(project =>
-                project.CreatedBy != null && project.CreatedBy.ID == userId).ToList();
-
-            List<Project> models = new();
-            entities.ForEach(entity =>
-            {
-                models.Add(
-                    _converter.ConvertToModel(entity)
-                );
-            });
-
-            return models;
-        }
-
         public virtual Project? Get(int id)
         {
             Data.Entities.Project? entity = _DBContext.Project.Find(id);
@@ -75,7 +59,7 @@ namespace AgileStudioServer.Application.Services
         {
             Data.Entities.Project entity = _converter.ConvertToEntity(project);
 
-            _DBContext.Add(project);
+            _DBContext.Project.Add(entity);
             _DBContext.SaveChanges();
 
             return _converter.ConvertToModel(entity);
@@ -85,7 +69,7 @@ namespace AgileStudioServer.Application.Services
         {
             Data.Entities.Project entity = _converter.ConvertToEntity(project);
 
-            _DBContext.Update(entity);
+            _DBContext.Project.Update(entity);
             _DBContext.SaveChanges();
 
             return _converter.ConvertToModel(entity);
@@ -95,7 +79,7 @@ namespace AgileStudioServer.Application.Services
         {
             Data.Entities.Project entity = _converter.ConvertToEntity(project);
 
-            _DBContext.Remove(entity);
+            _DBContext.Project.Remove(entity);
             _DBContext.SaveChanges();
         }
     }

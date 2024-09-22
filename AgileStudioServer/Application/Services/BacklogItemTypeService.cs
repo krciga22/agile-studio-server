@@ -60,7 +60,7 @@ namespace AgileStudioServer.Application.Services
         {
             Data.Entities.BacklogItemType entity = _converter.ConvertToEntity(backlogItemType);
 
-            _DBContext.Add(backlogItemType);
+            _DBContext.Add(entity);
             _DBContext.SaveChanges();
 
             return _converter.ConvertToModel(entity);

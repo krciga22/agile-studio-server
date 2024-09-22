@@ -1,8 +1,36 @@
 ﻿
+using AgileStudioServer.Data;
+using AgileStudioServer.Data.Exceptions;
+using Microsoft.EntityFrameworkCore;
+
 namespace AgileStudioServer.Application.Models.ModelEntityConverters
 {
-    public class BacklogItemConverter : IModelEntityConverter<BacklogItem, Data.Entities.BacklogItem>
+    public class BacklogItemConverter : AbstractModelEntityConverter, IModelEntityConverter<BacklogItem, Data.Entities.BacklogItem>
     {
+        private ProjectConverter _projectConverter;
+        private SprintConverter _sprintConverter;
+        private ReleaseConverter _releaseConverter;
+        private BacklogItemTypeConverter _backlogItemTypeConverter;
+        private WorkflowStateConverter _workflowStateConverter;
+        private UserConverter _userConverter;
+
+        public BacklogItemConverter(
+            DBContext dBContext,
+            ProjectConverter projectConverter,
+            SprintConverter sprintConverter,
+            ReleaseConverter releaseConverter,
+            BacklogItemTypeConverter backlogItemTypeConverter,
+            WorkflowStateConverter workflowStateConverter,
+            UserConverter userConverter) : base(dBContext)
+        {
+            _projectConverter = projectConverter;
+            _sprintConverter = sprintConverter;
+            _releaseConverter = releaseConverter;
+            _backlogItemTypeConverter = backlogItemTypeConverter;
+            _workflowStateConverter = workflowStateConverter;
+            _userConverter = userConverter;
+        }
+
         public bool CanConvert(Type model, Type entity)
         {
             return model == typeof(BacklogItem) && 
@@ -11,41 +39,56 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public Data.Entities.BacklogItem ConvertToEntity(BacklogItem model)
         {
-            var entity = new Data.Entities.BacklogItem(model.Title);
+            Data.Entities.BacklogItem? entity = null;
+
+            if (model.ID > 0)
+            {
+                entity = _DBContext.BacklogItem.Find(model.ID);
+                if (entity == null)
+                {
+                    throw new EntityNotFoundException(
+                        nameof(Data.Entities.BacklogItem), 
+                        model.ID.ToString()
+                    );
+                }
+
+                entity.Title = model.Title;
+            }
+            else
+            {
+                entity = new Data.Entities.BacklogItem(model.Title);
+            }
 
             if (model.Project != null)
             {
-                entity.Project = new ProjectConverter()
-                    .ConvertToEntity(model.Project);
+                entity.Project = _projectConverter.ConvertToEntity(model.Project);
             }
 
             if (model.Sprint != null)
             {
-                entity.Sprint = new SprintConverter()
-                    .ConvertToEntity(model.Sprint);
+                entity.Sprint = _sprintConverter.ConvertToEntity(model.Sprint);
             }
 
             if (model.Release != null)
             {
-                entity.Release = new ReleaseConverter()
-                    .ConvertToEntity(model.Release);
+                entity.Release = _releaseConverter.ConvertToEntity(model.Release);
             }
 
             if (model.BacklogItemType != null)
             {
-                entity.BacklogItemType = new BacklogItemTypeConverter()
+                entity.BacklogItemType = _backlogItemTypeConverter
                     .ConvertToEntity(model.BacklogItemType);
             }
 
             if (model.WorkflowState != null)
             {
-                entity.WorkflowState = new WorkflowStateConverter()
+                entity.WorkflowState = _workflowStateConverter
                     .ConvertToEntity(model.WorkflowState);
             }
 
             if (model.CreatedBy != null)
             {
-                entity.CreatedBy = new UserConverter().ConvertToEntity(model.CreatedBy);
+                entity.CreatedBy = _userConverter.ConvertToEntity(model.CreatedBy);
             }
 
             return entity;
@@ -53,41 +96,41 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
 
         public BacklogItem ConvertToModel(Data.Entities.BacklogItem entity)
         {
-            var model = new BacklogItem(entity.Title);
+            var model = new BacklogItem(entity.Title)
+            {
+                ID = entity.ID
+            };
 
             if (entity.Project != null)
             {
-                model.Project = new ProjectConverter()
-                    .ConvertToModel(entity.Project);
+                model.Project = _projectConverter.ConvertToModel(entity.Project);
             }
 
             if (entity.Sprint != null)
             {
-                model.Sprint = new SprintConverter()
-                    .ConvertToModel(entity.Sprint);
+                model.Sprint = _sprintConverter.ConvertToModel(entity.Sprint);
             }
 
             if (entity.Release != null)
             {
-                model.Release = new ReleaseConverter()
-                    .ConvertToModel(entity.Release);
+                model.Release = _releaseConverter.ConvertToModel(entity.Release);
             }
 
             if (entity.BacklogItemType != null)
             {
-                model.BacklogItemType = new BacklogItemTypeConverter()
+                model.BacklogItemType = _backlogItemTypeConverter
                     .ConvertToModel(entity.BacklogItemType);
             }
 
             if (entity.WorkflowState != null)
             {
-                model.WorkflowState = new WorkflowStateConverter()
+                model.WorkflowState = _workflowStateConverter
                     .ConvertToModel(entity.WorkflowState);
             }
 
             if (entity.CreatedBy != null)
             {
-                model.CreatedBy = new UserConverter().ConvertToModel(entity.CreatedBy);
+                model.CreatedBy = _userConverter.ConvertToModel(entity.CreatedBy);
             }
 
             return model;

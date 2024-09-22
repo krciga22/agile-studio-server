@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
         public SprintControllerTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             SprintController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;

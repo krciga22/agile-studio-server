@@ -12,7 +12,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
         public BacklogItemControllerTest(
             DBContext dbContext,
-            Fixtures fixtures,
+            EntityFixtures fixtures,
             BacklogItemController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;

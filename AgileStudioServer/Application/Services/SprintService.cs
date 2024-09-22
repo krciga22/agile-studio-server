@@ -48,7 +48,7 @@ namespace AgileStudioServer.Application.Services
 
             entity.SprintNumber = GetNextSprintNumber();
 
-            _DBContext.Add(sprint);
+            _DBContext.Add(entity);
             _DBContext.SaveChanges();
 
             return _converter.ConvertToModel(entity);
