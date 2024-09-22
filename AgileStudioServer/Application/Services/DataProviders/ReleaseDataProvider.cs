@@ -2,6 +2,7 @@
 using AgileStudioServer.API.Dtos;
 using AgileStudioServer.Data;
 using AgileStudioServer.Data.Entities;
+using AgileStudioServer.Data.Exceptions;
 using AgileStudioServer.Exceptions;
 
 namespace AgileStudioServer.Application.Services.DataProviders

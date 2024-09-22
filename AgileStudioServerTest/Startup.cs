@@ -1,6 +1,7 @@
 ﻿using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
+using AgileStudioServer.Data.Repositories;
 using AgileStudioServerTest.IntegrationTests;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ namespace AgileStudioServerTest
             services.AddScoped<SprintDataProvider>();
             services.AddScoped<WorkflowDataProvider>();
             services.AddScoped<WorkflowStateDataProvider>();
+
+            services.AddScoped<ProjectRepository>();
 
             services.AddScoped<Fixtures>();
         }

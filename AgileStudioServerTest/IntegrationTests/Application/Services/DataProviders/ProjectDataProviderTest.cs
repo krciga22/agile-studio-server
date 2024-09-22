@@ -6,11 +6,11 @@ using AgileStudioServer.Data;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProviders
 {
-    public class ProjectDataProviderTest : AbstractDataProviderTest
+    public class ProjectRepositoryTest : AbstractDataProviderTest
     {
         private readonly ProjectDataProvider _DataProvider;
 
-        public ProjectDataProviderTest(
+        public ProjectRepositoryTest(
             DBContext dbContext,
             Fixtures fixtures,
             ProjectDataProvider projectDataProvider) : base(dbContext, fixtures)
