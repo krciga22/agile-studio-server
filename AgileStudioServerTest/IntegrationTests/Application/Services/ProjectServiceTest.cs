@@ -1,6 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
-using AgileStudioServer.API.ApiResources;
-using AgileStudioServer.Data;
+﻿using AgileStudioServer.Data;
 using AgileStudioServer.Application.Models;
 using AgileStudioServer.Application.Services;
 
@@ -26,8 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
 
             project = _projectService.Create(project);
 
-            Assert.IsType<Project>(project);
-            Assert.True(project.ID >= 0);
+            Assert.NotNull(project);
+            Assert.True(project.ID > 0);
         }
 
         [Fact]

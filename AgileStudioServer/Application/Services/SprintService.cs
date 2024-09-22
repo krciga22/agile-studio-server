@@ -72,7 +72,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private int GetNextSprintNumber()
+        public int GetNextSprintNumber()
         {
             return GetLastSprintNumber() + 1;
         }

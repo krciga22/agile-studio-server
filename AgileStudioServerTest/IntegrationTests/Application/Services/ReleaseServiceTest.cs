@@ -26,8 +26,8 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
 
             release = _releaseService.Create(release);
 
-            Assert.IsType<Release>(release);
-            Assert.True(release.ID >= 0);
+            Assert.NotNull(release);
+            Assert.True(release.ID > 0);
         }
 
         [Fact]
