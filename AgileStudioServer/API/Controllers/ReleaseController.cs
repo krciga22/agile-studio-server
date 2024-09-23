@@ -23,7 +23,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetRelease")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ReleaseApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ReleaseDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -38,7 +38,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateRelease")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(ReleaseApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ReleaseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(ReleasePostDto releasePostDto)
         {
@@ -59,7 +59,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateRelease")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(ReleaseApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ReleaseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ReleasePatchDto releasePatchDto)

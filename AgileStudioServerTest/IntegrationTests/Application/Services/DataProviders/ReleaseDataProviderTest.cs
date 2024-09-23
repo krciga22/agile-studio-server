@@ -25,7 +25,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var releaseApiResource = _DataProvider.Create(releasePostDto);
 
-            Assert.IsType<ReleaseApiResource>(releaseApiResource);
+            Assert.IsType<ReleaseDto>(releaseApiResource);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var releaseApiResource = _DataProvider.Get(release.ID);
 
-            Assert.IsType<ReleaseApiResource>(releaseApiResource);
+            Assert.IsType<ReleaseDto>(releaseApiResource);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
                 _Fixtures.CreateRelease("v1.0.1", project)
             };
 
-            List<ReleaseApiResource> releaseApiResources = _DataProvider.ListForProjectId(project.ID);
+            List<ReleaseDto> releaseApiResources = _DataProvider.ListForProjectId(project.ID);
 
             Assert.Equal(releases.Count, releaseApiResources.Count);
         }
@@ -62,7 +62,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var releaseApiResource = _DataProvider.Update(release.ID, releasePatchDto);
 
-            Assert.IsType<ReleaseApiResource>(releaseApiResource);
+            Assert.IsType<ReleaseDto>(releaseApiResource);
             Assert.Equal(releasePatchDto.Title, releaseApiResource.Title);
         }
 

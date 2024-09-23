@@ -26,14 +26,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                 _Fixtures.CreateWorkflow("Test Workflow 2")
             };
 
-            List<WorkflowApiResource>? apiResources = null;
+            List<WorkflowDto>? apiResources = null;
             IActionResult result = _Controller.Get();
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<WorkflowApiResource>;
+                apiResources = okResult.Value as List<WorkflowDto>;
             }
 
-            Assert.IsType<List<WorkflowApiResource>>(apiResources);
+            Assert.IsType<List<WorkflowDto>>(apiResources);
             Assert.Equal(workflows.Count, apiResources.Count);
         }
 
@@ -42,14 +42,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var workflow = _Fixtures.CreateWorkflow();
 
-            WorkflowApiResource? apiResource = null;
+            WorkflowDto? apiResource = null;
             IActionResult result = _Controller.Get(workflow.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResource = okResult.Value as WorkflowApiResource;
+                apiResource = okResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
             Assert.Equal(workflow.ID, apiResource.ID);
         }
 
@@ -75,14 +75,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     workflow: workflow)
             };
 
-            List<WorkflowStateApiResource>? apiResources = null;
+            List<WorkflowStateDto>? apiResources = null;
             IActionResult result = _Controller.GetWorkflowStatesForWorkflow(workflow.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<WorkflowStateApiResource>;
+                apiResources = okResult.Value as List<WorkflowStateDto>;
             }
 
-            Assert.IsType<List<WorkflowStateApiResource>>(apiResources);
+            Assert.IsType<List<WorkflowStateDto>>(apiResources);
             Assert.Equal(workflowStates.Count, apiResources.Count);
         }
 
@@ -91,14 +91,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var workflowPostDto = new WorkflowPostDto("Test Workflow");
 
-            WorkflowApiResource? apiResource = null;
+            WorkflowDto? apiResource = null;
             IActionResult result = _Controller.Post(workflowPostDto);
             if (result is CreatedResult createdResult)
             {
-                apiResource = createdResult.Value as WorkflowApiResource;
+                apiResource = createdResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
             Assert.Equal(workflowPostDto.Title, apiResource.Title);
         }
 
@@ -110,13 +110,13 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
             var workflowPatchDto = new WorkflowPatchDto(title);
 
             IActionResult result = _Controller.Patch(workflow.ID, workflowPatchDto);
-            WorkflowApiResource? apiResource = null;
+            WorkflowDto? apiResource = null;
             if (result is OkObjectResult okObjectResult)
             {
-                apiResource = okObjectResult.Value as WorkflowApiResource;
+                apiResource = okObjectResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
             Assert.Equal(workflowPatchDto.Title, apiResource.Title);
         }
 

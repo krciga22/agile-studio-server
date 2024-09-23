@@ -24,7 +24,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Create(workflowPostDto);
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Get(workflow.ID);
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
                 _Fixtures.CreateWorkflow("Test Workflow 2")
             };
 
-            List<WorkflowApiResource> apiResources = _DataProvider.List();
+            List<WorkflowDto> apiResources = _DataProvider.List();
 
             Assert.Equal(workflows.Count, apiResources.Count);
         }
@@ -60,7 +60,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Update(workflow.ID, workflowPatchDto);
 
-            Assert.IsType<WorkflowApiResource>(apiResource);
+            Assert.IsType<WorkflowDto>(apiResource);
             Assert.Equal(workflowPatchDto.Title, apiResource.Title);
         }
 

@@ -15,24 +15,24 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<ReleaseApiResource> ListForProjectId(int projectId)
+        public virtual List<ReleaseDto> ListForProjectId(int projectId)
         {
             List<Release> releases = _DBContext.Release.Where(release => release.Project.ID == projectId).ToList();
 
-            List<ReleaseApiResource> releaseApiResources = new();
+            List<ReleaseDto> releaseApiResources = new();
             releases.ForEach(release =>
             {
                 LoadReferences(release);
 
                 releaseApiResources.Add(
-                    new ReleaseApiResource(release)
+                    new ReleaseDto(release)
                 );
             });
 
             return releaseApiResources;
         }
 
-        public virtual ReleaseApiResource? Get(int id)
+        public virtual ReleaseDto? Get(int id)
         {
             Release? release = _DBContext.Release.Find(id);
             if (release is null)
@@ -42,10 +42,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(release);
 
-            return new ReleaseApiResource(release);
+            return new ReleaseDto(release);
         }
 
-        public virtual ReleaseApiResource Create(ReleasePostDto releasePostDto)
+        public virtual ReleaseDto Create(ReleasePostDto releasePostDto)
         {
             var project = _DBContext.Project.Find(releasePostDto.ProjectId) ??
                 throw new EntityNotFoundException(nameof(Project), releasePostDto.ProjectId.ToString());
@@ -61,10 +61,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext.Add(release);
             _DBContext.SaveChanges();
 
-            return new ReleaseApiResource(release);
+            return new ReleaseDto(release);
         }
 
-        public virtual ReleaseApiResource Update(int id, ReleasePatchDto releasePatchDto)
+        public virtual ReleaseDto Update(int id, ReleasePatchDto releasePatchDto)
         {
             var release = _DBContext.Release.Find(id) ??
                 throw new EntityNotFoundException(nameof(Release), id.ToString());
@@ -77,7 +77,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(release);
 
-            return new ReleaseApiResource(release);
+            return new ReleaseDto(release);
         }
 
         public virtual void Delete(int id)

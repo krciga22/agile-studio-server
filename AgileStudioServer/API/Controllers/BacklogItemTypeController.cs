@@ -20,7 +20,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetBacklogItemType")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(BacklogItemTypeApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BacklogItemTypeDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -35,7 +35,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateBacklogItemType")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(BacklogItemTypeApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BacklogItemTypeDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(BacklogItemTypePostDto dto)
         {
@@ -53,7 +53,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateBacklogItemType")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(BacklogItemTypeApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BacklogItemTypeDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, BacklogItemTypePatchDto dto)

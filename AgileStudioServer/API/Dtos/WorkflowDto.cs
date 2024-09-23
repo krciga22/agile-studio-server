@@ -2,7 +2,7 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class WorkflowApiResource
+    public class WorkflowDto
     {
         public int ID { get; set; }
 
@@ -12,15 +12,15 @@ namespace AgileStudioServer.API.Dtos
 
         public DateTime CreatedOn { get; set; }
 
-        public UserSubResource? CreatedBy { get; set; }
+        public UserSummaryDto? CreatedBy { get; set; }
 
-        public WorkflowApiResource(Workflow workflow)
+        public WorkflowDto(Workflow workflow)
         {
             ID = workflow.ID;
             Title = workflow.Title;
             Description = workflow.Description;
             CreatedOn = workflow.CreatedOn;
-            CreatedBy = workflow.CreatedBy is null ? null : new UserSubResource(workflow.CreatedBy);
+            CreatedBy = workflow.CreatedBy is null ? null : new UserSummaryDto(workflow.CreatedBy);
         }
     }
 }

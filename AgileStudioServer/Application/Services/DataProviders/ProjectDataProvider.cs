@@ -15,24 +15,24 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<ProjectApiResource> List()
+        public virtual List<ProjectDto> List()
         {
             List<Project> projects = _DBContext.Project.ToList();
 
-            List<ProjectApiResource> projectApiResources = new();
+            List<ProjectDto> projectApiResources = new();
             projects.ForEach(project =>
             {
                 LoadReferences(project);
 
                 projectApiResources.Add(
-                    new ProjectApiResource(project)
+                    new ProjectDto(project)
                 );
             });
 
             return projectApiResources;
         }
 
-        public virtual ProjectApiResource? Get(int id)
+        public virtual ProjectDto? Get(int id)
         {
             Project? project = _DBContext.Project.Find(id);
             if (project is null)
@@ -42,10 +42,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(project);
 
-            return new ProjectApiResource(project);
+            return new ProjectDto(project);
         }
 
-        public virtual ProjectApiResource Create(ProjectPostDto projectPostDto)
+        public virtual ProjectDto Create(ProjectPostDto projectPostDto)
         {
             var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(projectPostDto.BacklogItemTypeSchemaId) ??
                 throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), projectPostDto.BacklogItemTypeSchemaId.ToString());
@@ -59,10 +59,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext.Add(project);
             _DBContext.SaveChanges();
 
-            return new ProjectApiResource(project);
+            return new ProjectDto(project);
         }
 
-        public virtual ProjectApiResource Update(int id, ProjectPatchDto projectPatchDto)
+        public virtual ProjectDto Update(int id, ProjectPatchDto projectPatchDto)
         {
             var project = _DBContext.Project.Find(id) ??
                 throw new EntityNotFoundException(nameof(Project), id.ToString());
@@ -73,7 +73,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(project);
 
-            return new ProjectApiResource(project);
+            return new ProjectDto(project);
         }
 
         public virtual void Delete(int id)

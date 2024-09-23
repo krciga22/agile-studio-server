@@ -15,7 +15,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource Create(BacklogItemTypeSchemaPostDto dto)
+        public virtual BacklogItemTypeSchemaDto Create(BacklogItemTypeSchemaPostDto dto)
         {
             var backlogItemTypeSchema = new BacklogItemTypeSchema(dto.Title)
             {
@@ -25,12 +25,12 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext.Add(backlogItemTypeSchema);
             _DBContext.SaveChanges();
 
-            return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
+            return new BacklogItemTypeSchemaDto(backlogItemTypeSchema);
         }
 
-        public virtual List<BacklogItemTypeSchemaApiResource> List()
+        public virtual List<BacklogItemTypeSchemaDto> List()
         {
-            List<BacklogItemTypeSchemaApiResource> apiResources = new();
+            List<BacklogItemTypeSchemaDto> apiResources = new();
 
             List<BacklogItemTypeSchema> backlogItemTypeSchemas = _DBContext.BacklogItemTypeSchema.ToList();
             backlogItemTypeSchemas.ForEach(backlogItemTypeSchema =>
@@ -38,14 +38,14 @@ namespace AgileStudioServer.Application.Services.DataProviders
                 LoadReferences(backlogItemTypeSchema);
 
                 apiResources.Add(
-                    new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema)
+                    new BacklogItemTypeSchemaDto(backlogItemTypeSchema)
                 );
             });
 
             return apiResources;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource? Get(int id)
+        public virtual BacklogItemTypeSchemaDto? Get(int id)
         {
             BacklogItemTypeSchema? backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id);
             if (backlogItemTypeSchema is null)
@@ -55,10 +55,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(backlogItemTypeSchema);
 
-            return backlogItemTypeSchema != null ? new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema) : null;
+            return backlogItemTypeSchema != null ? new BacklogItemTypeSchemaDto(backlogItemTypeSchema) : null;
         }
 
-        public virtual BacklogItemTypeSchemaApiResource Update(int id, BacklogItemTypeSchemaPatchDto dto)
+        public virtual BacklogItemTypeSchemaDto Update(int id, BacklogItemTypeSchemaPatchDto dto)
         {
             var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(id) ??
                 throw new EntityNotFoundException(nameof(BacklogItemTypeSchema), id.ToString());
@@ -69,7 +69,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(backlogItemTypeSchema);
 
-            return new BacklogItemTypeSchemaApiResource(backlogItemTypeSchema);
+            return new BacklogItemTypeSchemaDto(backlogItemTypeSchema);
         }
 
         public virtual void Delete(int id)

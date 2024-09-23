@@ -2,16 +2,16 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class WorkflowSubResource
+    public class ReleaseSummaryDto
     {
         public int ID { get; set; }
 
         public string Title { get; set; }
 
-        public WorkflowSubResource(Workflow workflow)
+        public ReleaseSummaryDto(Release release)
         {
-            ID = workflow.ID;
-            Title = workflow.Title;
+            ID = release.ID;
+            Title = release.Title;
         }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class BacklogItemTypeSchemaSubResource
+    public class BacklogItemTypeSchemaSummaryDto
     {
         public int ID { get; set; }
 
         public string Title { get; set; }
 
-        public BacklogItemTypeSchemaSubResource(BacklogItemTypeSchema backlogItemTypeSchema)
+        public BacklogItemTypeSchemaSummaryDto(BacklogItemTypeSchema backlogItemTypeSchema)
         {
             ID = backlogItemTypeSchema.ID;
             Title = backlogItemTypeSchema.Title;

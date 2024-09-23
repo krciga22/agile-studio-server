@@ -15,24 +15,24 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<SprintApiResource> ListForProjectId(int projectId)
+        public virtual List<SprintDto> ListForProjectId(int projectId)
         {
             List<Sprint> sprints = _DBContext.Sprint.Where(sprint => sprint.Project.ID == projectId).ToList();
 
-            List<SprintApiResource> sprintApiResources = new();
+            List<SprintDto> sprintApiResources = new();
             sprints.ForEach(sprint =>
             {
                 LoadReferences(sprint);
 
                 sprintApiResources.Add(
-                    new SprintApiResource(sprint)
+                    new SprintDto(sprint)
                 );
             });
 
             return sprintApiResources;
         }
 
-        public virtual SprintApiResource? Get(int id)
+        public virtual SprintDto? Get(int id)
         {
             Sprint? sprint = _DBContext.Sprint.Find(id);
             if (sprint is null)
@@ -42,10 +42,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(sprint);
 
-            return new SprintApiResource(sprint);
+            return new SprintDto(sprint);
         }
 
-        public virtual SprintApiResource Create(SprintPostDto sprintPostDto)
+        public virtual SprintDto Create(SprintPostDto sprintPostDto)
         {
             var project = _DBContext.Project.Find(sprintPostDto.ProjectId) ??
                 throw new EntityNotFoundException(nameof(Project), sprintPostDto.ProjectId.ToString());
@@ -63,10 +63,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext.Add(sprint);
             _DBContext.SaveChanges();
 
-            return new SprintApiResource(sprint);
+            return new SprintDto(sprint);
         }
 
-        public virtual SprintApiResource Update(int id, SprintPatchDto sprintPatchDto)
+        public virtual SprintDto Update(int id, SprintPatchDto sprintPatchDto)
         {
             var sprint = _DBContext.Sprint.Find(id) ??
                 throw new EntityNotFoundException(nameof(Sprint), id.ToString());
@@ -78,7 +78,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(sprint);
 
-            return new SprintApiResource(sprint);
+            return new SprintDto(sprint);
         }
 
         public virtual void Delete(int id)

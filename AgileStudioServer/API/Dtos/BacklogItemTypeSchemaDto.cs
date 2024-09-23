@@ -2,7 +2,7 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class BacklogItemTypeSchemaApiResource
+    public class BacklogItemTypeSchemaDto
     {
         public int ID { get; set; }
 
@@ -12,15 +12,15 @@ namespace AgileStudioServer.API.Dtos
 
         public DateTime CreatedOn { get; set; }
 
-        public UserSubResource? CreatedBy { get; set; }
+        public UserSummaryDto? CreatedBy { get; set; }
 
-        public BacklogItemTypeSchemaApiResource(BacklogItemTypeSchema backlogItemTypeSchema)
+        public BacklogItemTypeSchemaDto(BacklogItemTypeSchema backlogItemTypeSchema)
         {
             ID = backlogItemTypeSchema.ID;
             Title = backlogItemTypeSchema.Title;
             Description = backlogItemTypeSchema.Description;
             CreatedOn = backlogItemTypeSchema.CreatedOn;
-            CreatedBy = backlogItemTypeSchema.CreatedBy is null ? null : new UserSubResource(backlogItemTypeSchema.CreatedBy);
+            CreatedBy = backlogItemTypeSchema.CreatedBy is null ? null : new UserSummaryDto(backlogItemTypeSchema.CreatedBy);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace AgileStudioServer.API.Controllers
         }
 
         [HttpGet(Name = "GetProjects")]
-        [ProducesResponseType(typeof(List<ProjectApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ProjectDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
             return Ok(_DataProvider.List());
@@ -40,7 +40,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetProject")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProjectDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -55,7 +55,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}/BacklogItems", Name = "GetProjectBacklogItems")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<BacklogItemApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<BacklogItemDto>), StatusCodes.Status200OK)]
         public IActionResult GetBacklogItemsForProject(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -70,7 +70,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}/Sprints", Name = "GetProjectSprints")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<SprintApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<SprintDto>), StatusCodes.Status200OK)]
         public IActionResult GetSprintsForProject(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -85,7 +85,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}/Releases", Name = "GetProjectReleases")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<ReleaseApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ReleaseDto>), StatusCodes.Status200OK)]
         public IActionResult GetReleasesForProject(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -100,7 +100,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateProject")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProjectDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(ProjectPostDto projectPostDto)
         {
@@ -117,7 +117,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateProject")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(ProjectApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProjectDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ProjectPatchDto projectPatchDto)

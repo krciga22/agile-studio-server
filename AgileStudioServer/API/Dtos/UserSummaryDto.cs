@@ -2,7 +2,7 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class UserSubResource
+    public class UserSummaryDto
     {
         public int ID { get; set; }
 
@@ -10,7 +10,7 @@ namespace AgileStudioServer.API.Dtos
 
         public string LastName { get; set; }
 
-        public UserSubResource(User user)
+        public UserSummaryDto(User user)
         {
             ID = user.ID;
             FirstName = user.FirstName;

@@ -22,14 +22,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var sprint = _Fixtures.CreateSprint();
 
-            SprintApiResource? sprintApiResource = null;
+            SprintDto? sprintApiResource = null;
             IActionResult result = _Controller.Get(sprint.ID);
             if (result is OkObjectResult okResult)
             {
-                sprintApiResource = okResult.Value as SprintApiResource;
+                sprintApiResource = okResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
             Assert.Equal(sprint.ID, sprintApiResource.ID);
         }
 
@@ -48,14 +48,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
             var sprintPostDto = new SprintPostDto(project.ID);
             sprintPostDto.Description = "Test Sprint";
 
-            SprintApiResource? sprintApiResource = null;
+            SprintDto? sprintApiResource = null;
             IActionResult result = _Controller.Post(sprintPostDto);
             if (result is CreatedResult createdResult)
             {
-                sprintApiResource = createdResult.Value as SprintApiResource;
+                sprintApiResource = createdResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
             Assert.Equal(sprintPostDto.Description, sprintApiResource.Description);
         }
 
@@ -70,13 +70,13 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
             };
 
             IActionResult result = _Controller.Patch(sprint.ID, sprintPatchDto);
-            SprintApiResource? sprintApiResource = null;
+            SprintDto? sprintApiResource = null;
             if (result is OkObjectResult okObjectResult)
             {
-                sprintApiResource = okObjectResult.Value as SprintApiResource;
+                sprintApiResource = okObjectResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
             Assert.Equal(sprintPatchDto.Description, sprintApiResource.Description);
         }
 

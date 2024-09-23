@@ -2,16 +2,16 @@
 
 namespace AgileStudioServer.API.Dtos
 {
-    public class ReleaseSubResource
+    public class BacklogItemSummaryDto
     {
         public int ID { get; set; }
 
         public string Title { get; set; }
 
-        public ReleaseSubResource(Release release)
+        public BacklogItemSummaryDto(BacklogItem backlogItem)
         {
-            ID = release.ID;
-            Title = release.Title;
+            ID = backlogItem.ID;
+            Title = backlogItem.Title;
         }
     }
 }

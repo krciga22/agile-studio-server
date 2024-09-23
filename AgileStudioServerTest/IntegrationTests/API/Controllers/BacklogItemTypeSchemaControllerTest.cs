@@ -26,14 +26,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                 _Fixtures.CreateBacklogItemTypeSchema("Test Backlog Item Type Schema 2")
             };
 
-            List<BacklogItemTypeSchemaApiResource>? apiResources = null;
+            List<BacklogItemTypeSchemaDto>? apiResources = null;
             IActionResult result = _Controller.List();
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<BacklogItemTypeSchemaApiResource>;
+                apiResources = okResult.Value as List<BacklogItemTypeSchemaDto>;
             }
 
-            Assert.IsType<List<BacklogItemTypeSchemaApiResource>>(apiResources);
+            Assert.IsType<List<BacklogItemTypeSchemaDto>>(apiResources);
             Assert.Equal(backlogItemTypeSchemas.Count, apiResources.Count);
         }
 
@@ -51,14 +51,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     backlogItemTypeSchema: backlogItemTypeSchema)
             };
 
-            List<BacklogItemTypeSubResource>? apiResources = null;
+            List<BacklogItemTypeSummaryDto>? apiResources = null;
             IActionResult result = _Controller.ListBacklogItemTypes(backlogItemTypeSchema.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<BacklogItemTypeSubResource>;
+                apiResources = okResult.Value as List<BacklogItemTypeSummaryDto>;
             }
 
-            Assert.IsType<List<BacklogItemTypeSubResource>>(apiResources);
+            Assert.IsType<List<BacklogItemTypeSummaryDto>>(apiResources);
             Assert.Equal(backlogItemTypes.Count, apiResources.Count);
         }
 
@@ -67,14 +67,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
 
-            BacklogItemTypeSchemaApiResource? apiResource = null;
+            BacklogItemTypeSchemaDto? apiResource = null;
             IActionResult result = _Controller.Get(backlogItemTypeSchema.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResource = okResult.Value as BacklogItemTypeSchemaApiResource;
+                apiResource = okResult.Value as BacklogItemTypeSchemaDto;
             }
 
-            Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
+            Assert.IsType<BacklogItemTypeSchemaDto>(apiResource);
             Assert.Equal(backlogItemTypeSchema.ID, apiResource.ID);
         }
 
@@ -83,14 +83,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var dto = new BacklogItemTypeSchemaPostDto("Test Backlog Item Type Schema");
 
-            BacklogItemTypeSchemaApiResource? apiResource = null;
+            BacklogItemTypeSchemaDto? apiResource = null;
             IActionResult result = _Controller.Post(dto);
             if (result is CreatedResult createdResult)
             {
-                apiResource = createdResult.Value as BacklogItemTypeSchemaApiResource;
+                apiResource = createdResult.Value as BacklogItemTypeSchemaDto;
             }
 
-            Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
+            Assert.IsType<BacklogItemTypeSchemaDto>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
         }
 
@@ -102,13 +102,13 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
             var dto = new BacklogItemTypeSchemaPatchDto(title);
 
             IActionResult result = _Controller.Patch(backlogItemTypeSchema.ID, dto);
-            BacklogItemTypeSchemaApiResource? apiResource = null;
+            BacklogItemTypeSchemaDto? apiResource = null;
             if (result is OkObjectResult okObjectResult)
             {
-                apiResource = okObjectResult.Value as BacklogItemTypeSchemaApiResource;
+                apiResource = okObjectResult.Value as BacklogItemTypeSchemaDto;
             }
 
-            Assert.IsType<BacklogItemTypeSchemaApiResource>(apiResource);
+            Assert.IsType<BacklogItemTypeSchemaDto>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
         }
 

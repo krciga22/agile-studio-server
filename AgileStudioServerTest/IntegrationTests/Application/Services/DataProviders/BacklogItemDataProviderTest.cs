@@ -29,7 +29,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Create(dto);
 
-            Assert.IsType<BacklogItemApiResource>(apiResource);
+            Assert.IsType<BacklogItemDto>(apiResource);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Get(backlogItem.ID);
 
-            Assert.IsType<BacklogItemApiResource>(apiResource);
+            Assert.IsType<BacklogItemDto>(apiResource);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResources = _DataProvider.ListForProjectId(project.ID);
 
-            Assert.IsType<List<BacklogItemApiResource>>(apiResources);
+            Assert.IsType<List<BacklogItemDto>>(apiResources);
             Assert.Equal(backlogItems.Count, apiResources.Count);
         }
 
@@ -75,7 +75,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var apiResource = _DataProvider.Update(backlogItem.ID, dto);
 
-            Assert.IsType<BacklogItemApiResource>(apiResource);
+            Assert.IsType<BacklogItemDto>(apiResource);
             Assert.Equal(dto.Title, apiResource.Title);
         }
 

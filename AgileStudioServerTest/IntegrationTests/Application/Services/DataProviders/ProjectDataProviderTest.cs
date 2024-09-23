@@ -25,7 +25,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var projectApiResource = _DataProvider.Create(projectPostDto);
 
-            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.IsType<ProjectDto>(projectApiResource);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var projectApiResource = _DataProvider.Get(project.ID);
 
-            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.IsType<ProjectDto>(projectApiResource);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
                 _Fixtures.CreateProject("Test Project 2")
             };
 
-            List<ProjectApiResource> projectApiResources = _DataProvider.List();
+            List<ProjectDto> projectApiResources = _DataProvider.List();
 
             Assert.Equal(projects.Count, projectApiResources.Count);
         }
@@ -61,7 +61,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var projectApiResource = _DataProvider.Update(project.ID, projectPatchDto);
 
-            Assert.IsType<ProjectApiResource>(projectApiResource);
+            Assert.IsType<ProjectDto>(projectApiResource);
             Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
         }
 

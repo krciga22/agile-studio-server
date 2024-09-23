@@ -15,7 +15,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual BacklogItemApiResource Create(BacklogItemPostDto dto)
+        public virtual BacklogItemDto Create(BacklogItemPostDto dto)
         {
             Project project = _DBContext.Project.Find(dto.ProjectId) ??
                 throw new EntityNotFoundException(nameof(Project), dto.ProjectId.ToString());
@@ -55,12 +55,12 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(backlogItem);
 
-            return new BacklogItemApiResource(backlogItem);
+            return new BacklogItemDto(backlogItem);
         }
 
-        public virtual List<BacklogItemApiResource> List()
+        public virtual List<BacklogItemDto> List()
         {
-            List<BacklogItemApiResource> apiResources = new();
+            List<BacklogItemDto> apiResources = new();
 
             List<BacklogItem> backlogItems = _DBContext.BacklogItem.ToList();
             backlogItems.ForEach(backlogItem =>
@@ -68,16 +68,16 @@ namespace AgileStudioServer.Application.Services.DataProviders
                 LoadReferences(backlogItem);
 
                 apiResources.Add(
-                    new BacklogItemApiResource(backlogItem)
+                    new BacklogItemDto(backlogItem)
                 );
             });
 
             return apiResources;
         }
 
-        public virtual List<BacklogItemApiResource> ListForProjectId(int projectId)
+        public virtual List<BacklogItemDto> ListForProjectId(int projectId)
         {
-            List<BacklogItemApiResource> apiResources = new();
+            List<BacklogItemDto> apiResources = new();
 
             List<BacklogItem> backlogItems = _DBContext.BacklogItem.Where(x => x.Project.ID == projectId).ToList();
             backlogItems.ForEach(backlogItem =>
@@ -85,14 +85,14 @@ namespace AgileStudioServer.Application.Services.DataProviders
                 LoadReferences(backlogItem);
 
                 apiResources.Add(
-                    new BacklogItemApiResource(backlogItem)
+                    new BacklogItemDto(backlogItem)
                 );
             });
 
             return apiResources;
         }
 
-        public virtual BacklogItemApiResource? Get(int id)
+        public virtual BacklogItemDto? Get(int id)
         {
             BacklogItem? backlogItem = _DBContext.BacklogItem.Find(id);
             if (backlogItem is null)
@@ -102,10 +102,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(backlogItem);
 
-            return new BacklogItemApiResource(backlogItem);
+            return new BacklogItemDto(backlogItem);
         }
 
-        public virtual BacklogItemApiResource Update(int id, BacklogItemPatchDto dto)
+        public virtual BacklogItemDto Update(int id, BacklogItemPatchDto dto)
         {
             var backlogItem = _DBContext.BacklogItem.Find(id) ??
                 throw new EntityNotFoundException(nameof(BacklogItem), id.ToString());
@@ -136,7 +136,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(backlogItem);
 
-            return new BacklogItemApiResource(backlogItem);
+            return new BacklogItemDto(backlogItem);
         }
 
         public virtual void Delete(int id)

@@ -20,7 +20,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetWorkflowState")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(WorkflowStateApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(WorkflowStateDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -35,7 +35,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateWorkflowState")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(WorkflowStateApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(WorkflowStateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(WorkflowStatePostDto workflowStatePostDto)
         {
@@ -52,7 +52,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateWorkflowState")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(WorkflowStateApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(WorkflowStateDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, WorkflowStatePatchDto workflowStatePatchDto)

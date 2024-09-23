@@ -23,7 +23,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetSprint")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(SprintApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SprintDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -38,7 +38,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateSprint")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(SprintApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SprintDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(SprintPostDto sprintPostDto)
         {
@@ -59,7 +59,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateSprint")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(SprintApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SprintDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, SprintPatchDto sprintPatchDto)

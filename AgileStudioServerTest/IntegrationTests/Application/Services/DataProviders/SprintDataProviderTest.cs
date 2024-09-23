@@ -25,7 +25,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var sprintApiResource = _DataProvider.Create(sprintPostDto);
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var sprintApiResource = _DataProvider.Get(sprint.ID);
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
                 _Fixtures.CreateSprint(2, project)
             };
 
-            List<SprintApiResource> sprintApiResources = _DataProvider.ListForProjectId(project.ID);
+            List<SprintDto> sprintApiResources = _DataProvider.ListForProjectId(project.ID);
 
             Assert.Equal(sprints.Count, sprintApiResources.Count);
         }
@@ -65,7 +65,7 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services.DataProvid
 
             var sprintApiResource = _DataProvider.Update(sprint.ID, sprintPatchDto);
 
-            Assert.IsType<SprintApiResource>(sprintApiResource);
+            Assert.IsType<SprintDto>(sprintApiResource);
             Assert.Equal(sprintPatchDto.Description, sprintApiResource.Description);
         }
 

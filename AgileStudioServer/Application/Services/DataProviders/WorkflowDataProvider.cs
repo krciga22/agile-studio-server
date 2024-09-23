@@ -15,24 +15,24 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext = dbContext;
         }
 
-        public virtual List<WorkflowApiResource> List()
+        public virtual List<WorkflowDto> List()
         {
             List<Workflow> workflows = _DBContext.Workflow.ToList();
 
-            List<WorkflowApiResource> workflowApiResources = new();
+            List<WorkflowDto> workflowApiResources = new();
             workflows.ForEach(workflow =>
             {
                 LoadReferences(workflow);
 
                 workflowApiResources.Add(
-                    new WorkflowApiResource(workflow)
+                    new WorkflowDto(workflow)
                 );
             });
 
             return workflowApiResources;
         }
 
-        public virtual WorkflowApiResource? Get(int id)
+        public virtual WorkflowDto? Get(int id)
         {
             Workflow? workflow = _DBContext.Workflow.Find(id);
             if (workflow is null)
@@ -42,10 +42,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(workflow);
 
-            return new WorkflowApiResource(workflow);
+            return new WorkflowDto(workflow);
         }
 
-        public virtual WorkflowApiResource Create(WorkflowPostDto workflowPostDto)
+        public virtual WorkflowDto Create(WorkflowPostDto workflowPostDto)
         {
             var workflow = new Workflow(workflowPostDto.Title)
             {
@@ -55,10 +55,10 @@ namespace AgileStudioServer.Application.Services.DataProviders
             _DBContext.Add(workflow);
             _DBContext.SaveChanges();
 
-            return new WorkflowApiResource(workflow);
+            return new WorkflowDto(workflow);
         }
 
-        public virtual WorkflowApiResource Update(int id, WorkflowPatchDto workflowPatchDto)
+        public virtual WorkflowDto Update(int id, WorkflowPatchDto workflowPatchDto)
         {
             var workflow = _DBContext.Workflow.Find(id) ??
                 throw new EntityNotFoundException(nameof(Workflow), id.ToString());
@@ -69,7 +69,7 @@ namespace AgileStudioServer.Application.Services.DataProviders
 
             LoadReferences(workflow);
 
-            return new WorkflowApiResource(workflow);
+            return new WorkflowDto(workflow);
         }
 
         public virtual void Delete(int id)

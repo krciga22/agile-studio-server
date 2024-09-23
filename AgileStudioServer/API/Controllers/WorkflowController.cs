@@ -22,7 +22,7 @@ namespace AgileStudioServer.API.Controllers
         }
 
         [HttpGet(Name = "GetWorkflows")]
-        [ProducesResponseType(typeof(List<WorkflowApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<WorkflowDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
             return Ok(_DataProvider.List());
@@ -31,7 +31,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}", Name = "GetWorkflow")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(WorkflowApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(WorkflowDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -46,7 +46,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpGet("{id}/WorkflowStates", Name = "GetWorkflowWorkflowStates")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<WorkflowStateApiResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<WorkflowStateDto>), StatusCodes.Status200OK)]
         public IActionResult GetWorkflowStatesForWorkflow(int id)
         {
             var apiResource = _DataProvider.Get(id);
@@ -61,7 +61,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPost(Name = "CreateWorkflow")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(WorkflowApiResource), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(WorkflowDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public CreatedResult Post(WorkflowPostDto workflowPostDto)
         {
@@ -78,7 +78,7 @@ namespace AgileStudioServer.API.Controllers
         [HttpPatch("{id}", Name = "UpdateWorkflow")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(WorkflowApiResource), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(WorkflowDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, WorkflowPatchDto workflowPatchDto)
