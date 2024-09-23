@@ -1,4 +1,3 @@
-using AgileStudioServer.API.ApiResources;
 using AgileStudioServer.API.Dtos;
 using AgileStudioServer.Application.Services.DataProviders;
 using Microsoft.AspNetCore.Authorization;

@@ -1,7 +1,6 @@
 ﻿using AgileStudioServer.API.Controllers;
 using AgileStudioServer.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using AgileStudioServer.API.ApiResources;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServerTest.IntegrationTests.API.Controllers

@@ -1,5 +1,4 @@
 ﻿using AgileStudioServer.API.Dtos;
-using AgileStudioServer.API.ApiResources;
 using AgileStudioServer.Data.Entities;
 using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
