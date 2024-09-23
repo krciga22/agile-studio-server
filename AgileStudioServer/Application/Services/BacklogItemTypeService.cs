@@ -31,21 +31,6 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        public virtual List<BacklogItemType> GetByBacklogItemTypeId(int backlogItemTypeId)
-        {
-            List<Data.Entities.BacklogItemType> entities = _DBContext.BacklogItemType.Where(backlogItemType => 
-                backlogItemType.ID == backlogItemTypeId).ToList();
-
-            List<BacklogItemType> models = new();
-            entities.ForEach(entity => {
-                models.Add(
-                    _converter.ConvertToModel(entity)
-                );
-            });
-
-            return models;
-        }
-
         public virtual BacklogItemType? Get(int id)
         {
             Data.Entities.BacklogItemType? entity = _DBContext.BacklogItemType.Find(id);
