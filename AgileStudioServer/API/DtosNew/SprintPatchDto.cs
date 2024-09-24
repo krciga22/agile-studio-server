@@ -4,6 +4,9 @@ namespace AgileStudioServer.API.DtosNew
 {
     public class SprintPatchDto
     {
+        [Required]
+        public int ID;
+
         [StringLength(255)]
         public string? Description { get; set; }
 
@@ -12,5 +15,10 @@ namespace AgileStudioServer.API.DtosNew
 
         [DataType(DataType.DateTime)]
         public DateTime? EndDate { get; set; }
+
+        public SprintPatchDto(int id)
+        {
+            ID = id;
+        }
     }
 }

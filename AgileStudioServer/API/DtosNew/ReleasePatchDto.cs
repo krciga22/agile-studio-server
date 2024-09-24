@@ -5,6 +5,9 @@ namespace AgileStudioServer.API.DtosNew
     public class ReleasePatchDto
     {
         [Required]
+        public int ID;
+
+        [Required]
         [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
@@ -17,8 +20,9 @@ namespace AgileStudioServer.API.DtosNew
         [DataType(DataType.DateTime)]
         public DateTime? EndDate { get; set; }
 
-        public ReleasePatchDto(string title)
+        public ReleasePatchDto(int id, string title)
         {
+            ID = id;
             Title = title;
         }
     }
