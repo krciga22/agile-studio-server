@@ -1,5 +1,8 @@
-using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.API.DtosNew.DtoModelConverters;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,15 +13,23 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class SprintController : ControllerBase
     {
-        private readonly SprintDataProvider _DataProvider;
+        private SprintService _sprintService;
+        private SprintConverter _sprintConverter;
+        private SprintPostConverter _sprintPostConverter;
+        private SprintPatchConverter _sprintPatchConverter;
 
-        private readonly ProjectDataProvider _ProjectDataProvider;
-
-        public SprintController(SprintDataProvider sprintDataProvider, ProjectDataProvider projectDataProvider)
+        public SprintController(
+            SprintService sprintService,
+            SprintConverter sprintConverter,
+            SprintPostConverter sprintPostConverter,
+            SprintPatchConverter sprintPatchConverter)
         {
-            _DataProvider = sprintDataProvider;
-            _ProjectDataProvider = projectDataProvider;
+            _sprintService = sprintService;
+            _sprintConverter = sprintConverter;
+            _sprintPostConverter = sprintPostConverter;
+            _sprintPatchConverter = sprintPatchConverter;
         }
+
 
         [HttpGet("{id}", Name = "GetSprint")]
         [Produces("application/json")]
@@ -26,13 +37,13 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(SprintDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
+            var sprint = _sprintService.Get(id);
+            if (sprint == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            return Ok(_sprintConverter.ConvertToDto(sprint));
         }
 
         [HttpPost(Name = "CreateSprint")]
@@ -42,18 +53,24 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(SprintPostDto sprintPostDto)
         {
-            var apiResource = _DataProvider.Create(sprintPostDto);
-            if (apiResource is null)
+            Sprint sprint;
+            try
             {
+                sprint = _sprintPostConverter.ConvertToModel(sprintPostDto);
+                sprint = _sprintService.Create(sprint);
+            }
+            catch (Exception)
+            {
+                // todo log exception
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             var apiResourceUrl = "";
             if (Url != null)
             {
-                apiResourceUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? apiResourceUrl;
+                apiResourceUrl = Url.Action(nameof(Get), new { id = sprint.ID }) ?? apiResourceUrl;
             }
-            return Created(apiResourceUrl, apiResource);
+            return Created(apiResourceUrl, _sprintConverter.ConvertToDto(sprint));
         }
 
         [HttpPatch("{id}", Name = "UpdateSprint")]
@@ -64,15 +81,26 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, SprintPatchDto sprintPatchDto)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            Sprint sprint;
+            try
             {
-                return NotFound();
+                sprint = _sprintPatchConverter.ConvertToModel(sprintPatchDto);
+                sprint = _sprintService.Update(sprint);
+            }
+            catch (ModelNotFoundException e)
+            {
+                // todo log exception
+                return e.ModelClassName.Equals(nameof(Sprint)) ?
+                    NotFound() : 
+                    StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception)
+            {
+                // todo log exception
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            apiResource = _DataProvider.Update(id, sprintPatchDto);
-
-            return new OkObjectResult(apiResource);
+            return new OkObjectResult(_sprintConverter.ConvertToDto(sprint));
         }
 
         [HttpDelete("{id}", Name = "DeleteSprint")]
@@ -81,13 +109,21 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            try
             {
-                return NotFound();
-            }
+                Sprint? sprint = _sprintService.Get(id);
+                if (sprint == null)
+                {
+                    return NotFound();
+                }
 
-            _DataProvider.Delete(id);
+                _sprintService.Delete(sprint);
+            }
+            catch (Exception)
+            {
+                // todo log exception
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return new OkResult();
         }

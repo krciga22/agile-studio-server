@@ -45,6 +45,11 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
                 entity = new Data.Entities.Sprint(model.SprintNumber);
             }
 
+            entity.Description = model.Description;
+            entity.CreatedOn = model.CreatedOn;
+            entity.StartDate = model.StartDate;
+            entity.EndDate = model.EndDate;
+
             if (model.Project != null) {
                 entity.Project = _projectConverter.ConvertToEntity(model.Project);
             }
@@ -60,7 +65,11 @@ namespace AgileStudioServer.Application.Models.ModelEntityConverters
         {
             var model = new Sprint(entity.SprintNumber)
             {
-                ID = entity.ID
+                ID = entity.ID,
+                Description = entity.Description,
+                CreatedOn = entity.CreatedOn,
+                StartDate = entity.StartDate,
+                EndDate = entity.EndDate,
             };
 
             if (entity.Project != null)

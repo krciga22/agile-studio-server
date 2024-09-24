@@ -1,17 +1,17 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 {
-    public class SprintControllerTest : AbstractControllerTest
+    public class SprintControllerTest : AbstractControllerNewTest
     {
         private readonly SprintController _Controller;
 
         public SprintControllerTest(
             DBContext dbContext,
-            EntityFixtures fixtures,
+            ModelFixtures fixtures,
             SprintController controller) : base(dbContext, fixtures)
         {
             _Controller = controller;
@@ -63,8 +63,8 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var sprint = _Fixtures.CreateSprint();
-            var description = $"Test Sprint {sprint.SprintNumber} Updated";
-            var sprintPatchDto = new SprintPatchDto()
+            var description = $"Test Sprint {sprint.ID} Updated";
+            var sprintPatchDto = new SprintPatchDto(sprint.ID)
             {
                 Description = description
             };
