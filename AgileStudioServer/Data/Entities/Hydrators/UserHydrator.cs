@@ -3,7 +3,7 @@ using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators
 {
-    public class UserHydrator : AbstractEntityHydrator, IEntityHydrator<Application.Models.User, User>
+    public class UserHydrator : AbstractEntityHydrator
     {
         public UserHydrator(DBContext dBContext) : base(dBContext)
         {

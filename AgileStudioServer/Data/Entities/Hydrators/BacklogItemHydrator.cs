@@ -3,7 +3,7 @@ using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators
 {
-    public class BacklogItemHydrator : AbstractEntityHydrator, IEntityHydrator<Application.Models.BacklogItem, BacklogItem>
+    public class BacklogItemHydrator : AbstractEntityHydrator
     {
         private ProjectHydrator _projectHydrator;
         private SprintHydrator _sprintHydrator;
