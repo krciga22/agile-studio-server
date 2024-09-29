@@ -1,24 +1,21 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class ReleaseHydrator : AbstractModelHydrator
     {
-        private ReleaseService _releaseService;
-        private ProjectService _projectService;
+        private DBContext _DBContext;
         private ProjectHydrator _projectHydrator;
         private UserHydrator _userHydrator;
 
         public ReleaseHydrator(
-            ReleaseService releaseService,
-            ProjectService projectService,
+            DBContext dbContext,
             ProjectHydrator projectHydrator,
             UserHydrator userHydrator)
         {
-            _releaseService = releaseService;
-            _projectService = projectService;
+            _DBContext = dbContext;
             _projectHydrator = projectHydrator;
             _userHydrator = userHydrator;
         }
@@ -27,17 +24,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             if (model == null)
             {
-                if (entity.ID > 0)
-                {
-                    model = _releaseService.Get(entity.ID) ??
-                       throw new ModelNotFoundException(
-                           nameof(Release), entity.ID.ToString()
-                       );
-                }
-                else
-                {
-                    model = new Release(entity.Title);
-                }
+                model = new Release(entity.Title);
             }
 
             model.Title = entity.Title;
@@ -68,20 +55,23 @@ namespace AgileStudioServer.Application.Models.Hydrators
             model.StartDate = dto.StartDate;
             model.EndDate = dto.EndDate;
 
-            model.Project = _projectService.Get(dto.ProjectId) ??
-                throw new ModelNotFoundException(
-                    nameof(Project), dto.ProjectId.ToString()
-                );
+            Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
+                throw new ModelNotFoundException(nameof(Project), dto.ProjectId.ToString());
+
+            model.Project = _projectHydrator.Hydrate(projectEntity);
 
             return model;
         }
 
         public Release Hydrate(API.DtosNew.ReleasePatchDto dto, Release? model = null)
         {
-            model ??= _releaseService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(Release), dto.ID.ToString()
-                );
+            if (model == null)
+            {
+                Data.Entities.Release? releaseEntity = _DBContext.Release.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(Release), dto.ID.ToString());
+
+                model ??= Hydrate(releaseEntity);
+            }
 
             model.Title = dto.Title;
             model.Description = dto.Description;

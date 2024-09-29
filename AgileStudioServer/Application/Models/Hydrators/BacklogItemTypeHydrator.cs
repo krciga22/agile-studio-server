@@ -1,50 +1,31 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class BacklogItemTypeHydrator : AbstractModelHydrator
     {
-        private BacklogItemTypeService _backlogItemTypeService;
-        private BacklogItemTypeSchemaService _backlogItemTypeSchemaService;
+        private DBContext _DBContext;
         private BacklogItemTypeSchemaHydrator _backlogItemTypeSchemaHydrator;
         private UserHydrator _userHydrator;
-        private WorkflowService _workflowService;
         private WorkflowHydrator _workflowHydrator;
 
         public BacklogItemTypeHydrator(
-            BacklogItemTypeService backlogItemTypeService,
-            BacklogItemTypeSchemaService backlogItemTypeSchemaService,
+            DBContext dbContext,
             BacklogItemTypeSchemaHydrator backlogItemTypeSchemaHydrator,
             UserHydrator userHydrator,
-            WorkflowService workflowService,
             WorkflowHydrator workflowHydrator)
         {
-            _backlogItemTypeService = backlogItemTypeService;
-            _backlogItemTypeSchemaService = backlogItemTypeSchemaService;
+            _DBContext = dbContext;
             _backlogItemTypeSchemaHydrator = backlogItemTypeSchemaHydrator;
             _userHydrator = userHydrator;
-            _workflowService = workflowService;
             _workflowHydrator = workflowHydrator;
         }
 
         public BacklogItemType Hydrate(Data.Entities.BacklogItemType entity, BacklogItemType? model = null)
         {
-            if (model == null)
-            {
-                if (entity.ID > 0)
-                {
-                    model = _backlogItemTypeService.Get(entity.ID) ??
-                       throw new ModelNotFoundException(
-                           nameof(BacklogItemType), entity.ID.ToString()
-                       );
-                }
-                else
-                {
-                    model = new BacklogItemType(entity.Title);
-                }
-            }
+            model ??= new BacklogItemType(entity.Title);
 
             model.Title = entity.Title;
             model.Description = entity.Description;
@@ -75,27 +56,32 @@ namespace AgileStudioServer.Application.Models.Hydrators
             model.Title = dto.Title;
             model.Description = dto.Description;
 
-            model.BacklogItemTypeSchema = _backlogItemTypeSchemaService
-                .Get(dto.BacklogItemTypeSchemaId) ?? 
-                throw new ModelNotFoundException(
-                    nameof(BacklogItemTypeSchema), dto.BacklogItemTypeSchemaId.ToString()
-                );
+            Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity =
+                    _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
+                        throw new ModelNotFoundException(
+                            nameof(BacklogItemTypeSchema), 
+                            dto.BacklogItemTypeSchemaId.ToString()
+                        );
+            model.BacklogItemTypeSchema = _backlogItemTypeSchemaHydrator.Hydrate(backlogItemTypeSchemaEntity);
 
-            model.Workflow = _workflowService
-                .Get(dto.WorkflowId) ??
-                throw new ModelNotFoundException(
-                    nameof(Workflow), dto.WorkflowId.ToString()
-                );
+            Data.Entities.Workflow? workflowEntity =
+                    _DBContext.Workflow.Find(dto.WorkflowId) ??
+                        throw new ModelNotFoundException(nameof(Workflow), dto.WorkflowId.ToString());
+            model.Workflow = _workflowHydrator.Hydrate(workflowEntity);
 
             return model;
         }
 
         public BacklogItemType Hydrate(API.DtosNew.BacklogItemTypePatchDto dto, BacklogItemType? model = null)
         {
-            model ??= _backlogItemTypeService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(BacklogItemType), dto.ID.ToString()
-                );
+            if (model == null)
+            {
+                Data.Entities.BacklogItemType? backlogItemTypeEntity = 
+                    _DBContext.BacklogItemType.Find(dto.ID) ??
+                        throw new ModelNotFoundException(nameof(BacklogItemType), dto.ID.ToString());
+
+                model ??= Hydrate(backlogItemTypeEntity);
+            }
 
             model.Title = dto.Title;
             model.Description = dto.Description;

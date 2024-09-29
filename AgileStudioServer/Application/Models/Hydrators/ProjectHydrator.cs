@@ -1,50 +1,28 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class ProjectHydrator : AbstractModelHydrator
     {
-        private ProjectService _projectService;
+        private DBContext _DBContext;
         private UserHydrator _userHydrator;
-        private WorkflowService _workflowService;
-        private WorkflowHydrator _workflowHydrator;
         private BacklogItemTypeSchemaHydrator _backlogItemTypeSchemaHydrator;
-        private BacklogItemTypeSchemaService _backlogItemTypeSchemaService;
 
         public ProjectHydrator(
-            ProjectService projectService,
+            DBContext dbContext,
             UserHydrator userHydrator,
-            WorkflowService workflowService,
-            WorkflowHydrator workflowHydrator,
-            BacklogItemTypeSchemaHydrator backlogItemTypeSchemaHydrator,
-            BacklogItemTypeSchemaService backlogItemTypeSchemaService)
+            BacklogItemTypeSchemaHydrator backlogItemTypeSchemaHydrator)
         {
-            _projectService = projectService;
+            _DBContext = dbContext;
             _userHydrator = userHydrator;
-            _workflowService = workflowService;
-            _workflowHydrator = workflowHydrator;
             _backlogItemTypeSchemaHydrator = backlogItemTypeSchemaHydrator;
-            _backlogItemTypeSchemaService = backlogItemTypeSchemaService;
         }
 
         public Project Hydrate(Data.Entities.Project entity, Project? model = null)
         {
-            if (model == null)
-            {
-                if (entity.ID > 0)
-                {
-                    model = _projectService.Get(entity.ID) ??
-                       throw new ModelNotFoundException(
-                           nameof(Project), entity.ID.ToString()
-                       );
-                }
-                else
-                {
-                    model = new Project(entity.Title);
-                }
-            }
+            model ??= new Project(entity.Title);
 
             model.Title = entity.Title;
             model.Description = entity.Description;
@@ -69,22 +47,28 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             model.Title = dto.Title;
             model.Description = dto.Description;
-            
-            model.BacklogItemTypeSchema = _backlogItemTypeSchemaService
-                .Get(dto.BacklogItemTypeSchemaId) ??
-                throw new ModelNotFoundException(
-                    nameof(BacklogItemTypeSchema), dto.BacklogItemTypeSchemaId.ToString()
-                );
+
+            Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity = 
+                _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
+                    throw new ModelNotFoundException(
+                        nameof(Project), 
+                        dto.BacklogItemTypeSchemaId.ToString()
+                    );
+
+            model.BacklogItemTypeSchema = _backlogItemTypeSchemaHydrator.Hydrate(backlogItemTypeSchemaEntity);
 
             return model;
         }
 
         public Project Hydrate(API.DtosNew.ProjectPatchDto dto, Project? model = null)
         {
-            model ??= _projectService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(Project), dto.ID.ToString()
-                );
+            if (model == null)
+            {
+                Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(Project), dto.ID.ToString());
+
+                model ??= Hydrate(projectEntity);
+            }
 
             model.Title = dto.Title;
             model.Description = dto.Description;

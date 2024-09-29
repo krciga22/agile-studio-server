@@ -1,45 +1,30 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class WorkflowStateHydrator : AbstractModelHydrator
     {
-        private WorkflowStateService _workflowStateService;
-        private WorkflowService _workflowService;
+        private DBContext _DBContext;
         private WorkflowHydrator _workflowHydrator;
         private UserHydrator _userHydrator;
 
         public WorkflowStateHydrator(
-            WorkflowStateService workflowStateService,
-            WorkflowService workflowService,
+            DBContext dbContext,
             WorkflowHydrator workflowHydrator,
             UserHydrator userHydrator)
         {
-            _workflowStateService = workflowStateService;
-            _workflowService = workflowService;
+            _DBContext = dbContext;
             _workflowHydrator = workflowHydrator;
             _userHydrator = userHydrator;
         }
 
         public WorkflowState Hydrate(Data.Entities.WorkflowState entity, WorkflowState? model = null)
         {
-            if(model == null)
-            {
-                if (entity.ID > 0)
-                {
-                    model = _workflowStateService.Get(entity.ID) ??
-                        throw new ModelNotFoundException(
-                            nameof(WorkflowState), entity.ID.ToString()
-                        );
-                }
-                else
-                {
-                    model = new WorkflowState(entity.Title);
-                }
-            }
+            model ??= new WorkflowState(entity.Title);
             
+            model.ID = entity.ID;
             model.Title  = entity.Title;
             model.Description = entity.Description;
             model.CreatedOn = entity.CreatedOn;
@@ -63,21 +48,24 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             model.Title = dto.Title;
             model.Description = dto.Description;
-            model.Workflow = _workflowService.Get(dto.WorkflowId) ??
-                throw new ModelNotFoundException(
-                    nameof(Workflow), dto.WorkflowId.ToString()
-                );
+
+            Data.Entities.Workflow? workflowEntity = _DBContext.Workflow.Find(dto.WorkflowId) ??
+                throw new ModelNotFoundException(nameof(Workflow), dto.WorkflowId.ToString());
+            model.Workflow = _workflowHydrator.Hydrate(workflowEntity);
 
             return model;
         }
 
         public WorkflowState Hydrate(API.DtosNew.WorkflowStatePatchDto dto, WorkflowState? model = null)
         {
-            model ??= _workflowStateService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(WorkflowState), dto.ID.ToString()
-                );
+            if(model == null)
+            {
+                Data.Entities.WorkflowState? workflowStateEntity = _DBContext.WorkflowState.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(WorkflowState), dto.ID.ToString());
 
+                model ??= Hydrate(workflowStateEntity);
+            }
+            
             model.Title = dto.Title;
             model.Description = dto.Description;
 

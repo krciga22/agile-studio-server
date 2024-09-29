@@ -1,44 +1,28 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class SprintHydrator : AbstractModelHydrator
     {
-        private SprintService _sprintService;
-        private ProjectService _projectService;
+        private DBContext _DBContext;
         private ProjectHydrator _projectHydrator;
         private UserHydrator _userHydrator;
 
         public SprintHydrator(
-            SprintService sprintService,
-            ProjectService projectService,
+            DBContext dbContext,
             ProjectHydrator projectHydrator,
             UserHydrator userHydrator)
         {
-            _sprintService = sprintService;
-            _projectService = projectService;
+            _DBContext = dbContext;
             _projectHydrator = projectHydrator;
             _userHydrator = userHydrator;
         }
 
         public Sprint Hydrate(Data.Entities.Sprint entity, Sprint? model = null)
         {
-            if (model == null)
-            {
-                if (entity.ID > 0)
-                {
-                    model = _sprintService.Get(entity.ID) ??
-                       throw new ModelNotFoundException(
-                           nameof(Sprint), entity.ID.ToString()
-                       );
-                }
-                else
-                {
-                    model = new Sprint(entity.SprintNumber);
-                }
-            }
+            model ??= new Sprint(entity.SprintNumber);
 
             model.SprintNumber = entity.SprintNumber;
             model.Description = entity.Description;
@@ -61,30 +45,29 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
         public Sprint Hydrate(API.DtosNew.SprintPostDto dto, Sprint? model = null)
         {
-            if (model == null)
-            {
-                var nextSprintNumber = _sprintService.GetNextSprintNumber();
-                model = new Sprint(nextSprintNumber);
-            }
+            model ??= new Sprint(0);
 
             model.Description = dto.Description;
             model.StartDate = dto.StartDate;
             model.EndDate = dto.EndDate;
-            
-            model.Project = _projectService.Get(dto.ProjectId) ??
-                throw new ModelNotFoundException(
-                    nameof(Project), dto.ProjectId.ToString()
-                );
+
+            Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
+                throw new ModelNotFoundException(nameof(Project), dto.ProjectId.ToString());
+
+            model.Project = _projectHydrator.Hydrate(projectEntity);
 
             return model;
         }
 
         public Sprint Hydrate(API.DtosNew.SprintPatchDto dto, Sprint? model = null)
         {
-            model ??= _sprintService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(Sprint), dto.ID.ToString()
-                );
+            if(model == null)
+            {
+                Data.Entities.Sprint? sprintEntity = _DBContext.Sprint.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(Sprint), dto.ID.ToString());
+
+                model ??= Hydrate(sprintEntity);
+            }
 
             model.Description = dto.Description;
             model.StartDate = dto.StartDate;

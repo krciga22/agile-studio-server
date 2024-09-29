@@ -1,68 +1,40 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
-using AgileStudioServer.Application.Services;
+using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class BacklogItemHydrator : AbstractModelHydrator
     {
-        private BacklogItemService _backlogItemService;
-        private ProjectService _projectService;
+        private DBContext _DBContext;
         private ProjectHydrator _projectHydrator;
-        private SprintService _sprintService;
         private SprintHydrator _sprintHydrator;
-        private ReleaseService _releaseService;
         private ReleaseHydrator _releaseHydrator;
-        private BacklogItemTypeService _backlogItemTypeService;
         private BacklogItemTypeHydrator _backlogItemTypeHydrator;
         private UserHydrator _userHydrator;
-        private WorkflowStateService _workflowStateService;
         private WorkflowStateHydrator _workflowStateHydrator;
 
         public BacklogItemHydrator(
-            BacklogItemService backlogItemService,
-            ProjectService projectService,
+            DBContext dbContext,
             ProjectHydrator projectHydrator,
-            SprintService sprintService,
             SprintHydrator sprintHydrator,
-            ReleaseService releaseService,
             ReleaseHydrator releaseHydrator,
-            BacklogItemTypeService backlogItemTypeService,
             BacklogItemTypeHydrator backlogItemTypeSchemaHydrator,
             UserHydrator userHydrator,
-            WorkflowStateService workflowService,
             WorkflowStateHydrator workflowHydrator)
         {
-            _backlogItemService = backlogItemService;
-            _projectService = projectService;
+            _DBContext = dbContext;
             _projectHydrator = projectHydrator;
-            _sprintService = sprintService;
             _sprintHydrator = sprintHydrator;
-            _releaseService = releaseService;
             _releaseHydrator = releaseHydrator;
-            _backlogItemTypeService = backlogItemTypeService;
             _backlogItemTypeHydrator = backlogItemTypeSchemaHydrator;
             _userHydrator = userHydrator;
-            _workflowStateService = workflowService;
             _workflowStateHydrator = workflowHydrator;
         }
 
-        public BacklogItem ConvertToModel(Data.Entities.BacklogItem entity, BacklogItem? model = null)
+        public BacklogItem Hydrate(Data.Entities.BacklogItem entity, BacklogItem? model = null)
         {
-            if (model == null)
-            {
-                if (entity.ID > 0)
-                {
-                    model = _backlogItemService.Get(entity.ID) ??
-                       throw new ModelNotFoundException(
-                           nameof(BacklogItem), entity.ID.ToString()
-                       );
-                }
-                else
-                {
-                    model = new BacklogItem(entity.Title);
-                }
-            }
+            model ??= new BacklogItem(entity.Title);
 
             model.Title = entity.Title;
             model.Description = entity.Description;
@@ -108,39 +80,44 @@ namespace AgileStudioServer.Application.Models.Hydrators
             model.Title = dto.Title;
             model.Description = dto.Description;
 
-            model.Project = _projectService.Get(dto.ProjectId) ??
-                throw new ModelNotFoundException(
-                    nameof(Project), dto.ProjectId.ToString()
-                );
+            Data.Entities.Project? projectEntity =
+                _DBContext.Project.Find(dto.ProjectId) ??
+                    throw new ModelNotFoundException(
+                        nameof(Project),
+                        dto.ProjectId.ToString()
+                    );
+            model.Project = _projectHydrator.Hydrate(projectEntity);
 
-            model.BacklogItemType = _backlogItemTypeService
-                .Get(dto.BacklogItemTypeId) ??
-                throw new ModelNotFoundException(
-                    nameof(BacklogItemType), dto.BacklogItemTypeId.ToString()
-                );
+            Data.Entities.BacklogItemType? backlogItemTypeEntity =
+                _DBContext.BacklogItemType.Find(dto.BacklogItemTypeId) ??
+                    throw new ModelNotFoundException(
+                        nameof(BacklogItemType),
+                        dto.BacklogItemTypeId.ToString()
+                    );
+            model.BacklogItemType = _backlogItemTypeHydrator.Hydrate(backlogItemTypeEntity);
 
-            model.WorkflowState = _workflowStateService
-                .Get(dto.WorkflowStateId) ??
-                throw new ModelNotFoundException(
-                    nameof(WorkflowState), dto.WorkflowStateId.ToString()
-                );
+            Data.Entities.WorkflowState? workflowStateEntity = 
+                _DBContext.WorkflowState.Find(dto.WorkflowStateId) ??
+                    throw new ModelNotFoundException(
+                        nameof(WorkflowState), 
+                        dto.WorkflowStateId.ToString()
+                    );
+            model.WorkflowState = _workflowStateHydrator.Hydrate(workflowStateEntity);
 
             if (dto.SprintId != null)
             {
-                int sprintId = (int) dto.SprintId;
-                model.Sprint = _sprintService.Get(sprintId) ??
-                    throw new ModelNotFoundException(
-                        nameof(Sprint), sprintId.ToString()
-                    );
+                int sprintId = (int)dto.SprintId;
+                Data.Entities.Sprint? sprintEntity = _DBContext.Sprint.Find(sprintId) ??
+                    throw new ModelNotFoundException(nameof(Sprint), sprintId.ToString());
+                model.Sprint = _sprintHydrator.Hydrate(sprintEntity);
             }
 
             if (dto.ReleaseId != null)
             {
-                int ReleaseId = (int)dto.ReleaseId;
-                model.Release = _releaseService.Get(ReleaseId) ??
-                    throw new ModelNotFoundException(
-                        nameof(Release), ReleaseId.ToString()
-                    );
+                int releaseId = (int)dto.ReleaseId;
+                Data.Entities.Release? releaseEntity = _DBContext.Release.Find(releaseId) ??
+                    throw new ModelNotFoundException(nameof(Release), releaseId.ToString());
+                model.Release = _releaseHydrator.Hydrate(releaseEntity);
             }
 
             return model;
@@ -148,35 +125,36 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
         public BacklogItem Hydrate(API.DtosNew.BacklogItemPatchDto dto, BacklogItem? model = null)
         {
-            model ??= _backlogItemService.Get(dto.ID) ??
-                throw new ModelNotFoundException(
-                    nameof(BacklogItem), dto.ID.ToString()
-                );
+            if (model == null)
+            {
+                Data.Entities.BacklogItem? backlogItemEntity = _DBContext.BacklogItem.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(BacklogItem), dto.ID.ToString());
+
+                model ??= Hydrate(backlogItemEntity);
+            }
 
             model.Title = dto.Title;
             model.Description = dto.Description;
-            model.WorkflowState = _workflowStateService
-                .Get(dto.WorkflowStateId) ??
-                throw new ModelNotFoundException(
-                    nameof(WorkflowState), dto.WorkflowStateId.ToString()
-                );
+
+
+            Data.Entities.WorkflowState? workflowStateEntity = _DBContext.WorkflowState.Find(dto.ID) ??
+                    throw new ModelNotFoundException(nameof(WorkflowState), dto.ID.ToString());
+            model.WorkflowState = _workflowStateHydrator.Hydrate(workflowStateEntity);
 
             if (dto.SprintId != null)
             {
                 int sprintId = (int)dto.SprintId;
-                model.Sprint = _sprintService.Get(sprintId) ??
-                    throw new ModelNotFoundException(
-                        nameof(Sprint), sprintId.ToString()
-                    );
+                Data.Entities.Sprint? sprintEntity = _DBContext.Sprint.Find(sprintId) ??
+                    throw new ModelNotFoundException(nameof(Sprint), sprintId.ToString());
+                model.Sprint = _sprintHydrator.Hydrate(sprintEntity);
             }
 
             if (dto.ReleaseId != null)
             {
-                int ReleaseId = (int)dto.ReleaseId;
-                model.Release = _releaseService.Get(ReleaseId) ??
-                    throw new ModelNotFoundException(
-                        nameof(Release), ReleaseId.ToString()
-                    );
+                int releaseId = (int)dto.ReleaseId;
+                Data.Entities.Release? releaseEntity = _DBContext.Release.Find(releaseId) ??
+                    throw new ModelNotFoundException(nameof(Release), releaseId.ToString());
+                model.Release = _releaseHydrator.Hydrate(releaseEntity);
             }
 
             return model;
