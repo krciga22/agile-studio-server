@@ -1,62 +1,107 @@
 ﻿
-using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class WorkflowHydrator : AbstractModelHydrator
     {
-        private DBContext _DBContext;
-        private UserHydrator _userHydrator;
-
         public WorkflowHydrator(
-            DBContext dbContext,
-            UserHydrator userHydrator)
+            DBContext dbContext, 
+            HydratorRegistry hydratorRegistry
+        ) : base(dbContext, hydratorRegistry)
         {
-            _DBContext = dbContext;
-            _userHydrator = userHydrator;
+            hydratorRegistry.Register(this);
         }
 
-        public Workflow Hydrate(Data.Entities.Workflow entity, Workflow? model = null)
+        public override bool Supports(Type from, Type to)
         {
-            model ??= new Workflow(entity.Title);
+            return (
+                from == typeof(Data.Entities.Workflow)
+                || from == typeof(API.DtosNew.WorkflowPostDto)
+                || from == typeof(API.DtosNew.WorkflowPatchDto)
+            ) && to == typeof(Workflow);
+        }
 
-            model.Title = entity.Title;
-            model.Description = entity.Description;
-            model.CreatedOn = entity.CreatedOn;
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth)
+        {
+            Object? model = null;
 
-            if (entity.CreatedBy != null)
+            if (to != typeof(Workflow))
             {
-                model.CreatedBy = _userHydrator.Hydrate(entity.CreatedBy);
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Data.Entities.Workflow)
+            {
+                var entity = (Data.Entities.Workflow)from;
+                model = new Workflow(entity.Title);
+                Hydrate(from, model, maxDepth, depth);
+            }
+            else if (from is API.DtosNew.WorkflowPostDto)
+            {
+                var dto = (API.DtosNew.WorkflowPostDto)from;
+                model = new Workflow(dto.Title);
+                Hydrate(from, model, maxDepth, depth);
+            }
+            else if (from is API.DtosNew.WorkflowPatchDto)
+            {
+                var dto = (API.DtosNew.WorkflowPatchDto)from;
+                var entity = _DBContext.Workflow.Find(dto.ID);
+                if(entity != null)
+                {
+                    model = Hydrate(entity, typeof(Workflow), maxDepth, depth);
+                    Hydrate(dto, model, maxDepth, depth);
+                }
+            }
+
+            if (model == null)
+            {
+                throw new Exception("Hydration failed for from and to"); // todo
             }
 
             return model;
         }
 
-        public Workflow Hydrate(API.DtosNew.WorkflowPostDto dto, Workflow? model = null)
+        public override void Hydrate(object from, object to, int maxDepth, int depth)
         {
-            model ??= new Workflow(dto.Title);
-
-            model.Title = dto.Title;
-            model.Description = dto.Description;
-
-            return model;
-        }
-
-        public Workflow Hydrate(API.DtosNew.WorkflowPatchDto dto, Workflow? model = null)
-        {
-            if(model == null)
+            if(to is not Workflow)
             {
-                Data.Entities.Workflow? workflowEntity = _DBContext.Workflow.Find(dto.ID) ??
-                    throw new ModelNotFoundException(nameof(Workflow), dto.ID.ToString());
-
-                model ??= Hydrate(workflowEntity);
+                throw new Exception("Unsupported to");
             }
 
-            model.Title = dto.Title;
-            model.Description = dto.Description;
+            var model = (Workflow)to;
+            int nextDepth = depth + 1;
 
-            return model;
+            if (from is Data.Entities.Workflow)
+            {
+                var entity = (Data.Entities.Workflow) from;
+                model.ID = entity.ID;
+                model.Title = entity.Title;
+                model.Description = entity.Description;
+                model.CreatedOn = entity.CreatedOn;
+
+                if(nextDepth <= maxDepth)
+                {
+                    if (entity.CreatedBy != null)
+                    {
+                        model.CreatedBy = (User)_HydratorRegistry.Hydrate(
+                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
+                        );
+                    }
+                }
+            }
+            else if(from is API.DtosNew.WorkflowPostDto)
+            {
+                var dto = (API.DtosNew.WorkflowPostDto) from;
+                model.Title = dto.Title;
+                model.Description = dto.Description;
+            }
+            else if(from is API.DtosNew.WorkflowPatchDto)
+            {
+                var dto = (API.DtosNew.WorkflowPatchDto) from;
+                model.Title = dto.Title;
+                model.Description = dto.Description;
+            }
         }
     }
 }

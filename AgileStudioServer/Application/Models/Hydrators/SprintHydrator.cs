@@ -6,74 +6,124 @@ namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class SprintHydrator : AbstractModelHydrator
     {
-        private DBContext _DBContext;
-        private ProjectHydrator _projectHydrator;
-        private UserHydrator _userHydrator;
-
         public SprintHydrator(
             DBContext dbContext,
-            ProjectHydrator projectHydrator,
-            UserHydrator userHydrator)
+            HydratorRegistry hydratorRegistry
+        ) : base(dbContext, hydratorRegistry)
         {
-            _DBContext = dbContext;
-            _projectHydrator = projectHydrator;
-            _userHydrator = userHydrator;
+            hydratorRegistry.Register(this);
         }
 
-        public Sprint Hydrate(Data.Entities.Sprint entity, Sprint? model = null)
+        public override bool Supports(Type from, Type to)
         {
-            model ??= new Sprint(entity.SprintNumber);
+            return (
+                from == typeof(Data.Entities.Sprint)
+                || from == typeof(API.DtosNew.SprintPostDto)
+                || from == typeof(API.DtosNew.SprintPatchDto)
+            ) && to == typeof(Sprint);
+        }
 
-            model.SprintNumber = entity.SprintNumber;
-            model.Description = entity.Description;
-            model.CreatedOn = entity.CreatedOn;
-            model.StartDate = entity.StartDate;
-            model.EndDate = entity.EndDate;
+        public override object Hydrate(object from, Type to, int maxDepth, int depth)
+        {
+            Object? model = null;
 
-            if (entity.CreatedBy != null)
+            if (to != typeof(Sprint))
             {
-                model.CreatedBy = _userHydrator.Hydrate(entity.CreatedBy);
+                throw new Exception("Unsupported to"); // todo
             }
 
-            if (entity.Project != null)
+            if (from is Data.Entities.Sprint)
             {
-                model.Project = _projectHydrator.Hydrate(entity.Project);
+                var entity = (Data.Entities.Sprint)from;
+                model = new Sprint(entity.SprintNumber);
+                Hydrate(from, model, maxDepth, depth);
+            }
+            else if (from is API.DtosNew.SprintPostDto)
+            {
+                model = new Sprint(0); // todo fix hard coded sprint number
+                Hydrate(from, model, maxDepth, depth);
+            }
+            else if (from is API.DtosNew.SprintPatchDto)
+            {
+                var dto = (API.DtosNew.SprintPatchDto)from;
+                var entity = _DBContext.Sprint.Find(dto.ID);
+                if (entity != null)
+                {
+                    model = Hydrate(entity, typeof(Sprint), maxDepth, depth);
+                    Hydrate(dto, model, maxDepth, depth);
+                }
+            }
+
+            if (model == null)
+            {
+                throw new Exception("Hydration failed for from and to"); // todo
             }
 
             return model;
         }
 
-        public Sprint Hydrate(API.DtosNew.SprintPostDto dto, Sprint? model = null)
+        public override void Hydrate(object from, object to, int maxDepth, int depth)
         {
-            model ??= new Sprint(0);
-
-            model.Description = dto.Description;
-            model.StartDate = dto.StartDate;
-            model.EndDate = dto.EndDate;
-
-            Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
-                throw new ModelNotFoundException(nameof(Project), dto.ProjectId.ToString());
-
-            model.Project = _projectHydrator.Hydrate(projectEntity);
-
-            return model;
-        }
-
-        public Sprint Hydrate(API.DtosNew.SprintPatchDto dto, Sprint? model = null)
-        {
-            if(model == null)
+            if (to is not Sprint)
             {
-                Data.Entities.Sprint? sprintEntity = _DBContext.Sprint.Find(dto.ID) ??
-                    throw new ModelNotFoundException(nameof(Sprint), dto.ID.ToString());
-
-                model ??= Hydrate(sprintEntity);
+                throw new Exception("Unsupported to");
             }
 
-            model.Description = dto.Description;
-            model.StartDate = dto.StartDate;
-            model.EndDate = dto.EndDate;
+            var model = (Sprint)to;
+            int nextDepth = depth + 1;
 
-            return model;
+            if (from is Data.Entities.Sprint)
+            {
+                var entity = (Data.Entities.Sprint)from;
+
+                model.ID = entity.ID;
+                model.SprintNumber = entity.SprintNumber;
+                model.Description = entity.Description;
+                model.CreatedOn = entity.CreatedOn;
+                model.StartDate = entity.StartDate;
+                model.EndDate = entity.EndDate;
+
+                if (nextDepth <= maxDepth)
+                {
+                    model.Project = (Project)_HydratorRegistry.Hydrate(
+                        entity.Project, typeof(Project), maxDepth, nextDepth
+                    );
+
+                    if (entity.CreatedBy != null)
+                    {
+                        model.CreatedBy = (User)_HydratorRegistry.Hydrate(
+                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
+                        );
+                    }
+                }
+            }
+            else if (from is API.DtosNew.SprintPostDto)
+            {
+                var dto = (API.DtosNew.SprintPostDto)from;
+                model.Description = dto.Description;
+                model.StartDate = dto.StartDate;
+                model.EndDate = dto.EndDate;
+
+                if (depth < maxDepth)
+                {
+                    Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
+                        throw new ModelNotFoundException(
+                            nameof(Project),
+                            dto.ProjectId.ToString()
+                        );
+
+                    model.Project = (Project)_HydratorRegistry.Hydrate(
+                        projectEntity, typeof(Project), maxDepth, nextDepth
+                    );
+                }
+            }
+            else if (from is API.DtosNew.SprintPatchDto)
+            {
+                var dto = (API.DtosNew.SprintPatchDto)from;
+                model.Description = dto.Description;
+                model.StartDate = dto.StartDate;
+                model.EndDate = dto.EndDate;
+            }
         }
     }
 }
