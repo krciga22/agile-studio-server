@@ -38,6 +38,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 }
             }
 
+            entity.Title = model.Title;
+            entity.Description = model.Description;
+            entity.CreatedOn = model.CreatedOn;
+
             if (model.Workflow != null)
             {
                 entity.Workflow = _workflowHydrator.Hydrate(model.Workflow);

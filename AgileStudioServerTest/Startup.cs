@@ -1,5 +1,8 @@
 ﻿using DtoModelConverters = AgileStudioServer.API.DtosNew.DtoModelConverters;
 using ModelEntityConverters = AgileStudioServer.Application.Models.ModelEntityConverters;
+using DtoHydrators = AgileStudioServer.API.DtosNew.Hydrators;
+using ModelHydrators = AgileStudioServer.Application.Models.Hydrators;
+using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
 
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Application.Services;
@@ -82,6 +85,46 @@ namespace AgileStudioServerTest
             services.AddScoped<ModelEntityConverters.UserConverter>();
             services.AddScoped<ModelEntityConverters.WorkflowConverter>();
             services.AddScoped<ModelEntityConverters.WorkflowStateConverter>();
+
+            services.AddScoped<DtoHydrators.BacklogItemDtoHydrator>();
+            services.AddScoped<DtoHydrators.BacklogItemSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.BacklogItemTypeDtoHydrator>();
+            services.AddScoped<DtoHydrators.BacklogItemTypeSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.BacklogItemTypeSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.BacklogItemTypeSchemaSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.ProjectDtoHydrator>();
+            services.AddScoped<DtoHydrators.ProjectSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.ReleaseDtoHydrator>();
+            services.AddScoped<DtoHydrators.ReleaseSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.SprintDtoHydrator>();
+            services.AddScoped<DtoHydrators.SprintSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.UserSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.WorkflowDtoHydrator>();
+            services.AddScoped<DtoHydrators.WorkflowSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.WorkflowSummaryDtoHydrator>();
+            services.AddScoped<DtoHydrators.WorkflowStateSummaryDtoHydrator>();
+
+            services.AddScoped<ModelHydrators.HydratorRegistry>();
+            services.AddScoped<ModelHydrators.HydratorLoader>();
+            services.AddScoped<ModelHydrators.BacklogItemHydrator>();
+            services.AddScoped<ModelHydrators.BacklogItemTypeHydrator>();
+            services.AddScoped<ModelHydrators.BacklogItemTypeSchemaHydrator>();
+            services.AddScoped<ModelHydrators.ProjectHydrator>();
+            services.AddScoped<ModelHydrators.ReleaseHydrator>();
+            services.AddScoped<ModelHydrators.SprintHydrator>();
+            services.AddScoped<ModelHydrators.UserHydrator>();
+            services.AddScoped<ModelHydrators.WorkflowHydrator>();
+            services.AddScoped<ModelHydrators.WorkflowStateHydrator>();
+
+            services.AddScoped<EntityHydrators.BacklogItemHydrator>();
+            services.AddScoped<EntityHydrators.BacklogItemTypeHydrator>();
+            services.AddScoped<EntityHydrators.BacklogItemTypeSchemaHydrator>();
+            services.AddScoped<EntityHydrators.ProjectHydrator>();
+            services.AddScoped<EntityHydrators.ReleaseHydrator>();
+            services.AddScoped<EntityHydrators.SprintHydrator>();
+            services.AddScoped<EntityHydrators.UserHydrator>();
+            services.AddScoped<EntityHydrators.WorkflowHydrator>();
+            services.AddScoped<EntityHydrators.WorkflowStateHydrator>();
 
             services.AddScoped<BacklogItemService>();
             services.AddScoped<BacklogItemTypeService>();
