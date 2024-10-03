@@ -11,6 +11,7 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using AgileStudioServer.Application.Models.Hydrators;
 
 namespace AgileStudioServer
 {
@@ -104,14 +105,14 @@ namespace AgileStudioServer
 
             builder.Services.AddScoped<ModelHydrators.HydratorRegistry>();
             builder.Services.AddScoped<ModelHydrators.HydratorLoader>();
-            builder.Services.AddScoped<ModelHydrators.BacklogItemTypeHydrator>();
-            builder.Services.AddScoped<ModelHydrators.BacklogItemTypeSchemaHydrator>();
-            builder.Services.AddScoped<ModelHydrators.ProjectHydrator>();
-            builder.Services.AddScoped<ModelHydrators.ReleaseHydrator>();
-            builder.Services.AddScoped<ModelHydrators.SprintHydrator>();
-            builder.Services.AddScoped<ModelHydrators.UserHydrator>();
-            builder.Services.AddScoped<ModelHydrators.WorkflowHydrator>();
-            builder.Services.AddScoped<ModelHydrators.WorkflowStateHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.BacklogItemTypeHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.BacklogItemTypeSchemaHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.ProjectHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.ReleaseHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.SprintHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.UserHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.WorkflowHydrator>();
+            builder.Services.AddScoped<IModelHydrator, ModelHydrators.WorkflowStateHydrator>();
 
             builder.Services.AddScoped<EntityHydrators.BacklogItemHydrator>();
             builder.Services.AddScoped<EntityHydrators.BacklogItemTypeHydrator>();
