@@ -1,16 +1,55 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
+
 namespace AgileStudioServer.API.DtosNew.Hydrators
 {
     public class SprintSummaryDtoHydrator : AbstractDtoHydrator
     {
-        public SprintSummaryDto Hydrate(Application.Models.Sprint model, SprintSummaryDto? dto = null)
+        public override bool Supports(Type from, Type to)
         {
-            dto ??= new SprintSummaryDto(model.ID, model.SprintNumber);
+            return from == typeof(Application.Models.Sprint) &&
+                to == typeof(SprintSummaryDto);
+        }
 
-            dto.ID = model.ID;
-            dto.SprintNumber = model.SprintNumber;
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            Object? dto = null;
+
+            if (to != typeof(SprintSummaryDto))
+            {
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Application.Models.Sprint)
+            {
+                var model = (Data.Entities.Sprint)from;
+                dto = new SprintSummaryDto(model.ID, model.SprintNumber);
+                Hydrate(model, dto, maxDepth, depth, referenceHydrator);
+            }
+
+            if (dto == null)
+            {
+                throw new Exception("Hydration failed for from and to"); // todo
+            }
 
             return dto;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            if (to is not SprintSummaryDto)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var dto = (SprintSummaryDto)to;
+
+            if (from is Application.Models.Sprint)
+            {
+                var model = (Application.Models.Sprint)from;
+                dto.ID = model.ID;
+                dto.SprintNumber = model.SprintNumber;
+            }
         }
     }
 }

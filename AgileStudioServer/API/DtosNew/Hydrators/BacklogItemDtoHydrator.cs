@@ -1,68 +1,107 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
+
 namespace AgileStudioServer.API.DtosNew.Hydrators
 {
     public class BacklogItemDtoHydrator : AbstractDtoHydrator
     {
-        private ProjectSummaryDtoHydrator _projectSummaryDtoHydrator;
-        private BacklogItemTypeSummaryDtoHydrator _backlogItemTypeSummaryDtoHydrator;
-        private WorkflowStateSummaryDtoHydrator _workflowStateSummaryDtoHydrator;
-        private UserSummaryDtoHydrator _userSummaryDtoHydrator;
-        private SprintSummaryDtoHydrator _sprintSummaryDtoHydrator;
-        private ReleaseSummaryDtoHydrator _releaseSummaryDtoHydrator;
-
-        public BacklogItemDtoHydrator(
-            ProjectSummaryDtoHydrator projectSummaryDtoHydrator,
-            BacklogItemTypeSummaryDtoHydrator backlogItemTypeSummaryDtoHydrator,
-            WorkflowStateSummaryDtoHydrator workflowStateSummaryDtoHydrator,
-            UserSummaryDtoHydrator userSummaryDtoHydrator,
-            SprintSummaryDtoHydrator sprintSummaryDtoHydrator,
-            ReleaseSummaryDtoHydrator releaseSummaryDtoHydrator)
+        public override bool Supports(Type from, Type to)
         {
-            _projectSummaryDtoHydrator = projectSummaryDtoHydrator;
-            _backlogItemTypeSummaryDtoHydrator = backlogItemTypeSummaryDtoHydrator;
-            _workflowStateSummaryDtoHydrator = workflowStateSummaryDtoHydrator;
-            _userSummaryDtoHydrator = userSummaryDtoHydrator;
-            _sprintSummaryDtoHydrator = sprintSummaryDtoHydrator;
-            _releaseSummaryDtoHydrator = releaseSummaryDtoHydrator;
+            return from == typeof(Application.Models.BacklogItem) &&
+                to == typeof(BacklogItemDto);
         }
 
-        public BacklogItemDto Hydrate(Application.Models.BacklogItem model, BacklogItemDto? dto = null)
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            ProjectSummaryDto projectSummaryDto =
-                _projectSummaryDtoHydrator.Hydrate(model.Project);
+            Object? dto = null;
 
-            BacklogItemTypeSummaryDto backlogItemTypeSummaryDto =
-                _backlogItemTypeSummaryDtoHydrator.Hydrate(model.BacklogItemType);
-
-            WorkflowStateSummaryDto workflowStateSummaryDto = 
-                _workflowStateSummaryDtoHydrator.Hydrate(model.WorkflowState);
-
-            dto ??= new BacklogItemDto(
-                model.ID, model.Title, model.CreatedOn, 
-                projectSummaryDto, backlogItemTypeSummaryDto, workflowStateSummaryDto
-            );
-
-            dto.ID = model.ID;
-            dto.Title = model.Title;
-            dto.Description = model.Description;
-            dto.CreatedOn = model.CreatedOn;
-
-            if (model.CreatedBy != null)
+            if (to != typeof(BacklogItemDto))
             {
-                dto.CreatedBy = _userSummaryDtoHydrator.Hydrate(model.CreatedBy);
+                throw new Exception("Unsupported to"); // todo
             }
 
-            if (model.Sprint != null)
+            if (from is Application.Models.BacklogItem && referenceHydrator != null)
             {
-                dto.Sprint = _sprintSummaryDtoHydrator.Hydrate(model.Sprint);
+                var model = (Application.Models.BacklogItem)from;
+
+                var projectSummaryDto = (ProjectSummaryDto)referenceHydrator.Hydrate(
+                    model.Project, typeof(ProjectSummaryDto), maxDepth, depth
+                );
+
+                var backlogItemTypeSummaryDto = (BacklogItemTypeSummaryDto)referenceHydrator.Hydrate(
+                    model.BacklogItemType, typeof(BacklogItemTypeSummaryDto), maxDepth, depth
+                );
+
+                var workflowStateSummaryDto = (WorkflowStateSummaryDto)referenceHydrator.Hydrate(
+                    model.WorkflowState, typeof(WorkflowStateSummaryDto), maxDepth, depth
+                );
+
+                dto = new BacklogItemDto(model.ID, model.Title, model.CreatedOn, projectSummaryDto, backlogItemTypeSummaryDto, workflowStateSummaryDto);
+                Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }
 
-            if (model.Release != null)
+            if (dto == null)
             {
-                dto.Release = _releaseSummaryDtoHydrator.Hydrate(model.Release);
+                throw new Exception("Hydration failed for from and to"); // todo
             }
 
             return dto;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            if (to is not BacklogItemDto)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var dto = (BacklogItemDto)to;
+            int nextDepth = depth + 1;
+
+            if (from is Application.Models.BacklogItem)
+            {
+                var model = (Application.Models.BacklogItem)from;
+                dto.ID = model.ID;
+                dto.Title = model.Title;
+                dto.Description = model.Description;
+                dto.CreatedOn = model.CreatedOn;
+
+                if (referenceHydrator != null && nextDepth <= maxDepth)
+                {
+                    dto.Project = (ProjectSummaryDto)referenceHydrator.Hydrate(
+                        model.Project, typeof(ProjectSummaryDto), maxDepth, depth
+                    );
+
+                    dto.BacklogItemType = (BacklogItemTypeSummaryDto)referenceHydrator.Hydrate(
+                        model.BacklogItemType, typeof(BacklogItemTypeSummaryDto), maxDepth, depth
+                    );
+
+                    dto.WorkflowState = (WorkflowStateSummaryDto)referenceHydrator.Hydrate(
+                        model.WorkflowState, typeof(WorkflowStateSummaryDto), maxDepth, depth
+                    );
+
+                    if (model.CreatedBy != null)
+                    {
+                        dto.CreatedBy = (UserSummaryDto)referenceHydrator.Hydrate(
+                            model.CreatedBy, typeof(UserSummaryDto), maxDepth, depth
+                        );
+                    }
+
+                    if (model.Sprint != null)
+                    {
+                        dto.Sprint = (SprintSummaryDto)referenceHydrator.Hydrate(
+                            model.Sprint, typeof(SprintSummaryDto), maxDepth, depth
+                        );
+                    }
+
+                    if (model.Release != null)
+                    {
+                        dto.Release = (ReleaseSummaryDto)referenceHydrator.Hydrate(
+                            model.Release, typeof(ReleaseSummaryDto), maxDepth, depth
+                        );
+                    }
+                }
+            }
         }
     }
 }

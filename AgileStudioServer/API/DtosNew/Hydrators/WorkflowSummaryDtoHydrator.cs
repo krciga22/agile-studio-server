@@ -1,16 +1,55 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
+
 namespace AgileStudioServer.API.DtosNew.Hydrators
 {
     public class WorkflowSummaryDtoHydrator : AbstractDtoHydrator
     {
-        public WorkflowSummaryDto Hydrate(Application.Models.Workflow model, WorkflowSummaryDto? dto = null)
+        public override bool Supports(Type from, Type to)
         {
-            dto ??= new WorkflowSummaryDto(model.ID, model.Title);
+            return from == typeof(Application.Models.Workflow) && 
+                to == typeof(WorkflowSummaryDto);
+        }
 
-            dto.ID = model.ID;
-            dto.Title = model.Title;
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            Object? dto = null;
+
+            if (to != typeof(WorkflowSummaryDto))
+            {
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Application.Models.Workflow)
+            {
+                var model = (Data.Entities.Workflow)from;
+                dto = new WorkflowSummaryDto(model.ID, model.Title);
+                Hydrate(model, dto, maxDepth, depth, referenceHydrator);
+            }
+
+            if (dto == null)
+            {
+                throw new Exception("Hydration failed for from and to"); // todo
+            }
 
             return dto;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            if (to is not WorkflowSummaryDto)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var dto = (WorkflowSummaryDto)to;
+
+            if (from is Application.Models.Workflow)
+            {
+                var model = (Application.Models.Workflow)from;
+                dto.ID = model.ID;
+                dto.Title = model.Title;
+            }
         }
     }
 }

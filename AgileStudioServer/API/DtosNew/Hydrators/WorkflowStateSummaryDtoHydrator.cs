@@ -1,18 +1,55 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
+
 namespace AgileStudioServer.API.DtosNew.Hydrators
 {
     public class WorkflowStateSummaryDtoHydrator : AbstractDtoHydrator
     {
-        public WorkflowStateSummaryDto Hydrate(
-            Application.Models.WorkflowState model, 
-            WorkflowStateSummaryDto? dto = null)
+        public override bool Supports(Type from, Type to)
         {
-            dto ??= new WorkflowStateSummaryDto(model.ID, model.Title);
+            return from == typeof(Application.Models.WorkflowState) &&
+                to == typeof(WorkflowStateSummaryDto);
+        }
 
-            dto.ID = model.ID;
-            dto.Title = model.Title;
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            Object? dto = null;
+
+            if (to != typeof(WorkflowStateSummaryDto))
+            {
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Application.Models.WorkflowState)
+            {
+                var model = (Data.Entities.WorkflowState)from;
+                dto = new WorkflowStateSummaryDto(model.ID, model.Title);
+                Hydrate(model, dto, maxDepth, depth, referenceHydrator);
+            }
+
+            if (dto == null)
+            {
+                throw new Exception("Hydration failed for from and to"); // todo
+            }
 
             return dto;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
+        {
+            if (to is not WorkflowStateSummaryDto)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var dto = (WorkflowStateSummaryDto)to;
+
+            if (from is Application.Models.WorkflowState)
+            {
+                var model = (Application.Models.WorkflowState)from;
+                dto.ID = model.ID;
+                dto.Title = model.Title;
+            }
         }
     }
 }
