@@ -1,57 +1,96 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators;
 
 public class ReleaseHydrator : AbstractEntityHydrator
 {
-    private ProjectHydrator _projectHydrator;
-    private UserHydrator _userHydrator;
-
-    public ReleaseHydrator(
-        DBContext dBContext,
-        ProjectHydrator projectHydrator,
-        UserHydrator userHydrator) : base(dBContext)
+    public ReleaseHydrator(DBContext dBContext) : base(dBContext)
     {
-        _projectHydrator = projectHydrator;
-        _userHydrator = userHydrator;
+
     }
 
-    public Release Hydrate(Application.Models.Release model, Release? entity = null)
+    public override bool Supports(Type from, Type to)
     {
-        if(entity == null)
+        return from == typeof(Application.Models.Release) &&
+            to == typeof(Release);
+    }
+
+    public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+    {
+        Object? entity = null;
+
+        if (to != typeof(Release))
         {
+            throw new Exception("Unsupported to"); // todo
+        }
+
+        if (from is Application.Models.Release)
+        {
+            var model = (Application.Models.Release)from;
             if (model.ID > 0)
             {
                 entity = _DBContext.Release.Find(model.ID);
                 if (entity == null)
                 {
                     throw new EntityNotFoundException(
-                        nameof(Release),
-                        model.ID.ToString()
-                    );
+                        nameof(Release), model.ID.ToString());
                 }
             }
             else
             {
                 entity = new Release(model.Title);
             }
+
+            if (entity != null)
+            {
+                Hydrate(model, entity, maxDepth, depth, referenceHydrator);
+            }
         }
 
-        entity.Title = model.Title;
-        entity.Description = model.Description;
-        entity.CreatedOn = model.CreatedOn;
-        entity.StartDate = model.StartDate;
-        entity.EndDate = model.EndDate;
-
-        if (model.Project != null) {
-            entity.Project = _projectHydrator.Hydrate(model.Project);
-        }
-
-        if(model.CreatedBy != null){
-            entity.CreatedBy = _userHydrator.Hydrate(model.CreatedBy);
+        if (entity == null)
+        {
+            throw new Exception("Hydration failed for from and to"); // todo
         }
 
         return entity;
+    }
+
+    public override void Hydrate(object from, object to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+    {
+        if (to is not Release)
+        {
+            throw new Exception("Unsupported to");
+        }
+
+        var entity = (Release)to;
+        int nextDepth = depth + 1;
+
+        if (from is Application.Models.Release)
+        {
+            var model = (Application.Models.Release)from;
+
+            entity.ID = model.ID;
+            entity.Title = model.Title;
+            entity.Description = model.Description;
+            entity.CreatedOn = model.CreatedOn;
+            entity.StartDate = model.StartDate;
+            entity.EndDate = model.EndDate;
+
+            if (referenceHydrator != null && nextDepth <= maxDepth)
+            {
+                entity.Project = (Project)referenceHydrator.Hydrate(
+                    model.Project, typeof(Project), maxDepth, nextDepth
+                );
+
+                if (model.CreatedBy != null)
+                {
+                    entity.CreatedBy = (User)referenceHydrator.Hydrate(
+                        model.CreatedBy, typeof(User), maxDepth, nextDepth
+                    );
+                }
+            }
+        }
     }
 }

@@ -1,49 +1,91 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators
 {
     public class BacklogItemTypeSchemaHydrator : AbstractEntityHydrator
     {
-        private UserHydrator _userHydrator;
-
-        public BacklogItemTypeSchemaHydrator(
-            DBContext dBContext, 
-            UserHydrator userHydrator) : base(dBContext)
+        public BacklogItemTypeSchemaHydrator(DBContext dBContext) : base(dBContext)
         {
-            _userHydrator = userHydrator;
+
         }
 
-        public BacklogItemTypeSchema Hydrate(Application.Models.BacklogItemTypeSchema model, BacklogItemTypeSchema? entity = null)
+        public override bool Supports(Type from, Type to)
         {
-            if(entity == null)
+            return from == typeof(Application.Models.BacklogItemTypeSchema) &&
+                to == typeof(BacklogItemTypeSchema);
+        }
+
+        public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+        {
+            Object? entity = null;
+
+            if (to != typeof(BacklogItemTypeSchema))
             {
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Application.Models.BacklogItemTypeSchema)
+            {
+                var model = (Application.Models.BacklogItemTypeSchema)from;
                 if (model.ID > 0)
                 {
                     entity = _DBContext.BacklogItemTypeSchema.Find(model.ID);
                     if (entity == null)
                     {
                         throw new EntityNotFoundException(
-                            nameof(BacklogItemTypeSchema),
-                            model.ID.ToString()
-                        );
+                            nameof(BacklogItemTypeSchema), model.ID.ToString());
                     }
-
                 }
                 else
                 {
                     entity = new BacklogItemTypeSchema(model.Title);
                 }
-            }
-            
-            entity.Title = model.Title;
 
-            if (model.CreatedBy != null)
+                if (entity != null)
+                {
+                    Hydrate(model, entity, maxDepth, depth, referenceHydrator);
+                }
+            }
+
+            if (entity == null)
             {
-                entity.CreatedBy = _userHydrator.Hydrate(model.CreatedBy);
+                throw new Exception("Hydration failed for from and to"); // todo
             }
 
             return entity;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+        {
+            if (to is not BacklogItemTypeSchema)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var entity = (BacklogItemTypeSchema)to;
+            int nextDepth = depth + 1;
+
+            if (from is Application.Models.BacklogItemTypeSchema)
+            {
+                var model = (Application.Models.BacklogItemTypeSchema)from;
+
+                entity.ID = model.ID;
+                entity.Title = model.Title;
+                entity.Description = model.Description;
+                entity.CreatedOn = model.CreatedOn;
+
+                if (referenceHydrator != null && nextDepth <= maxDepth)
+                {
+                    if (model.CreatedBy != null)
+                    {
+                        entity.CreatedBy = (User)referenceHydrator.Hydrate(
+                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                        );
+                    }
+                }
+            }
         }
     }
 }

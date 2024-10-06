@@ -1,90 +1,117 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators
 {
     public class BacklogItemHydrator : AbstractEntityHydrator
     {
-        private ProjectHydrator _projectHydrator;
-        private SprintHydrator _sprintHydrator;
-        private ReleaseHydrator _releaseHydrator;
-        private BacklogItemTypeHydrator _backlogItemTypeHydrator;
-        private WorkflowStateHydrator _workflowStateHydrator;
-        private UserHydrator _userHydrator;
-
-        public BacklogItemHydrator(
-            DBContext dBContext,
-            ProjectHydrator projectHydrator,
-            SprintHydrator sprintHydrator,
-            ReleaseHydrator releaseHydrator,
-            BacklogItemTypeHydrator backlogItemTypeHydrator,
-            WorkflowStateHydrator workflowStateHydrator,
-            UserHydrator userHydrator) : base(dBContext)
+        public BacklogItemHydrator(DBContext dBContext) : base(dBContext)
         {
-            _projectHydrator = projectHydrator;
-            _sprintHydrator = sprintHydrator;
-            _releaseHydrator = releaseHydrator;
-            _backlogItemTypeHydrator = backlogItemTypeHydrator;
-            _workflowStateHydrator = workflowStateHydrator;
-            _userHydrator = userHydrator;
+
         }
 
-        public BacklogItem Hydrate(Application.Models.BacklogItem model, BacklogItem? entity = null)
+        public override bool Supports(Type from, Type to)
         {
-            if(entity == null)
+            return from == typeof(Application.Models.BacklogItem) && 
+                to == typeof(BacklogItem);
+        }
+
+        public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+        {
+            Object? entity = null;
+
+            if (to != typeof(BacklogItem))
             {
+                throw new Exception("Unsupported to"); // todo
+            }
+
+            if (from is Application.Models.BacklogItem)
+            {
+                var model = (Application.Models.BacklogItem)from;
                 if (model.ID > 0)
                 {
                     entity = _DBContext.BacklogItem.Find(model.ID);
                     if (entity == null)
                     {
                         throw new EntityNotFoundException(
-                            nameof(BacklogItem),
-                            model.ID.ToString()
-                        );
+                            nameof(BacklogItem), model.ID.ToString());
                     }
                 }
                 else
                 {
                     entity = new BacklogItem(model.Title);
                 }
+
+                if (entity != null)
+                {
+                    Hydrate(model, entity, maxDepth, depth, referenceHydrator);
+                }
             }
 
-            entity.Title = model.Title;
-
-            if (model.Project != null)
+            if (entity == null)
             {
-                entity.Project = _projectHydrator.Hydrate(model.Project);
-            }
-
-            if (model.Sprint != null)
-            {
-                entity.Sprint = _sprintHydrator.Hydrate(model.Sprint);
-            }
-
-            if (model.Release != null)
-            {
-                entity.Release = _releaseHydrator.Hydrate(model.Release);
-            }
-
-            if (model.BacklogItemType != null)
-            {
-                entity.BacklogItemType = _backlogItemTypeHydrator
-                    .Hydrate(model.BacklogItemType);
-            }
-
-            if (model.WorkflowState != null)
-            {
-                entity.WorkflowState = _workflowStateHydrator
-                    .Hydrate(model.WorkflowState);
-            }
-
-            if (model.CreatedBy != null)
-            {
-                entity.CreatedBy = _userHydrator.Hydrate(model.CreatedBy);
+                throw new Exception("Hydration failed for from and to"); // todo
             }
 
             return entity;
+        }
+
+        public override void Hydrate(object from, object to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
+        {
+            if (to is not BacklogItem)
+            {
+                throw new Exception("Unsupported to");
+            }
+
+            var entity = (BacklogItem)to;
+            int nextDepth = depth + 1;
+
+            if (from is Application.Models.BacklogItem)
+            {
+                var model = (Application.Models.BacklogItem)from;
+
+                entity.ID = model.ID;
+                entity.Title = model.Title;
+                entity.Description = model.Description;
+                entity.CreatedOn = model.CreatedOn;
+
+                if (referenceHydrator != null && nextDepth <= maxDepth)
+                {
+                    entity.Project = (Project)referenceHydrator.Hydrate(
+                        model.Project, typeof(Project), maxDepth, nextDepth
+                    );
+
+                    entity.BacklogItemType = (BacklogItemType)referenceHydrator.Hydrate(
+                        model.BacklogItemType, typeof(BacklogItemType), maxDepth, nextDepth
+                    );
+
+                    entity.WorkflowState = (WorkflowState)referenceHydrator.Hydrate(
+                        model.WorkflowState, typeof(WorkflowState), maxDepth, nextDepth
+                    );
+
+                    if (model.Sprint != null)
+                    {
+                        entity.Sprint = (Sprint)referenceHydrator.Hydrate(
+                            model.Sprint, typeof(Sprint), maxDepth, nextDepth
+                        );
+                    }
+
+                    if (model.Release != null)
+                    {
+                        entity.Release = (Release)referenceHydrator.Hydrate(
+                            model.Release, typeof(Release), maxDepth, nextDepth
+                        );
+                    }
+
+                    if (model.CreatedBy != null)
+                    {
+                        entity.CreatedBy = (User)referenceHydrator.Hydrate(
+                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                        );
+                    }
+                }
+            }
         }
     }
 }
