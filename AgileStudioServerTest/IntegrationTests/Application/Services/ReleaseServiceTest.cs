@@ -5,11 +5,11 @@ using AgileStudioServer.Application.Services;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services
 {
-    public class ReleaseRepositoryTest : AbstractServiceTest
+    public class ReleaseServiceTest : AbstractServiceTest
     {
         private readonly ReleaseService _releaseService;
 
-        public ReleaseRepositoryTest(
+        public ReleaseServiceTest(
             DBContext dbContext,
             ModelFixtures fixtures,
             ReleaseService releaseService) : base(dbContext, fixtures)

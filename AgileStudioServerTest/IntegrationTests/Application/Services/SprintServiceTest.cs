@@ -5,11 +5,11 @@ using AgileStudioServer.Application.Services;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services
 {
-    public class SprintRepositoryTest : AbstractServiceTest
+    public class SprintServiceTest : AbstractServiceTest
     {
         private readonly SprintService _sprintService;
 
-        public SprintRepositoryTest(
+        public SprintServiceTest(
             DBContext dbContext,
             ModelFixtures fixtures,
             SprintService sprintService) : base(dbContext, fixtures)

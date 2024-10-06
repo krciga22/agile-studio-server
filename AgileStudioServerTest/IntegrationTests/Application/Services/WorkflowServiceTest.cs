@@ -4,11 +4,11 @@ using AgileStudioServer.Application.Services;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services
 {
-    public class WorkflowRepositoryTest : AbstractServiceTest
+    public class WorkflowServiceTest : AbstractServiceTest
     {
         private readonly WorkflowService _workflowService;
 
-        public WorkflowRepositoryTest(
+        public WorkflowServiceTest(
             DBContext dbContext,
             ModelFixtures fixtures,
             WorkflowService workflowService) : base(dbContext, fixtures)

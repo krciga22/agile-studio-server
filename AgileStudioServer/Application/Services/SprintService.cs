@@ -1,5 +1,5 @@
 ﻿using AgileStudioServer.Application.Models;
-using AgileStudioServer.Application.Models.ModelEntityConverters;
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Services
@@ -8,12 +8,12 @@ namespace AgileStudioServer.Application.Services
     {
         private readonly DBContext _DBContext;
 
-        private readonly SprintConverter _converter;
+        private readonly Hydrator _Hydrator;
 
-        public SprintService(DBContext dbContext, SprintConverter sprintConverter)
+        public SprintService(DBContext dbContext, Hydrator hydrator)
         {
             _DBContext = dbContext;
-            _converter = sprintConverter;
+            _Hydrator = hydrator;
         }
 
         public virtual List<Sprint> GetByProjectId(int projectId)
@@ -21,15 +21,7 @@ namespace AgileStudioServer.Application.Services
             List<Data.Entities.Sprint> entities = _DBContext.Sprint.Where(sprint => 
                 sprint.Project.ID == projectId).ToList();
 
-            List<Sprint> models = new();
-            entities.ForEach(entity =>
-            {
-                models.Add(
-                    _converter.ConvertToModel(entity)
-                );
-            });
-
-            return models;
+            return HydrateSprintModels(entities);
         }
 
         public virtual Sprint? Get(int id)
@@ -39,34 +31,34 @@ namespace AgileStudioServer.Application.Services
                 return null;
             }
 
-            return _converter.ConvertToModel(entity);
+            return HydrateSprintModel(entity);
         }
 
         public virtual Sprint Create(Sprint sprint)
         {
-            Data.Entities.Sprint entity = _converter.ConvertToEntity(sprint);
+            Data.Entities.Sprint entity = HydrateSprintEntity(sprint);
 
             entity.SprintNumber = GetNextSprintNumber();
 
             _DBContext.Add(entity);
             _DBContext.SaveChanges();
 
-            return _converter.ConvertToModel(entity);
+            return HydrateSprintModel(entity);
         }
 
         public virtual Sprint Update(Sprint sprint)
         {
-            Data.Entities.Sprint entity = _converter.ConvertToEntity(sprint);
+            Data.Entities.Sprint entity = HydrateSprintEntity(sprint);
 
             _DBContext.Update(entity);
             _DBContext.SaveChanges();
 
-            return _converter.ConvertToModel(entity);
+            return HydrateSprintModel(entity);
         }
 
         public virtual void Delete(Sprint sprint)
         {
-            Data.Entities.Sprint entity = _converter.ConvertToEntity(sprint);
+            Data.Entities.Sprint entity = HydrateSprintEntity(sprint);
 
             _DBContext.Remove(entity);
             _DBContext.SaveChanges();
@@ -84,6 +76,32 @@ namespace AgileStudioServer.Application.Services
                 .FirstOrDefault();
 
             return lastSprint?.SprintNumber ?? 0;
+        }
+
+        private List<Sprint> HydrateSprintModels(List<Data.Entities.Sprint> entities, int depth = 1)
+        {
+            List<Sprint> models = new();
+
+            entities.ForEach(entity => {
+                Sprint model = HydrateSprintModel(entity, depth);
+                models.Add(model);
+            });
+
+            return models;
+        }
+
+        private Sprint HydrateSprintModel(Data.Entities.Sprint sprint, int depth = 1)
+        {
+            return (Sprint)_Hydrator.Hydrate(
+                sprint, typeof(Sprint), depth
+            );
+        }
+
+        private Data.Entities.Sprint HydrateSprintEntity(Sprint sprint, int depth = 1)
+        {
+            return (Data.Entities.Sprint)_Hydrator.Hydrate(
+                sprint, typeof(Data.Entities.Sprint), depth
+            );
         }
     }
 }

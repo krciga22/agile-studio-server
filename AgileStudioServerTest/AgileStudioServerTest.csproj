@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="IntegrationTests\Application\Models\ModelEntityConverters\" />
     <Folder Include="IntegrationTests\Data\" />
   </ItemGroup>
 

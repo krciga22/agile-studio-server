@@ -1,5 +1,4 @@
 ﻿using DtoModelConverters = AgileStudioServer.API.DtosNew.DtoModelConverters;
-using ModelEntityConverters = AgileStudioServer.Application.Models.ModelEntityConverters;
 using DtoHydrators = AgileStudioServer.API.DtosNew.Hydrators;
 using ModelHydrators = AgileStudioServer.Application.Models.Hydrators;
 using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
@@ -76,16 +75,6 @@ namespace AgileStudioServerTest
             services.AddScoped<DtoModelConverters.WorkflowStatePatchConverter>();
             services.AddScoped<DtoModelConverters.WorkflowStatePostConverter>();
             services.AddScoped<DtoModelConverters.WorkflowStateSummaryConverter>();
-
-            services.AddScoped<ModelEntityConverters.BacklogItemConverter>();
-            services.AddScoped<ModelEntityConverters.BacklogItemTypeConverter>();
-            services.AddScoped<ModelEntityConverters.BacklogItemTypeSchemaConverter>();
-            services.AddScoped<ModelEntityConverters.ProjectConverter>();
-            services.AddScoped<ModelEntityConverters.ReleaseConverter>();
-            services.AddScoped<ModelEntityConverters.SprintConverter>();
-            services.AddScoped<ModelEntityConverters.UserConverter>();
-            services.AddScoped<ModelEntityConverters.WorkflowConverter>();
-            services.AddScoped<ModelEntityConverters.WorkflowStateConverter>();
 
             services.AddScoped<DtoHydrators.BacklogItemDtoHydrator>();
             services.AddScoped<DtoHydrators.BacklogItemSummaryDtoHydrator>();

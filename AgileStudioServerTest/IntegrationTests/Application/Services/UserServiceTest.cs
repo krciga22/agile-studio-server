@@ -4,11 +4,11 @@ using AgileStudioServer.Application.Services;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services
 {
-    public class UserRepositoryTest : AbstractServiceTest
+    public class UserServiceTest : AbstractServiceTest
     {
         private readonly UserService _userService;
 
-        public UserRepositoryTest(
+        public UserServiceTest(
             DBContext dbContext,
             ModelFixtures fixtures,
             UserService userService) : base(dbContext, fixtures)
