@@ -22,7 +22,7 @@ namespace AgileStudioServer.API.DtosNew.Hydrators
 
             if (from is Application.Models.BacklogItemTypeSchema)
             {
-                var model = (Data.Entities.BacklogItemTypeSchema)from;
+                var model = (Application.Models.BacklogItemTypeSchema)from;
                 dto = new BacklogItemTypeSchemaSummaryDto(model.ID, model.Title);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }

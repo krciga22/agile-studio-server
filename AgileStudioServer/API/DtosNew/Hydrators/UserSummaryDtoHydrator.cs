@@ -22,7 +22,7 @@ namespace AgileStudioServer.API.DtosNew.Hydrators
 
             if (from is Application.Models.User)
             {
-                var model = (Data.Entities.User)from;
+                var model = (Application.Models.User)from;
                 dto = new UserSummaryDto(model.ID, model.FirstName, model.LastName);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }

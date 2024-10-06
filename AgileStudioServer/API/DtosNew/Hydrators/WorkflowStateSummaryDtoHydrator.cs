@@ -22,7 +22,7 @@ namespace AgileStudioServer.API.DtosNew.Hydrators
 
             if (from is Application.Models.WorkflowState)
             {
-                var model = (Data.Entities.WorkflowState)from;
+                var model = (Application.Models.WorkflowState)from;
                 dto = new WorkflowStateSummaryDto(model.ID, model.Title);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }
