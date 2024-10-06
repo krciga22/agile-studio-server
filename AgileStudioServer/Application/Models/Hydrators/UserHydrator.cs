@@ -1,16 +1,14 @@
 ﻿
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class UserHydrator : AbstractModelHydrator
     {
-        public UserHydrator(
-            DBContext dbContext,
-            HydratorRegistry hydratorRegistry
-        ) : base(dbContext, hydratorRegistry)
+        public UserHydrator(DBContext dbContext) : base(dbContext)
         {
-            hydratorRegistry.Register(this);
+
         }
 
         public override bool Supports(Type from, Type to)
@@ -19,7 +17,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 && to == typeof(User);
         }
 
-        public override Object Hydrate(object from, Type to, int maxDepth, int depth)
+        public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             Object? model = null;
 
@@ -32,7 +30,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             {
                 var entity = (Data.Entities.User)from;
                 model = new User(entity.Email, entity.FirstName, entity.LastName);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
 
             if(model == null)
@@ -43,7 +41,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             return model;
         }
 
-        public override void Hydrate(object from, object to, int maxDepth, int depth)
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             if(from is Data.Entities.User && to is User)
             {

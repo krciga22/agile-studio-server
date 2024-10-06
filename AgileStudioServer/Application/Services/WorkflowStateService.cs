@@ -1,26 +1,23 @@
 ﻿using AgileStudioServer.Application.Models;
 using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
 using AgileStudioServer.Data;
-using AgileStudioServer.Application.Models.Hydrators;
+using AgileStudioServer.Core.Hydrator;
 
 namespace AgileStudioServer.Application.Services
 {
     public class WorkflowStateService
     {
         private DBContext _DBContext;
-        private HydratorLoader _HydratorLoader;
-        private HydratorRegistry _HydratorRegistry;
+        private Hydrator _Hydrator;
         private EntityHydrators.WorkflowStateHydrator _EntityHydrator;
 
         public WorkflowStateService(
             DBContext dbContext,
-            HydratorLoader hydratorLoader,
-            HydratorRegistry hydratorRegistry,
+            Hydrator hydrator,
             EntityHydrators.WorkflowStateHydrator entityHydrator)
         {
             _DBContext = dbContext;
-            _HydratorLoader = hydratorLoader;
-            _HydratorRegistry = hydratorRegistry;
+            _Hydrator = hydrator;
             _EntityHydrator = entityHydrator;
         }
 
@@ -31,8 +28,8 @@ namespace AgileStudioServer.Application.Services
 
             List<WorkflowState> models = new();
             entities.ForEach(entity => {
-                WorkflowState model = (WorkflowState)_HydratorRegistry.Hydrate(
-                    entity, typeof(WorkflowState), 1, 0
+                WorkflowState model = (WorkflowState)_Hydrator.Hydrate(
+                    entity, typeof(WorkflowState), 1
                 );
                 models.Add(model);
             });
@@ -47,8 +44,8 @@ namespace AgileStudioServer.Application.Services
                 return null;
             }
 
-            WorkflowState model = (WorkflowState)_HydratorRegistry.Hydrate(
-                entity, typeof(WorkflowState), 1, 0
+            WorkflowState model = (WorkflowState)_Hydrator.Hydrate(
+                entity, typeof(WorkflowState), 1
             );
 
             return model;
@@ -61,8 +58,8 @@ namespace AgileStudioServer.Application.Services
             _DBContext.Add(entity);
             _DBContext.SaveChanges();
 
-            WorkflowState model = (WorkflowState)_HydratorRegistry.Hydrate(
-                entity, typeof(WorkflowState), 1, 0
+            WorkflowState model = (WorkflowState)_Hydrator.Hydrate(
+                entity, typeof(WorkflowState), 1
             );
 
             return model;
@@ -75,8 +72,8 @@ namespace AgileStudioServer.Application.Services
             _DBContext.Update(entity);
             _DBContext.SaveChanges();
 
-            WorkflowState model = (WorkflowState)_HydratorRegistry.Hydrate(
-                entity, typeof(WorkflowState), 1, 0
+            WorkflowState model = (WorkflowState)_Hydrator.Hydrate(
+                entity, typeof(WorkflowState), 1
             );
 
             return model;

@@ -10,7 +10,7 @@ using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
 using AgileStudioServerTest.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
-using AgileStudioServer.Application.Models.Hydrators;
+using AgileStudioServer.Core.Hydrator;
 
 namespace AgileStudioServerTest
 {
@@ -105,17 +105,17 @@ namespace AgileStudioServerTest
             services.AddScoped<DtoHydrators.WorkflowSummaryDtoHydrator>();
             services.AddScoped<DtoHydrators.WorkflowStateSummaryDtoHydrator>();
 
-            services.AddScoped<ModelHydrators.HydratorRegistry>();
-            services.AddScoped<ModelHydrators.HydratorLoader>();
-            services.AddScoped<IModelHydrator, ModelHydrators.BacklogItemHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.BacklogItemTypeHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.BacklogItemTypeSchemaHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.ProjectHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.ReleaseHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.SprintHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.UserHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.WorkflowHydrator>();
-            services.AddScoped<IModelHydrator, ModelHydrators.WorkflowStateHydrator>();
+            services.AddScoped<Hydrator>();
+            services.AddScoped<HydratorRegistry>();
+            services.AddScoped<IHydrator, ModelHydrators.BacklogItemHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.BacklogItemTypeHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.BacklogItemTypeSchemaHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.ProjectHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.ReleaseHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.SprintHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.UserHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.WorkflowHydrator>();
+            services.AddScoped<IHydrator, ModelHydrators.WorkflowStateHydrator>();
 
             services.AddScoped<EntityHydrators.BacklogItemHydrator>();
             services.AddScoped<EntityHydrators.BacklogItemTypeHydrator>();

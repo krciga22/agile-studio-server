@@ -1,17 +1,15 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class WorkflowStateHydrator : AbstractModelHydrator
     {
-        public WorkflowStateHydrator(
-            DBContext dbContext,
-            HydratorRegistry hydratorRegistry
-        ) : base(dbContext, hydratorRegistry)
+        public WorkflowStateHydrator(DBContext dbContext) : base(dbContext)
         {
-            hydratorRegistry.Register(this);
+
         }
 
         public override bool Supports(Type from, Type to)
@@ -23,7 +21,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             ) && to == typeof(WorkflowState);
         }
 
-        public override object Hydrate(object from, Type to, int maxDepth, int depth)
+        public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
         {
             Object? model = null;
 
@@ -36,13 +34,13 @@ namespace AgileStudioServer.Application.Models.Hydrators
             {
                 var entity = (Data.Entities.WorkflowState)from;
                 model = new WorkflowState(entity.Title);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.WorkflowStatePostDto)
             {
                 var dto = (API.DtosNew.WorkflowStatePostDto)from;
                 model = new WorkflowState(dto.Title);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.WorkflowStatePatchDto)
             {
@@ -50,8 +48,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 var entity = _DBContext.WorkflowState.Find(dto.ID);
                 if (entity != null)
                 {
-                    model = Hydrate(entity, typeof(WorkflowState), maxDepth, depth);
-                    Hydrate(dto, model, maxDepth, depth);
+                    model = Hydrate(entity, typeof(WorkflowState), maxDepth, depth, referenceHydrator);
+                    Hydrate(dto, model, maxDepth, depth, referenceHydrator);
                 }
             }
 
@@ -63,7 +61,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             return model;
         }
 
-        public override void Hydrate(object from, object to, int maxDepth, int depth)
+        public override void Hydrate(object from, object to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
         {
             if (to is not WorkflowState)
             {
@@ -81,18 +79,18 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
 
-                if (nextDepth <= maxDepth)
+                if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     if (entity.Workflow != null)
                     {
-                        model.Workflow = (Workflow)_HydratorRegistry.Hydrate(
+                        model.Workflow = (Workflow)referenceHydrator.Hydrate(
                             entity.Workflow, typeof(Workflow), maxDepth, nextDepth
                         );
                     }
 
                     if (entity.CreatedBy != null)
                     {
-                        model.CreatedBy = (User)_HydratorRegistry.Hydrate(
+                        model.CreatedBy = (User)referenceHydrator.Hydrate(
                             entity.CreatedBy, typeof(User), maxDepth, nextDepth
                         );
                     }
@@ -104,7 +102,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
-                if (depth < maxDepth)
+                if (referenceHydrator != null && depth < maxDepth)
                 {
                     if (dto.WorkflowId > 0)
                     {
@@ -114,7 +112,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                                 dto.WorkflowId.ToString()
                             );
 
-                        model.Workflow = (Workflow)_HydratorRegistry.Hydrate(
+                        model.Workflow = (Workflow)referenceHydrator.Hydrate(
                             workflowEntity, typeof(Workflow), maxDepth, nextDepth
                         );
                     }

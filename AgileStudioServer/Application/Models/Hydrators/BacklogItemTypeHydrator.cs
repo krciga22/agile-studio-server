@@ -1,17 +1,15 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class BacklogItemTypeHydrator : AbstractModelHydrator
     {
-        public BacklogItemTypeHydrator(
-            DBContext dbContext,
-            HydratorRegistry hydratorRegistry
-        ) : base(dbContext, hydratorRegistry)
+        public BacklogItemTypeHydrator(DBContext dbContext) : base(dbContext)
         {
-            hydratorRegistry.Register(this);
+
         }
 
         public override bool Supports(Type from, Type to)
@@ -23,7 +21,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             ) && to == typeof(BacklogItemType);
         }
 
-        public override object Hydrate(object from, Type to, int maxDepth, int depth)
+        public override object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             Object? model = null;
 
@@ -36,13 +34,13 @@ namespace AgileStudioServer.Application.Models.Hydrators
             {
                 var entity = (Data.Entities.BacklogItemType)from;
                 model = new BacklogItemType(entity.Title);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.BacklogItemTypePostDto)
             {
                 var dto = (API.DtosNew.BacklogItemTypePostDto)from;
                 model = new BacklogItemType(dto.Title);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.BacklogItemTypePatchDto)
             {
@@ -50,8 +48,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 var entity = _DBContext.BacklogItemType.Find(dto.ID);
                 if (entity != null)
                 {
-                    model = Hydrate(entity, typeof(BacklogItemType), maxDepth, depth);
-                    Hydrate(dto, model, maxDepth, depth);
+                    model = Hydrate(entity, typeof(BacklogItemType), maxDepth, depth, referenceHydrator);
+                    Hydrate(dto, model, maxDepth, depth, referenceHydrator);
                 }
             }
 
@@ -63,7 +61,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             return model;
         }
 
-        public override void Hydrate(object from, object to, int maxDepth, int depth)
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             if (to is not BacklogItemType)
             {
@@ -82,19 +80,19 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
 
-                if (nextDepth <= maxDepth)
+                if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
-                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)_HydratorRegistry.Hydrate(
+                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
                         entity.BacklogItemTypeSchema, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
                     );
 
-                    model.Workflow = (Workflow)_HydratorRegistry.Hydrate(
+                    model.Workflow = (Workflow)referenceHydrator.Hydrate(
                         entity.Workflow, typeof(Workflow), maxDepth, nextDepth
                     );
 
                     if (entity.CreatedBy != null)
                     {
-                        model.CreatedBy = (User)_HydratorRegistry.Hydrate(
+                        model.CreatedBy = (User)referenceHydrator.Hydrate(
                             entity.CreatedBy, typeof(User), maxDepth, nextDepth
                         );
                     }
@@ -106,27 +104,30 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
-                Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity = 
+                if(referenceHydrator != null && nextDepth <= maxDepth)
+                {
+                    Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity =
                     _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
                         throw new ModelNotFoundException(
                             nameof(BacklogItemTypeSchema),
                             dto.BacklogItemTypeSchemaId.ToString()
                         );
 
-                model.BacklogItemTypeSchema = (BacklogItemTypeSchema)_HydratorRegistry.Hydrate(
-                    backlogItemTypeSchemaEntity, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
-                );
+                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
+                        backlogItemTypeSchemaEntity, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
+                    );
 
-                Data.Entities.Workflow? workflowEntity =
-                    _DBContext.Workflow.Find(dto.WorkflowId) ??
-                        throw new ModelNotFoundException(
-                            nameof(Workflow),
-                            dto.WorkflowId.ToString()
-                        );
+                    Data.Entities.Workflow? workflowEntity =
+                        _DBContext.Workflow.Find(dto.WorkflowId) ??
+                            throw new ModelNotFoundException(
+                                nameof(Workflow),
+                                dto.WorkflowId.ToString()
+                            );
 
-                model.Workflow = (Workflow)_HydratorRegistry.Hydrate(
-                    workflowEntity, typeof(Workflow), maxDepth, nextDepth
-                );
+                    model.Workflow = (Workflow)referenceHydrator.Hydrate(
+                        workflowEntity, typeof(Workflow), maxDepth, nextDepth
+                    );
+                }
             }
             else if (from is API.DtosNew.BacklogItemTypePatchDto)
             {

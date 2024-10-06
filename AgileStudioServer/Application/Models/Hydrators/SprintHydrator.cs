@@ -1,17 +1,15 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
 {
     public class SprintHydrator : AbstractModelHydrator
     {
-        public SprintHydrator(
-            DBContext dbContext,
-            HydratorRegistry hydratorRegistry
-        ) : base(dbContext, hydratorRegistry)
+        public SprintHydrator(DBContext dbContext) : base(dbContext)
         {
-            hydratorRegistry.Register(this);
+
         }
 
         public override bool Supports(Type from, Type to)
@@ -23,7 +21,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             ) && to == typeof(Sprint);
         }
 
-        public override object Hydrate(object from, Type to, int maxDepth, int depth)
+        public override object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             Object? model = null;
 
@@ -36,12 +34,12 @@ namespace AgileStudioServer.Application.Models.Hydrators
             {
                 var entity = (Data.Entities.Sprint)from;
                 model = new Sprint(entity.SprintNumber);
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.SprintPostDto)
             {
                 model = new Sprint(0); // todo fix hard coded sprint number
-                Hydrate(from, model, maxDepth, depth);
+                Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.DtosNew.SprintPatchDto)
             {
@@ -49,8 +47,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 var entity = _DBContext.Sprint.Find(dto.ID);
                 if (entity != null)
                 {
-                    model = Hydrate(entity, typeof(Sprint), maxDepth, depth);
-                    Hydrate(dto, model, maxDepth, depth);
+                    model = Hydrate(entity, typeof(Sprint), maxDepth, depth, referenceHydrator);
+                    Hydrate(dto, model, maxDepth, depth, referenceHydrator);
                 }
             }
 
@@ -62,7 +60,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             return model;
         }
 
-        public override void Hydrate(object from, object to, int maxDepth, int depth)
+        public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
             if (to is not Sprint)
             {
@@ -83,15 +81,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.StartDate = entity.StartDate;
                 model.EndDate = entity.EndDate;
 
-                if (nextDepth <= maxDepth)
+                if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
-                    model.Project = (Project)_HydratorRegistry.Hydrate(
+                    model.Project = (Project)referenceHydrator.Hydrate(
                         entity.Project, typeof(Project), maxDepth, nextDepth
                     );
 
                     if (entity.CreatedBy != null)
                     {
-                        model.CreatedBy = (User)_HydratorRegistry.Hydrate(
+                        model.CreatedBy = (User)referenceHydrator.Hydrate(
                             entity.CreatedBy, typeof(User), maxDepth, nextDepth
                         );
                     }
@@ -104,7 +102,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.StartDate = dto.StartDate;
                 model.EndDate = dto.EndDate;
 
-                if (depth < maxDepth)
+                if (referenceHydrator != null && depth < maxDepth)
                 {
                     Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
                         throw new ModelNotFoundException(
@@ -112,7 +110,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                             dto.ProjectId.ToString()
                         );
 
-                    model.Project = (Project)_HydratorRegistry.Hydrate(
+                    model.Project = (Project)referenceHydrator.Hydrate(
                         projectEntity, typeof(Project), maxDepth, nextDepth
                     );
                 }
