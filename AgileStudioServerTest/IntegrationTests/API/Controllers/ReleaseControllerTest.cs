@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data;
@@ -62,7 +62,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         public void Patch_WithIdAndDto_ReturnsApiResource()
         {
             var release = _Fixtures.CreateRelease("v1.0.0");
-            var releasePatchDto = new ReleasePatchDto("v1.0.1");
+            var releasePatchDto = new ReleasePatchDto(release.ID, "v1.0.1");
 
             IActionResult result = _Controller.Patch(release.ID, releasePatchDto);
             ReleaseDto? releaseApiResource = null;

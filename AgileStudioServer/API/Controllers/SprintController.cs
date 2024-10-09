@@ -3,6 +3,7 @@ using AgileStudioServer.API.DtosNew.DtoModelConverters;
 using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Application.Models;
 using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Hydrator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,21 +14,15 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class SprintController : ControllerBase
     {
-        private SprintService _sprintService;
-        private SprintConverter _sprintConverter;
-        private SprintPostConverter _sprintPostConverter;
-        private SprintPatchConverter _sprintPatchConverter;
+        private SprintService _SprintService;
+        private readonly Hydrator _Hydrator;
 
         public SprintController(
             SprintService sprintService,
-            SprintConverter sprintConverter,
-            SprintPostConverter sprintPostConverter,
-            SprintPatchConverter sprintPatchConverter)
+            Hydrator hydrator)
         {
-            _sprintService = sprintService;
-            _sprintConverter = sprintConverter;
-            _sprintPostConverter = sprintPostConverter;
-            _sprintPatchConverter = sprintPatchConverter;
+            _SprintService = sprintService;
+            _Hydrator = hydrator;
         }
 
 
@@ -37,13 +32,14 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(SprintDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var sprint = _sprintService.Get(id);
-            if (sprint == null)
+            var model = _SprintService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return Ok(_sprintConverter.ConvertToDto(sprint));
+            var dto = HydrateSprintDto(model);
+            return Ok(dto);
         }
 
         [HttpPost(Name = "CreateSprint")]
@@ -53,24 +49,18 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(SprintPostDto sprintPostDto)
         {
-            Sprint sprint;
-            try
-            {
-                sprint = _sprintPostConverter.ConvertToModel(sprintPostDto);
-                sprint = _sprintService.Create(sprint);
-            }
-            catch (Exception)
-            {
-                // todo log exception
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            Sprint model = HydrateSprintModel(sprintPostDto);
+            model = _SprintService.Create(model);
 
             var apiResourceUrl = "";
             if (Url != null)
             {
-                apiResourceUrl = Url.Action(nameof(Get), new { id = sprint.ID }) ?? apiResourceUrl;
+                apiResourceUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? apiResourceUrl;
             }
-            return Created(apiResourceUrl, _sprintConverter.ConvertToDto(sprint));
+
+            var dto = HydrateSprintDto(model);
+
+            return Created(apiResourceUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateSprint")]
@@ -81,26 +71,26 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, SprintPatchDto sprintPatchDto)
         {
-            Sprint sprint;
+            SprintDto dto;
             try
             {
-                sprint = _sprintPatchConverter.ConvertToModel(sprintPatchDto);
-                sprint = _sprintService.Update(sprint);
+                Sprint model = HydrateSprintModel(sprintPatchDto);
+                model = _SprintService.Update(model);
+                dto = HydrateSprintDto(model);
             }
             catch (ModelNotFoundException e)
             {
-                // todo log exception
-                return e.ModelClassName.Equals(nameof(Sprint)) ?
-                    NotFound() : 
-                    StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (Exception)
-            {
-                // todo log exception
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                if (e.ModelClassName.Equals(nameof(Sprint)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            return new OkObjectResult(_sprintConverter.ConvertToDto(sprint));
+            return new OkObjectResult(dto);
         }
 
         [HttpDelete("{id}", Name = "DeleteSprint")]
@@ -109,23 +99,36 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            try
+            Sprint? model = _SprintService.Get(id);
+            if (model == null)
             {
-                Sprint? sprint = _sprintService.Get(id);
-                if (sprint == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                _sprintService.Delete(sprint);
-            }
-            catch (Exception)
-            {
-                // todo log exception
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            _SprintService.Delete(model);
 
             return new OkResult();
+        }
+
+        private Sprint HydrateSprintModel(SprintPostDto sprintPostDto, int depth = 1)
+        {
+            return (Sprint)_Hydrator.Hydrate(
+                sprintPostDto, typeof(Sprint), depth
+            );
+        }
+
+        private Sprint HydrateSprintModel(SprintPatchDto sprintPatchDto, int depth = 1)
+        {
+            return (Sprint)_Hydrator.Hydrate(
+                sprintPatchDto, typeof(Sprint), depth
+            );
+        }
+
+        private SprintDto HydrateSprintDto(Sprint sprint, int depth = 1)
+        {
+            return (SprintDto) _Hydrator.Hydrate(
+                sprint, typeof(SprintDto), depth
+            );
         }
     }
 }

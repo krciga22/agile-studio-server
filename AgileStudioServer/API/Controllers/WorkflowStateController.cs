@@ -1,5 +1,8 @@
-using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Hydrator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +13,13 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class WorkflowStateController : ControllerBase
     {
-        private readonly WorkflowStateDataProvider _DataProvider;
+        private readonly WorkflowStateService _WorkflowStateService;
+        private readonly Hydrator _Hydrator;
 
-        public WorkflowStateController(WorkflowStateDataProvider workflowStateDataProvider)
+        public WorkflowStateController(WorkflowStateService workflowStateService, Hydrator hydrator)
         {
-            _DataProvider = workflowStateDataProvider;
+            _WorkflowStateService = workflowStateService;
+            _Hydrator = hydrator;
         }
 
         [HttpGet("{id}", Name = "GetWorkflowState")]
@@ -23,13 +28,13 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(WorkflowStateDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
+            var model = _WorkflowStateService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            return Ok(HydrateWorkflowStateDto(model));
         }
 
         [HttpPost(Name = "CreateWorkflowState")]
@@ -37,16 +42,20 @@ namespace AgileStudioServer.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(WorkflowStateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public CreatedResult Post(WorkflowStatePostDto workflowStatePostDto)
+        public IActionResult Post(WorkflowStatePostDto workflowStatePostDto)
         {
-            var apiResource = _DataProvider.Create(workflowStatePostDto);
+            var model = HydrateWorkflowStateModel(workflowStatePostDto);
+            model = _WorkflowStateService.Create(model);
 
-            var workflowStateUrl = "";
+            string workflowStateUrl = "";
             if (Url != null)
             {
-                workflowStateUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? workflowStateUrl;
+                workflowStateUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? workflowStateUrl;
             }
-            return Created(workflowStateUrl, apiResource);
+
+            var dto = HydrateWorkflowStateDto(model);
+
+            return Created(workflowStateUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateWorkflowState")]
@@ -57,15 +66,31 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, WorkflowStatePatchDto workflowStatePatchDto)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            if (id != workflowStatePatchDto.ID)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            apiResource = _DataProvider.Update(id, workflowStatePatchDto);
+            WorkflowStateDto dto;
+            try
+            {
+                WorkflowState model = HydrateWorkflowStateModel(workflowStatePatchDto);
+                model = _WorkflowStateService.Update(model);
+                dto = HydrateWorkflowStateDto(model);
+            }
+            catch (ModelNotFoundException e)
+            {
+                if (e.ModelClassName.Equals(nameof(WorkflowState)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return new OkObjectResult(apiResource);
+            return new OkObjectResult(dto);
         }
 
         [HttpDelete("{id}", Name = "DeleteWorkflowState")]
@@ -74,15 +99,36 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            var model = _WorkflowStateService.Get(id);
+            if (model is null)
             {
                 return NotFound();
             }
 
-            _DataProvider.Delete(id);
+            _WorkflowStateService.Delete(model);
 
             return new OkResult();
+        }
+
+        private WorkflowStateDto HydrateWorkflowStateDto(WorkflowState workflowState, int depth = 1)
+        {
+            return (WorkflowStateDto)_Hydrator.Hydrate(
+                workflowState, typeof(WorkflowStateDto), depth
+            );
+        }
+
+        private WorkflowState HydrateWorkflowStateModel(WorkflowStatePostDto workflowStatePostDto, int depth = 1)
+        {
+            return (WorkflowState)_Hydrator.Hydrate(
+                workflowStatePostDto, typeof(WorkflowState), depth
+            );
+        }
+
+        private WorkflowState HydrateWorkflowStateModel(WorkflowStatePatchDto workflowStatePatchDto, int depth = 1)
+        {
+            return (WorkflowState) _Hydrator.Hydrate(
+                workflowStatePatchDto, typeof(WorkflowState), depth
+            );
         }
     }
 }

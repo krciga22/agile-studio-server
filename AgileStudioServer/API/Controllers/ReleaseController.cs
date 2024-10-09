@@ -1,5 +1,8 @@
-using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Hydrator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,14 +13,18 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class ReleaseController : ControllerBase
     {
-        private readonly ReleaseDataProvider _DataProvider;
+        private readonly ReleaseService _ReleaseService;
+        private readonly ProjectService _ProjectService;
+        private readonly Hydrator _Hydrator;
 
-        private readonly ProjectDataProvider _ProjectDataProvider;
-
-        public ReleaseController(ReleaseDataProvider releaseDataProvider, ProjectDataProvider projectDataProvider)
+        public ReleaseController(
+            ReleaseService releaseService, 
+            ProjectService projectService, 
+            Hydrator hydrator)
         {
-            _DataProvider = releaseDataProvider;
-            _ProjectDataProvider = projectDataProvider;
+            _ReleaseService = releaseService;
+            _ProjectService = projectService;
+            _Hydrator = hydrator;
         }
 
         [HttpGet("{id}", Name = "GetRelease")]
@@ -26,13 +33,14 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ReleaseDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
+            var model = _ReleaseService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            var dto = HydrateReleaseDto(model);
+            return Ok(dto);
         }
 
         [HttpPost(Name = "CreateRelease")]
@@ -42,18 +50,18 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public IActionResult Post(ReleasePostDto releasePostDto)
         {
-            var apiResource = _DataProvider.Create(releasePostDto);
-            if (apiResource is null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            Release model = HydrateReleaseModel(releasePostDto);
+            model = _ReleaseService.Create(model);
 
             var apiResourceUrl = "";
             if (Url != null)
             {
-                apiResourceUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? apiResourceUrl;
+                apiResourceUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? apiResourceUrl;
             }
-            return Created(apiResourceUrl, apiResource);
+
+            var dto = HydrateReleaseDto(model);
+
+            return Created(apiResourceUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateRelease")]
@@ -64,15 +72,26 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, ReleasePatchDto releasePatchDto)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            ReleaseDto dto;
+            try
             {
-                return NotFound();
+                Release model = HydrateReleaseModel(releasePatchDto);
+                model = _ReleaseService.Update(model);
+                dto = HydrateReleaseDto(model);
+            }
+            catch (ModelNotFoundException e)
+            {
+                if (e.ModelClassName.Equals(nameof(Release)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            apiResource = _DataProvider.Update(id, releasePatchDto);
-
-            return new OkObjectResult(apiResource);
+            return new OkObjectResult(dto);
         }
 
         [HttpDelete("{id}", Name = "DeleteRelease")]
@@ -81,15 +100,36 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            Release? model = _ReleaseService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            _DataProvider.Delete(id);
+            _ReleaseService.Delete(model);
 
             return new OkResult();
+        }
+
+        private Release HydrateReleaseModel(ReleasePostDto releasePostDto, int depth = 1)
+        {
+            return (Release)_Hydrator.Hydrate(
+                releasePostDto, typeof(Release), depth
+            );
+        }
+
+        private Release HydrateReleaseModel(ReleasePatchDto releasePatchDto, int depth = 1)
+        {
+            return (Release)_Hydrator.Hydrate(
+                releasePatchDto, typeof(Release), depth
+            );
+        }
+
+        private ReleaseDto HydrateReleaseDto(Release release, int depth = 1)
+        {
+            return (ReleaseDto)_Hydrator.Hydrate(
+                release, typeof(ReleaseDto), depth
+            );
         }
     }
 }

@@ -1,5 +1,8 @@
-using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Hydrator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,22 +13,25 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class WorkflowController : ControllerBase
     {
-        private readonly WorkflowDataProvider _DataProvider;
-        private readonly WorkflowStateDataProvider _WorkflowStateDataProvider;
+        private readonly WorkflowService _WorkflowService;
+        private readonly WorkflowStateService _WorkflowStateService;
+        private readonly Hydrator _Hydrator;
 
-        public WorkflowController(
-            WorkflowDataProvider workflowDataProvider,
-            WorkflowStateDataProvider workflowStateDataProvider)
+        public WorkflowController(WorkflowService workflowService, 
+            WorkflowStateService workflowStateService, Hydrator hydrator)
         {
-            _DataProvider = workflowDataProvider;
-            _WorkflowStateDataProvider = workflowStateDataProvider;
+            _WorkflowService = workflowService;
+            _WorkflowStateService = workflowStateService;
+            _Hydrator = hydrator;
         }
 
         [HttpGet(Name = "GetWorkflows")]
         [ProducesResponseType(typeof(List<WorkflowDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            return Ok(_DataProvider.List());
+            var models = _WorkflowService.GetAll();
+            var dtos = HydrateWorkflowDtos(models);
+            return Ok(dtos);
         }
 
         [HttpGet("{id}", Name = "GetWorkflow")]
@@ -34,13 +40,14 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(WorkflowDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
+            var model = _WorkflowService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            var dto = HydrateWorkflowDto(model);
+            return Ok(dto);
         }
 
         [HttpGet("{id}/WorkflowStates", Name = "GetWorkflowWorkflowStates")]
@@ -49,13 +56,15 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(List<WorkflowStateDto>), StatusCodes.Status200OK)]
         public IActionResult GetWorkflowStatesForWorkflow(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            var workflow = _WorkflowService.Get(id);
+            if(workflow == null)
             {
                 return NotFound();
             }
 
-            return Ok(_WorkflowStateDataProvider.ListForWorkflowId(id));
+            var models = _WorkflowStateService.GetByWorkflowId(workflow.ID);
+            var dtos = HydrateWorkflowStateDtos(models);
+            return Ok(dtos);
         }
 
         [HttpPost(Name = "CreateWorkflow")]
@@ -63,16 +72,20 @@ namespace AgileStudioServer.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(WorkflowDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public CreatedResult Post(WorkflowPostDto workflowPostDto)
+        public IActionResult Post(WorkflowPostDto workflowPostDto)
         {
-            var apiResource = _DataProvider.Create(workflowPostDto);
+            Workflow model = HydrateWorkflowModel(workflowPostDto);
+            model = _WorkflowService.Create(model);
 
-            var workflowUrl = "";
+            string workflowUrl = "";
             if (Url != null)
             {
-                workflowUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? workflowUrl;
+                workflowUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? workflowUrl;
             }
-            return Created(workflowUrl, apiResource);
+
+            var dto = HydrateWorkflowDto(model);
+
+            return Created(workflowUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateWorkflow")]
@@ -83,15 +96,31 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, WorkflowPatchDto workflowPatchDto)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            if(id != workflowPatchDto.ID)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            apiResource = _DataProvider.Update(id, workflowPatchDto);
+            WorkflowDto dto;
+            try
+            {
+                Workflow model = HydrateWorkflowModel(workflowPatchDto);
+                model = _WorkflowService.Update(model);
+                dto = HydrateWorkflowDto(model);
+            }
+            catch (ModelNotFoundException e)
+            {
+                if (e.ModelClassName.Equals(nameof(Workflow)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return new OkObjectResult(apiResource);
+            return new OkObjectResult(dto);
         }
 
         [HttpDelete("{id}", Name = "DeleteWorkflow")]
@@ -100,15 +129,74 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            Workflow? model = _WorkflowService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            _DataProvider.Delete(id);
+            _WorkflowService.Delete(model);
 
             return new OkResult();
+        }
+
+        private List<WorkflowDto> HydrateWorkflowDtos(List<Workflow> workflows, int depth = 1)
+        {
+            List<WorkflowDto> dtos = new();
+
+            workflows.ForEach(workflow => {
+                WorkflowDto dto = HydrateWorkflowDto(workflow, depth);
+                dtos.Add(dto);
+            });
+
+            return dtos;
+        }
+
+        private WorkflowDto HydrateWorkflowDto(Workflow workflow, int depth = 1)
+        {
+            return (WorkflowDto)_Hydrator.Hydrate(
+                workflow, typeof(WorkflowDto), depth
+            );
+        }
+
+        private List<WorkflowStateDto> HydrateWorkflowStateDtos(List<WorkflowState> workflowStates, int depth = 1)
+        {
+            List<WorkflowStateDto> dtos = new();
+
+            workflowStates.ForEach(workflowState => {
+                WorkflowStateDto dto = HydrateWorkflowStateDto(workflowState, depth);
+                dtos.Add(dto);
+            });
+
+            return dtos;
+        }
+
+        private WorkflowStateDto HydrateWorkflowStateDto(WorkflowState workflowState, int depth = 1)
+        {
+            return (WorkflowStateDto)_Hydrator.Hydrate(
+                workflowState, typeof(WorkflowStateDto), depth
+            );
+        }
+
+        private Workflow HydrateWorkflowModel(WorkflowPostDto workflowPostDto, int depth = 0)
+        {
+            return (Workflow)_Hydrator.Hydrate(
+                workflowPostDto, typeof(Workflow), depth
+            );
+        }
+
+        private Workflow HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, int depth = 0)
+        {
+            return (Workflow)_Hydrator.Hydrate(
+                workflowPatchDto, typeof(Workflow), depth
+            );
+        }
+
+        private void HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, Workflow workflow, int depth = 0)
+        {
+            _Hydrator.Hydrate(
+                workflowPatchDto, workflow, depth
+            );
         }
     }
 }

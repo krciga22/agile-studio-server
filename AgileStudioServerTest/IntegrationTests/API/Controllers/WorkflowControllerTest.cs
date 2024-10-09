@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data.Entities;
@@ -107,7 +107,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var workflow = _Fixtures.CreateWorkflow();
             var title = $"{workflow.Title} Updated";
-            var workflowPatchDto = new WorkflowPatchDto(title);
+            var workflowPatchDto = new WorkflowPatchDto(workflow.ID, title);
 
             IActionResult result = _Controller.Patch(workflow.ID, workflowPatchDto);
             WorkflowDto? apiResource = null;
