@@ -18,57 +18,57 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Get_WithId_ReturnsApiResource()
+        public void Get_WithId_ReturnsDto()
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
 
-            BacklogItemDto? apiResource = null;
+            BacklogItemDto? dto = null;
             IActionResult result = _Controller.Get(backlogItem.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResource = okResult.Value as BacklogItemDto;
+                dto = okResult.Value as BacklogItemDto;
             }
 
-            Assert.IsType<BacklogItemDto>(apiResource);
-            Assert.Equal(backlogItem.ID, apiResource.ID);
+            Assert.IsType<BacklogItemDto>(dto);
+            Assert.Equal(backlogItem.ID, dto.ID);
         }
 
         [Fact]
-        public void Post_WithDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsDto()
         {
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
                     backlogItemTypeSchema: project.BacklogItemTypeSchema);
             var workflowState = _Fixtures.CreateWorkflowState();
-            var dto = new BacklogItemPostDto("Test Backlog Item Type Schema", project.ID, backlogItemType.ID, workflowState.ID);
+            var postDto = new BacklogItemPostDto("Test Backlog Item Type Schema", project.ID, backlogItemType.ID, workflowState.ID);
 
-            BacklogItemDto? apiResource = null;
-            IActionResult result = _Controller.Post(dto);
+            BacklogItemDto? dto = null;
+            IActionResult result = _Controller.Post(postDto);
             if (result is CreatedResult createdResult)
             {
-                apiResource = createdResult.Value as BacklogItemDto;
+                dto = createdResult.Value as BacklogItemDto;
             }
 
-            Assert.IsType<BacklogItemDto>(apiResource);
-            Assert.Equal(dto.Title, apiResource.Title);
+            Assert.IsType<BacklogItemDto>(dto);
+            Assert.Equal(postDto.Title, dto.Title);
         }
 
         [Fact]
-        public void Patch_WithIdAndDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsDto()
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
             var title = $"{backlogItem.Title} Updated";
-            var dto = new BacklogItemPatchDto(backlogItem.ID, title, backlogItem.WorkflowState.ID);
+            var patchDto = new BacklogItemPatchDto(backlogItem.ID, title, backlogItem.WorkflowState.ID);
 
-            IActionResult result = _Controller.Patch(backlogItem.ID, dto);
-            BacklogItemDto? apiResource = null;
+            IActionResult result = _Controller.Patch(backlogItem.ID, patchDto);
+            BacklogItemDto? dto = null;
             if (result is OkObjectResult okObjectResult)
             {
-                apiResource = okObjectResult.Value as BacklogItemDto;
+                dto = okObjectResult.Value as BacklogItemDto;
             }
 
-            Assert.IsType<BacklogItemDto>(apiResource);
-            Assert.Equal(dto.Title, apiResource.Title);
+            Assert.IsType<BacklogItemDto>(dto);
+            Assert.Equal(patchDto.Title, dto.Title);
         }
 
         [Fact]

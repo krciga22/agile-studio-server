@@ -18,19 +18,19 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Get_WithId_ReturnsApiResource()
+        public void Get_WithId_ReturnsDto()
         {
             var release = _Fixtures.CreateRelease();
 
-            ReleaseDto? releaseApiResource = null;
+            ReleaseDto? releaseDto = null;
             IActionResult result = _Controller.Get(release.ID);
             if (result is OkObjectResult okResult)
             {
-                releaseApiResource = okResult.Value as ReleaseDto;
+                releaseDto = okResult.Value as ReleaseDto;
             }
 
-            Assert.IsType<ReleaseDto>(releaseApiResource);
-            Assert.Equal(release.ID, releaseApiResource.ID);
+            Assert.IsType<ReleaseDto>(releaseDto);
+            Assert.Equal(release.ID, releaseDto.ID);
         }
 
         [Fact]
@@ -42,37 +42,37 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Post_WithDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsDto()
         {
             var project = _Fixtures.CreateProject();
             var releasePostDto = new ReleasePostDto("v1.0.0", project.ID);
 
-            ReleaseDto? releaseApiResource = null;
+            ReleaseDto? releaseDto = null;
             IActionResult result = _Controller.Post(releasePostDto);
             if (result is CreatedResult createdResult)
             {
-                releaseApiResource = createdResult.Value as ReleaseDto;
+                releaseDto = createdResult.Value as ReleaseDto;
             }
 
-            Assert.IsType<ReleaseDto>(releaseApiResource);
-            Assert.Equal(releasePostDto.Title, releaseApiResource.Title);
+            Assert.IsType<ReleaseDto>(releaseDto);
+            Assert.Equal(releasePostDto.Title, releaseDto.Title);
         }
 
         [Fact]
-        public void Patch_WithIdAndDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsDto()
         {
             var release = _Fixtures.CreateRelease("v1.0.0");
             var releasePatchDto = new ReleasePatchDto(release.ID, "v1.0.1");
 
             IActionResult result = _Controller.Patch(release.ID, releasePatchDto);
-            ReleaseDto? releaseApiResource = null;
+            ReleaseDto? releaseDto = null;
             if (result is OkObjectResult okObjectResult)
             {
-                releaseApiResource = okObjectResult.Value as ReleaseDto;
+                releaseDto = okObjectResult.Value as ReleaseDto;
             }
 
-            Assert.IsType<ReleaseDto>(releaseApiResource);
-            Assert.Equal(releasePatchDto.Title, releaseApiResource.Title);
+            Assert.IsType<ReleaseDto>(releaseDto);
+            Assert.Equal(releasePatchDto.Title, releaseDto.Title);
         }
 
         [Fact]

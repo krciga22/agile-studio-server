@@ -53,15 +53,15 @@ namespace AgileStudioServer.API.Controllers
             Release model = HydrateReleaseModel(releasePostDto);
             model = _ReleaseService.Create(model);
 
-            var apiResourceUrl = "";
+            var releaseUrl = "";
             if (Url != null)
             {
-                apiResourceUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? apiResourceUrl;
+                releaseUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? releaseUrl;
             }
 
             var dto = HydrateReleaseDto(model);
 
-            return Created(apiResourceUrl, dto);
+            return Created(releaseUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateRelease")]

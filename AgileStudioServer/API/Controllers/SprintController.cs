@@ -52,15 +52,15 @@ namespace AgileStudioServer.API.Controllers
             Sprint model = HydrateSprintModel(sprintPostDto);
             model = _SprintService.Create(model);
 
-            var apiResourceUrl = "";
+            var sprintUrl = "";
             if (Url != null)
             {
-                apiResourceUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? apiResourceUrl;
+                sprintUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? sprintUrl;
             }
 
             var dto = HydrateSprintDto(model);
 
-            return Created(apiResourceUrl, dto);
+            return Created(sprintUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateSprint")]

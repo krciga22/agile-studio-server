@@ -19,38 +19,38 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Get_WithNoArguments_ReturnsApiResources()
+        public void Get_WithNoArguments_ReturnsDtos()
         {
             List<Workflow> workflows = new() {
                 _Fixtures.CreateWorkflow("Test Workflow 1"),
                 _Fixtures.CreateWorkflow("Test Workflow 2")
             };
 
-            List<WorkflowDto>? apiResources = null;
+            List<WorkflowDto>? dtos = null;
             IActionResult result = _Controller.Get();
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<WorkflowDto>;
+                dtos = okResult.Value as List<WorkflowDto>;
             }
 
-            Assert.IsType<List<WorkflowDto>>(apiResources);
-            Assert.Equal(workflows.Count, apiResources.Count);
+            Assert.IsType<List<WorkflowDto>>(dtos);
+            Assert.Equal(workflows.Count, dtos.Count);
         }
 
         [Fact]
-        public void Get_WithId_ReturnsApiResource()
+        public void Get_WithId_ReturnsDto()
         {
             var workflow = _Fixtures.CreateWorkflow();
 
-            WorkflowDto? apiResource = null;
+            WorkflowDto? dto = null;
             IActionResult result = _Controller.Get(workflow.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResource = okResult.Value as WorkflowDto;
+                dto = okResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowDto>(apiResource);
-            Assert.Equal(workflow.ID, apiResource.ID);
+            Assert.IsType<WorkflowDto>(dto);
+            Assert.Equal(workflow.ID, dto.ID);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void GetWorkflowStatesForWorkflow_WithId_ReturnsApiResources()
+        public void GetWorkflowStatesForWorkflow_WithId_ReturnsDtos()
         {
             var workflow = _Fixtures.CreateWorkflow();
 
@@ -75,49 +75,49 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     workflow: workflow)
             };
 
-            List<WorkflowStateDto>? apiResources = null;
+            List<WorkflowStateDto>? dtos = null;
             IActionResult result = _Controller.GetWorkflowStatesForWorkflow(workflow.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<WorkflowStateDto>;
+                dtos = okResult.Value as List<WorkflowStateDto>;
             }
 
-            Assert.IsType<List<WorkflowStateDto>>(apiResources);
-            Assert.Equal(workflowStates.Count, apiResources.Count);
+            Assert.IsType<List<WorkflowStateDto>>(dtos);
+            Assert.Equal(workflowStates.Count, dtos.Count);
         }
 
         [Fact]
-        public void Post_WithDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsDto()
         {
             var workflowPostDto = new WorkflowPostDto("Test Workflow");
 
-            WorkflowDto? apiResource = null;
+            WorkflowDto? dto = null;
             IActionResult result = _Controller.Post(workflowPostDto);
             if (result is CreatedResult createdResult)
             {
-                apiResource = createdResult.Value as WorkflowDto;
+                dto = createdResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowDto>(apiResource);
-            Assert.Equal(workflowPostDto.Title, apiResource.Title);
+            Assert.IsType<WorkflowDto>(dto);
+            Assert.Equal(workflowPostDto.Title, dto.Title);
         }
 
         [Fact]
-        public void Patch_WithIdAndDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsDto()
         {
             var workflow = _Fixtures.CreateWorkflow();
             var title = $"{workflow.Title} Updated";
             var workflowPatchDto = new WorkflowPatchDto(workflow.ID, title);
 
             IActionResult result = _Controller.Patch(workflow.ID, workflowPatchDto);
-            WorkflowDto? apiResource = null;
+            WorkflowDto? dto = null;
             if (result is OkObjectResult okObjectResult)
             {
-                apiResource = okObjectResult.Value as WorkflowDto;
+                dto = okObjectResult.Value as WorkflowDto;
             }
 
-            Assert.IsType<WorkflowDto>(apiResource);
-            Assert.Equal(workflowPatchDto.Title, apiResource.Title);
+            Assert.IsType<WorkflowDto>(dto);
+            Assert.Equal(workflowPatchDto.Title, dto.Title);
         }
 
         [Fact]

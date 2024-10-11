@@ -18,19 +18,19 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Get_WithId_ReturnsApiResource()
+        public void Get_WithId_ReturnsDto()
         {
             var sprint = _Fixtures.CreateSprint();
 
-            SprintDto? sprintApiResource = null;
+            SprintDto? sprintDto = null;
             IActionResult result = _Controller.Get(sprint.ID);
             if (result is OkObjectResult okResult)
             {
-                sprintApiResource = okResult.Value as SprintDto;
+                sprintDto = okResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintDto>(sprintApiResource);
-            Assert.Equal(sprint.ID, sprintApiResource.ID);
+            Assert.IsType<SprintDto>(sprintDto);
+            Assert.Equal(sprint.ID, sprintDto.ID);
         }
 
         [Fact]
@@ -42,25 +42,25 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Post_WithDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsDto()
         {
             var project = _Fixtures.CreateProject();
             var sprintPostDto = new SprintPostDto(project.ID);
             sprintPostDto.Description = "Test Sprint";
 
-            SprintDto? sprintApiResource = null;
+            SprintDto? sprintDto = null;
             IActionResult result = _Controller.Post(sprintPostDto);
             if (result is CreatedResult createdResult)
             {
-                sprintApiResource = createdResult.Value as SprintDto;
+                sprintDto = createdResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintDto>(sprintApiResource);
-            Assert.Equal(sprintPostDto.Description, sprintApiResource.Description);
+            Assert.IsType<SprintDto>(sprintDto);
+            Assert.Equal(sprintPostDto.Description, sprintDto.Description);
         }
 
         [Fact]
-        public void Patch_WithIdAndDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsDto()
         {
             var sprint = _Fixtures.CreateSprint();
             var description = $"Test Sprint {sprint.ID} Updated";
@@ -70,14 +70,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
             };
 
             IActionResult result = _Controller.Patch(sprint.ID, sprintPatchDto);
-            SprintDto? sprintApiResource = null;
+            SprintDto? sprintDto = null;
             if (result is OkObjectResult okObjectResult)
             {
-                sprintApiResource = okObjectResult.Value as SprintDto;
+                sprintDto = okObjectResult.Value as SprintDto;
             }
 
-            Assert.IsType<SprintDto>(sprintApiResource);
-            Assert.Equal(sprintPatchDto.Description, sprintApiResource.Description);
+            Assert.IsType<SprintDto>(sprintDto);
+            Assert.Equal(sprintPatchDto.Description, sprintDto.Description);
         }
 
         [Fact]

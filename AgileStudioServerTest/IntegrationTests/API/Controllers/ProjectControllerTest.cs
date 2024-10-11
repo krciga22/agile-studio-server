@@ -19,38 +19,38 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void Get_WithNoArguments_ReturnsApiResources()
+        public void Get_WithNoArguments_ReturnsDtos()
         {
             List<Project> projects = new() {
                 _Fixtures.CreateProject("Test Project 1"),
                 _Fixtures.CreateProject("Test Project 2")
             };
 
-            List<ProjectDto>? projectApiResources = null;
+            List<ProjectDto>? projectDtos = null;
             IActionResult result = _Controller.Get();
             if (result is OkObjectResult okResult)
             {
-                projectApiResources = okResult.Value as List<ProjectDto>;
+                projectDtos = okResult.Value as List<ProjectDto>;
             }
 
-            Assert.IsType<List<ProjectDto>>(projectApiResources);
-            Assert.Equal(projects.Count, projectApiResources.Count);
+            Assert.IsType<List<ProjectDto>>(projectDtos);
+            Assert.Equal(projects.Count, projectDtos.Count);
         }
 
         [Fact]
-        public void Get_WithId_ReturnsApiResource()
+        public void Get_WithId_ReturnsDto()
         {
             var project = _Fixtures.CreateProject();
 
-            ProjectDto? projectApiResource = null;
+            ProjectDto? projectDto = null;
             IActionResult result = _Controller.Get(project.ID);
             if (result is OkObjectResult okResult)
             {
-                projectApiResource = okResult.Value as ProjectDto;
+                projectDto = okResult.Value as ProjectDto;
             }
 
-            Assert.IsType<ProjectDto>(projectApiResource);
-            Assert.Equal(project.ID, projectApiResource.ID);
+            Assert.IsType<ProjectDto>(projectDto);
+            Assert.Equal(project.ID, projectDto.ID);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
-        public void GetBacklogItemsForProject_WithId_ReturnsApiResources()
+        public void GetBacklogItemsForProject_WithId_ReturnsDtos()
         {
             var project = _Fixtures.CreateProject();
             var backlogItemType = _Fixtures.CreateBacklogItemType(
@@ -79,19 +79,19 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     backlogItemType: backlogItemType)
             };
 
-            List<BacklogItemDto>? apiResources = null;
+            List<BacklogItemDto>? dtos = null;
             IActionResult result = _Controller.GetBacklogItemsForProject(project.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<BacklogItemDto>;
+                dtos = okResult.Value as List<BacklogItemDto>;
             }
 
-            Assert.IsType<List<BacklogItemDto>>(apiResources);
-            Assert.Equal(backlogItems.Count, apiResources.Count);
+            Assert.IsType<List<BacklogItemDto>>(dtos);
+            Assert.Equal(backlogItems.Count, dtos.Count);
         }
 
         [Fact]
-        public void GetSprintsForProject_WithId_ReturnsApiResources()
+        public void GetSprintsForProject_WithId_ReturnsDtos()
         {
             var project = _Fixtures.CreateProject();
 
@@ -104,19 +104,19 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     project: project)
             };
 
-            List<SprintSummaryDto>? apiResources = null;
+            List<SprintSummaryDto>? dtos = null;
             IActionResult result = _Controller.GetSprintsForProject(project.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<SprintSummaryDto>;
+                dtos = okResult.Value as List<SprintSummaryDto>;
             }
 
-            Assert.IsType<List<SprintSummaryDto>>(apiResources);
-            Assert.Equal(sprints.Count, apiResources.Count);
+            Assert.IsType<List<SprintSummaryDto>>(dtos);
+            Assert.Equal(sprints.Count, dtos.Count);
         }
 
         [Fact]
-        public void GetReleasesForProject_WithId_ReturnsApiResources()
+        public void GetReleasesForProject_WithId_ReturnsDtos()
         {
             var project = _Fixtures.CreateProject();
 
@@ -129,50 +129,50 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     project: project)
             };
 
-            List<ReleaseSummaryDto>? apiResources = null;
+            List<ReleaseSummaryDto>? dtos = null;
             IActionResult result = _Controller.GetReleasesForProject(project.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<ReleaseSummaryDto>;
+                dtos = okResult.Value as List<ReleaseSummaryDto>;
             }
 
-            Assert.IsType<List<ReleaseSummaryDto>>(apiResources);
-            Assert.Equal(releases.Count, apiResources.Count);
+            Assert.IsType<List<ReleaseSummaryDto>>(dtos);
+            Assert.Equal(releases.Count, dtos.Count);
         }
 
         [Fact]
-        public void Post_WithDto_ReturnsApiResource()
+        public void Post_WithDto_ReturnsDto()
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var projectPostDto = new ProjectPostDto("Test Project", backlogItemTypeSchema.ID);
 
-            ProjectDto? projectApiResource = null;
+            ProjectDto? projectDto = null;
             IActionResult result = _Controller.Post(projectPostDto);
             if (result is CreatedResult createdResult)
             {
-                projectApiResource = createdResult.Value as ProjectDto;
+                projectDto = createdResult.Value as ProjectDto;
             }
 
-            Assert.IsType<ProjectDto>(projectApiResource);
-            Assert.Equal(projectPostDto.Title, projectApiResource.Title);
+            Assert.IsType<ProjectDto>(projectDto);
+            Assert.Equal(projectPostDto.Title, projectDto.Title);
         }
 
         [Fact]
-        public void Patch_WithIdAndDto_ReturnsApiResource()
+        public void Patch_WithIdAndDto_ReturnsDto()
         {
             var project = _Fixtures.CreateProject();
             var title = $"{project.Title} Updated";
             var projectPatchDto = new ProjectPatchDto(project.ID, title);
 
             IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
-            ProjectDto? projectApiResource = null;
+            ProjectDto? projectDto = null;
             if (result is OkObjectResult okObjectResult)
             {
-                projectApiResource = okObjectResult.Value as ProjectDto;
+                projectDto = okObjectResult.Value as ProjectDto;
             }
 
-            Assert.IsType<ProjectDto>(projectApiResource);
-            Assert.Equal(projectPatchDto.Title, projectApiResource.Title);
+            Assert.IsType<ProjectDto>(projectDto);
+            Assert.Equal(projectPatchDto.Title, projectDto.Title);
         }
 
         [Fact]
