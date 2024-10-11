@@ -1,5 +1,8 @@
-using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Application.Services.DataProviders;
+using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Hydrator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,22 +13,29 @@ namespace AgileStudioServer.API.Controllers
     [Authorize]
     public class BacklogItemTypeSchemaController : ControllerBase
     {
-        private readonly BacklogItemTypeSchemaDataProvider _DataProvider;
-        private readonly BacklogItemTypeDataProvider _BacklogItemTypeDataProvider;
+        private readonly BacklogItemTypeSchemaService _BacklogItemTypeSchemaService;
+
+        private readonly BacklogItemTypeService _BacklogItemTypeService;
+
+        private readonly Hydrator _Hydrator;
 
         public BacklogItemTypeSchemaController(
-            BacklogItemTypeSchemaDataProvider dataProvider,
-            BacklogItemTypeDataProvider backlogItemTypeDataProvider)
+            BacklogItemTypeSchemaService dataProvider,
+            BacklogItemTypeService backlogItemTypeDataProvider,
+            Hydrator hydrator)
         {
-            _DataProvider = dataProvider;
-            _BacklogItemTypeDataProvider = backlogItemTypeDataProvider;
+            _BacklogItemTypeSchemaService = dataProvider;
+            _BacklogItemTypeService = backlogItemTypeDataProvider;
+            _Hydrator = hydrator;
         }
 
         [HttpGet(Name = "GetBacklogItemTypeSchemas")]
         [ProducesResponseType(typeof(List<BacklogItemTypeSchemaDto>), StatusCodes.Status200OK)]
         public IActionResult List()
         {
-            return Ok(_DataProvider.List());
+            var models = _BacklogItemTypeSchemaService.GetAll();
+            var dtos = HydrateBacklogItemTypeSchemaDtos(models);
+            return Ok(dtos);
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemTypeSchema")]
@@ -34,13 +44,14 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(BacklogItemTypeSchemaDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
+            var model = _BacklogItemTypeSchemaService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return Ok(apiResource);
+            var dto = HydrateBacklogItemTypeSchemaDto(model);
+            return Ok(dto);
         }
 
         [HttpGet("{id}/BacklogItemTypes", Name = "ListBacklogItemTypeSchema_BacklogItemTypes")]
@@ -49,13 +60,9 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(List<BacklogItemTypeSummaryDto>), StatusCodes.Status200OK)]
         public IActionResult ListBacklogItemTypes(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_BacklogItemTypeDataProvider.ListByBacklogItemTypeSchemaId(id));
+            var models = _BacklogItemTypeService.GetByBacklogItemTypeSchemaId(id);
+            var dtos = HydrateBacklogItemTypeSummaryDtos(models);
+            return Ok(dtos);
         }
 
         [HttpPost(Name = "CreateBacklogItemTypeSchema")]
@@ -63,17 +70,22 @@ namespace AgileStudioServer.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(BacklogItemTypeSchemaDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public CreatedResult Post(BacklogItemTypeSchemaPostDto dto)
+        public CreatedResult Post(BacklogItemTypeSchemaPostDto backlogItemTypeSchemaPostDto)
         {
-            var apiResource = _DataProvider.Create(dto);
+            BacklogItemTypeSchema model = HydrateBacklogItemTypeSchemaModel(
+                backlogItemTypeSchemaPostDto
+            );
+            model = _BacklogItemTypeSchemaService.Create(model);
 
-            var apiResourceUrl = "";
+            string backlogItemTypeSchemaUrl = "";
             if (Url != null)
             {
-                // todo
-                //apiResourceUrl = Url.Action(nameof(Get), new { id = apiResource.ID }) ?? apiResourceUrl;
+                backlogItemTypeSchemaUrl = Url.Action(nameof(Get), new { id = model.ID }) ?? backlogItemTypeSchemaUrl;
             }
-            return Created(apiResourceUrl, apiResource);
+
+            var dto = HydrateBacklogItemTypeSchemaDto(model);
+
+            return Created(backlogItemTypeSchemaUrl, dto);
         }
 
         [HttpPatch("{id}", Name = "UpdateBacklogItemTypeSchema")]
@@ -82,17 +94,33 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(BacklogItemTypeSchemaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto dto)
+        public IActionResult Patch(int id, BacklogItemTypeSchemaPatchDto backlogItemTypeSchemaPatchDto)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            if (id != backlogItemTypeSchemaPatchDto.ID)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            apiResource = _DataProvider.Update(id, dto);
+            BacklogItemTypeSchemaDto dto;
+            try
+            {
+                BacklogItemTypeSchema model = HydrateBacklogItemTypeSchemaModel(backlogItemTypeSchemaPatchDto);
+                model = _BacklogItemTypeSchemaService.Update(model);
+                dto = HydrateBacklogItemTypeSchemaDto(model);
+            }
+            catch (ModelNotFoundException e)
+            {
+                if (e.ModelClassName.Equals(nameof(BacklogItemTypeSchema)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return new OkObjectResult(apiResource);
+            return new OkObjectResult(dto);
         }
 
         [HttpDelete("{id}", Name = "DeleteBacklogItemTypeSchema")]
@@ -101,15 +129,67 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var apiResource = _DataProvider.Get(id);
-            if (apiResource is null)
+            BacklogItemTypeSchema? model = _BacklogItemTypeSchemaService.Get(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            _DataProvider.Delete(id);
+            _BacklogItemTypeSchemaService.Delete(model);
 
             return new OkResult();
+        }
+
+        private List<BacklogItemTypeSchemaDto> HydrateBacklogItemTypeSchemaDtos(List<BacklogItemTypeSchema> backlogItemTypeSchemas, int depth = 1)
+        {
+            List<BacklogItemTypeSchemaDto> dtos = new();
+
+            backlogItemTypeSchemas.ForEach(backlogItemTypeSchema => {
+                BacklogItemTypeSchemaDto dto = HydrateBacklogItemTypeSchemaDto(backlogItemTypeSchema, depth);
+                dtos.Add(dto);
+            });
+
+            return dtos;
+        }
+
+        private BacklogItemTypeSummaryDto HydrateBacklogItemTypeSummaryDto(BacklogItemType backlogItemType, int depth = 1)
+        {
+            return (BacklogItemTypeSummaryDto)_Hydrator.Hydrate(
+                backlogItemType, typeof(BacklogItemTypeSummaryDto), depth
+            );
+        }
+
+        private List<BacklogItemTypeSummaryDto> HydrateBacklogItemTypeSummaryDtos(List<BacklogItemType> backlogItemTypes, int depth = 1)
+        {
+            List<BacklogItemTypeSummaryDto> dtos = new();
+
+            backlogItemTypes.ForEach(backlogItemType => {
+                BacklogItemTypeSummaryDto dto = HydrateBacklogItemTypeSummaryDto(backlogItemType, depth);
+                dtos.Add(dto);
+            });
+
+            return dtos;
+        }
+
+        private BacklogItemTypeSchemaDto HydrateBacklogItemTypeSchemaDto(BacklogItemTypeSchema backlogItemTypeSchema, int depth = 1)
+        {
+            return (BacklogItemTypeSchemaDto)_Hydrator.Hydrate(
+                backlogItemTypeSchema, typeof(BacklogItemTypeSchemaDto), depth
+            );
+        }
+
+        private BacklogItemTypeSchema HydrateBacklogItemTypeSchemaModel(BacklogItemTypeSchemaPostDto backlogItemTypeSchemaPostDto, int depth = 1)
+        {
+            return (BacklogItemTypeSchema)_Hydrator.Hydrate(
+                backlogItemTypeSchemaPostDto, typeof(BacklogItemTypeSchema), depth
+            );
+        }
+
+        private BacklogItemTypeSchema HydrateBacklogItemTypeSchemaModel(BacklogItemTypeSchemaPatchDto backlogItemTypeSchemaPatchDto, int depth = 1)
+        {
+            return (BacklogItemTypeSchema)_Hydrator.Hydrate(
+                backlogItemTypeSchemaPatchDto, typeof(BacklogItemTypeSchema), depth
+            );
         }
     }
 }

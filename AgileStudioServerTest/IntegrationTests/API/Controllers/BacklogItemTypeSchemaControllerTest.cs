@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data.Entities;
@@ -99,7 +99,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var backlogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
             var title = $"{backlogItemTypeSchema.Title} Updated";
-            var dto = new BacklogItemTypeSchemaPatchDto(title);
+            var dto = new BacklogItemTypeSchemaPatchDto(backlogItemTypeSchema.ID, title);
 
             IActionResult result = _Controller.Patch(backlogItemTypeSchema.ID, dto);
             BacklogItemTypeSchemaDto? apiResource = null;

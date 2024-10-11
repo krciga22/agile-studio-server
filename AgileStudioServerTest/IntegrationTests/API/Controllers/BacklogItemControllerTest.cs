@@ -1,5 +1,5 @@
 ﻿using AgileStudioServer.API.Controllers;
-using AgileStudioServer.API.Dtos;
+using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.Data;
 

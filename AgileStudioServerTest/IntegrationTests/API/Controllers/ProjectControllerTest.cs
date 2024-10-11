@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data.Entities;
@@ -104,14 +104,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     project: project)
             };
 
-            List<SprintDto>? apiResources = null;
+            List<SprintSummaryDto>? apiResources = null;
             IActionResult result = _Controller.GetSprintsForProject(project.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<SprintDto>;
+                apiResources = okResult.Value as List<SprintSummaryDto>;
             }
 
-            Assert.IsType<List<SprintDto>>(apiResources);
+            Assert.IsType<List<SprintSummaryDto>>(apiResources);
             Assert.Equal(sprints.Count, apiResources.Count);
         }
 
@@ -129,14 +129,14 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                     project: project)
             };
 
-            List<ReleaseDto>? apiResources = null;
+            List<ReleaseSummaryDto>? apiResources = null;
             IActionResult result = _Controller.GetReleasesForProject(project.ID);
             if (result is OkObjectResult okResult)
             {
-                apiResources = okResult.Value as List<ReleaseDto>;
+                apiResources = okResult.Value as List<ReleaseSummaryDto>;
             }
 
-            Assert.IsType<List<ReleaseDto>>(apiResources);
+            Assert.IsType<List<ReleaseSummaryDto>>(apiResources);
             Assert.Equal(releases.Count, apiResources.Count);
         }
 
@@ -162,7 +162,7 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         {
             var project = _Fixtures.CreateProject();
             var title = $"{project.Title} Updated";
-            var projectPatchDto = new ProjectPatchDto(title);
+            var projectPatchDto = new ProjectPatchDto(project.ID, title);
 
             IActionResult result = _Controller.Patch(project.ID, projectPatchDto);
             ProjectDto? projectApiResource = null;
