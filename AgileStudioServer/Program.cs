@@ -1,4 +1,3 @@
-using DtoModelConverters = AgileStudioServer.API.DtosNew.DtoModelConverters;
 using DtoHydrators = AgileStudioServer.API.DtosNew.Hydrators;
 using ModelHydrators = AgileStudioServer.Application.Models.Hydrators;
 using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
@@ -29,40 +28,6 @@ namespace AgileStudioServer
             builder.Services.AddDbContext<DBContext>(optionsBuilder => {
                 DBContextFactory.ConfigureDefaultOptions(ref optionsBuilder);
             });
-
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemPatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemPostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypeConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypePatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypePostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypeSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypeSchemaConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypePatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypePostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.BacklogItemTypeSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ProjectConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ProjectPatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ProjectPostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ProjectSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ReleaseConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ReleasePatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ReleasePostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.ReleaseSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.SprintConverter>();
-            builder.Services.AddScoped<DtoModelConverters.SprintPatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.SprintPostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.SprintSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.UserSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowPatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowPostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowSummaryConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowStateConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowStatePatchConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowStatePostConverter>();
-            builder.Services.AddScoped<DtoModelConverters.WorkflowStateSummaryConverter>();
 
             builder.Services.AddScoped<Hydrator>();
             builder.Services.AddScoped<HydratorRegistry>();
