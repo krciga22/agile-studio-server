@@ -1,7 +1,7 @@
 ﻿
 using AgileStudioServer.Core.Hydrator;
 
-namespace AgileStudioServer.API.DtosNew.Hydrators
+namespace AgileStudioServer.API.Dtos.Hydrators
 {
     public class BacklogItemTypeSummaryDtoHydrator : AbstractDtoHydrator
     {

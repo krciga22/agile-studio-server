@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.Sprint)
-                || from == typeof(API.DtosNew.SprintPostDto)
-                || from == typeof(API.DtosNew.SprintPatchDto)
+                || from == typeof(API.Dtos.SprintPostDto)
+                || from == typeof(API.Dtos.SprintPatchDto)
             ) && to == typeof(Sprint);
         }
 
@@ -36,14 +36,14 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new Sprint(entity.SprintNumber);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.SprintPostDto)
+            else if (from is API.Dtos.SprintPostDto)
             {
                 model = new Sprint(0); // todo fix hard coded sprint number
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.SprintPatchDto)
+            else if (from is API.Dtos.SprintPatchDto)
             {
-                var dto = (API.DtosNew.SprintPatchDto)from;
+                var dto = (API.Dtos.SprintPatchDto)from;
                 var entity = _DBContext.Sprint.Find(dto.ID);
                 if (entity != null)
                 {
@@ -95,9 +95,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.SprintPostDto)
+            else if (from is API.Dtos.SprintPostDto)
             {
-                var dto = (API.DtosNew.SprintPostDto)from;
+                var dto = (API.Dtos.SprintPostDto)from;
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;
                 model.EndDate = dto.EndDate;
@@ -115,9 +115,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     );
                 }
             }
-            else if (from is API.DtosNew.SprintPatchDto)
+            else if (from is API.Dtos.SprintPatchDto)
             {
-                var dto = (API.DtosNew.SprintPatchDto)from;
+                var dto = (API.Dtos.SprintPatchDto)from;
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;
                 model.EndDate = dto.EndDate;

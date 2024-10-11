@@ -1,4 +1,4 @@
-using DtoHydrators = AgileStudioServer.API.DtosNew.Hydrators;
+using DtoHydrators = AgileStudioServer.API.Dtos.Hydrators;
 using ModelHydrators = AgileStudioServer.Application.Models.Hydrators;
 using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
 

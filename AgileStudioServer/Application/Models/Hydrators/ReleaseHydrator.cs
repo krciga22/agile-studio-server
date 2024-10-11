@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.Release)
-                || from == typeof(API.DtosNew.ReleasePostDto)
-                || from == typeof(API.DtosNew.ReleasePatchDto)
+                || from == typeof(API.Dtos.ReleasePostDto)
+                || from == typeof(API.Dtos.ReleasePatchDto)
             ) && to == typeof(Release);
         }
 
@@ -36,15 +36,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new Release(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.ReleasePostDto)
+            else if (from is API.Dtos.ReleasePostDto)
             {
-                var dto = (API.DtosNew.ReleasePostDto)from;
+                var dto = (API.Dtos.ReleasePostDto)from;
                 model = new Release(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.ReleasePatchDto)
+            else if (from is API.Dtos.ReleasePatchDto)
             {
-                var dto = (API.DtosNew.ReleasePatchDto)from;
+                var dto = (API.Dtos.ReleasePatchDto)from;
                 var entity = _DBContext.Release.Find(dto.ID);
                 if (entity != null)
                 {
@@ -96,9 +96,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.ReleasePostDto)
+            else if (from is API.Dtos.ReleasePostDto)
             {
-                var dto = (API.DtosNew.ReleasePostDto)from;
+                var dto = (API.Dtos.ReleasePostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;
@@ -117,9 +117,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     );
                 }
             }
-            else if (from is API.DtosNew.ReleasePatchDto)
+            else if (from is API.Dtos.ReleasePatchDto)
             {
-                var dto = (API.DtosNew.ReleasePatchDto)from;
+                var dto = (API.Dtos.ReleasePatchDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;

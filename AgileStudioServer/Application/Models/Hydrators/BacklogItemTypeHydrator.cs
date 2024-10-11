@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.BacklogItemType)
-                || from == typeof(API.DtosNew.BacklogItemTypePostDto)
-                || from == typeof(API.DtosNew.BacklogItemTypePatchDto)
+                || from == typeof(API.Dtos.BacklogItemTypePostDto)
+                || from == typeof(API.Dtos.BacklogItemTypePatchDto)
             ) && to == typeof(BacklogItemType);
         }
 
@@ -36,15 +36,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new BacklogItemType(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.BacklogItemTypePostDto)
+            else if (from is API.Dtos.BacklogItemTypePostDto)
             {
-                var dto = (API.DtosNew.BacklogItemTypePostDto)from;
+                var dto = (API.Dtos.BacklogItemTypePostDto)from;
                 model = new BacklogItemType(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.BacklogItemTypePatchDto)
+            else if (from is API.Dtos.BacklogItemTypePatchDto)
             {
-                var dto = (API.DtosNew.BacklogItemTypePatchDto)from;
+                var dto = (API.Dtos.BacklogItemTypePatchDto)from;
                 var entity = _DBContext.BacklogItemType.Find(dto.ID);
                 if (entity != null)
                 {
@@ -98,9 +98,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.BacklogItemTypePostDto)
+            else if (from is API.Dtos.BacklogItemTypePostDto)
             {
-                var dto = (API.DtosNew.BacklogItemTypePostDto)from;
+                var dto = (API.Dtos.BacklogItemTypePostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
@@ -129,9 +129,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     );
                 }
             }
-            else if (from is API.DtosNew.BacklogItemTypePatchDto)
+            else if (from is API.Dtos.BacklogItemTypePatchDto)
             {
-                var dto = (API.DtosNew.BacklogItemTypePatchDto)from;
+                var dto = (API.Dtos.BacklogItemTypePatchDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
             }

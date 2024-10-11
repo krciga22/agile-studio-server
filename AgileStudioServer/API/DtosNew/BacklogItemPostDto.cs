@@ -1,7 +1,7 @@
 ﻿using AgileStudioServer.API.Attributes.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace AgileStudioServer.API.DtosNew
+namespace AgileStudioServer.API.Dtos
 {
     [ValidBacklogItemTypeForBacklogItemPostDto]
     [ValidSprintForBacklogItem]

@@ -1,5 +1,5 @@
 ﻿
-namespace AgileStudioServer.API.DtosNew
+namespace AgileStudioServer.API.Dtos
 {
     public class ProjectSummaryDto
     {

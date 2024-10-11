@@ -15,8 +15,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.Workflow)
-                || from == typeof(API.DtosNew.WorkflowPostDto)
-                || from == typeof(API.DtosNew.WorkflowPatchDto)
+                || from == typeof(API.Dtos.WorkflowPostDto)
+                || from == typeof(API.Dtos.WorkflowPatchDto)
             ) && to == typeof(Workflow);
         }
 
@@ -35,15 +35,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new Workflow(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.WorkflowPostDto)
+            else if (from is API.Dtos.WorkflowPostDto)
             {
-                var dto = (API.DtosNew.WorkflowPostDto)from;
+                var dto = (API.Dtos.WorkflowPostDto)from;
                 model = new Workflow(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.WorkflowPatchDto)
+            else if (from is API.Dtos.WorkflowPatchDto)
             {
-                var dto = (API.DtosNew.WorkflowPatchDto)from;
+                var dto = (API.Dtos.WorkflowPatchDto)from;
                 var entity = _DBContext.Workflow.Find(dto.ID);
                 if(entity != null)
                 {
@@ -88,15 +88,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if(from is API.DtosNew.WorkflowPostDto)
+            else if(from is API.Dtos.WorkflowPostDto)
             {
-                var dto = (API.DtosNew.WorkflowPostDto) from;
+                var dto = (API.Dtos.WorkflowPostDto) from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
             }
-            else if(from is API.DtosNew.WorkflowPatchDto)
+            else if(from is API.Dtos.WorkflowPatchDto)
             {
-                var dto = (API.DtosNew.WorkflowPatchDto) from;
+                var dto = (API.Dtos.WorkflowPatchDto) from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
             }

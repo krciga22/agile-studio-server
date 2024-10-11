@@ -1,6 +1,6 @@
 ﻿using AgileStudioServer.Data.Entities;
 
-namespace AgileStudioServer.API.DtosNew
+namespace AgileStudioServer.API.Dtos
 {
     public class BacklogItemSummaryDto
     {

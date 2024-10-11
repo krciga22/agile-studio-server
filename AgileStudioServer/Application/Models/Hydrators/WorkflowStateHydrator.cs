@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.WorkflowState)
-                || from == typeof(API.DtosNew.WorkflowStatePostDto)
-                || from == typeof(API.DtosNew.WorkflowStatePatchDto)
+                || from == typeof(API.Dtos.WorkflowStatePostDto)
+                || from == typeof(API.Dtos.WorkflowStatePatchDto)
             ) && to == typeof(WorkflowState);
         }
 
@@ -36,15 +36,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new WorkflowState(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.WorkflowStatePostDto)
+            else if (from is API.Dtos.WorkflowStatePostDto)
             {
-                var dto = (API.DtosNew.WorkflowStatePostDto)from;
+                var dto = (API.Dtos.WorkflowStatePostDto)from;
                 model = new WorkflowState(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.WorkflowStatePatchDto)
+            else if (from is API.Dtos.WorkflowStatePatchDto)
             {
-                var dto = (API.DtosNew.WorkflowStatePatchDto)from;
+                var dto = (API.Dtos.WorkflowStatePatchDto)from;
                 var entity = _DBContext.WorkflowState.Find(dto.ID);
                 if (entity != null)
                 {
@@ -96,9 +96,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.WorkflowStatePostDto)
+            else if (from is API.Dtos.WorkflowStatePostDto)
             {
-                var dto = (API.DtosNew.WorkflowStatePostDto)from;
+                var dto = (API.Dtos.WorkflowStatePostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
@@ -118,9 +118,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.WorkflowStatePatchDto)
+            else if (from is API.Dtos.WorkflowStatePatchDto)
             {
-                var dto = (API.DtosNew.WorkflowStatePatchDto)from;
+                var dto = (API.Dtos.WorkflowStatePatchDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
             }

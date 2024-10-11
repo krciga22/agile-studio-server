@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.DtosNew;
+﻿using AgileStudioServer.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data.Entities;

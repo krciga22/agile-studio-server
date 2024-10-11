@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.BacklogItem)
-                || from == typeof(API.DtosNew.BacklogItemPostDto)
-                || from == typeof(API.DtosNew.BacklogItemPatchDto)
+                || from == typeof(API.Dtos.BacklogItemPostDto)
+                || from == typeof(API.Dtos.BacklogItemPatchDto)
             ) && to == typeof(BacklogItem);
         }
 
@@ -36,15 +36,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new BacklogItem(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.BacklogItemPostDto)
+            else if (from is API.Dtos.BacklogItemPostDto)
             {
-                var dto = (API.DtosNew.BacklogItemPostDto)from;
+                var dto = (API.Dtos.BacklogItemPostDto)from;
                 model = new BacklogItem(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.BacklogItemPatchDto)
+            else if (from is API.Dtos.BacklogItemPatchDto)
             {
-                var dto = (API.DtosNew.BacklogItemPatchDto)from;
+                var dto = (API.Dtos.BacklogItemPatchDto)from;
                 var entity = _DBContext.BacklogItem.Find(dto.ID);
                 if (entity != null)
                 {
@@ -116,9 +116,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.BacklogItemPostDto)
+            else if (from is API.Dtos.BacklogItemPostDto)
             {
-                var dto = (API.DtosNew.BacklogItemPostDto)from;
+                var dto = (API.Dtos.BacklogItemPostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
@@ -183,9 +183,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.BacklogItemPatchDto)
+            else if (from is API.Dtos.BacklogItemPatchDto)
             {
-                var dto = (API.DtosNew.BacklogItemPatchDto)from;
+                var dto = (API.Dtos.BacklogItemPatchDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 

@@ -1,5 +1,5 @@
 ﻿using AgileStudioServer.API.Attributes.Validation;
-using AgileStudioServer.API.DtosNew;
+using AgileStudioServer.API.Dtos;
 using AgileStudioServer.Data;
 using System.ComponentModel.DataAnnotations;
 

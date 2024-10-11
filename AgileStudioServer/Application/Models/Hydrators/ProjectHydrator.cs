@@ -16,8 +16,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             return (
                 from == typeof(Data.Entities.Project)
-                || from == typeof(API.DtosNew.ProjectPostDto)
-                || from == typeof(API.DtosNew.ProjectPatchDto)
+                || from == typeof(API.Dtos.ProjectPostDto)
+                || from == typeof(API.Dtos.ProjectPatchDto)
             ) && to == typeof(Project);
         }
 
@@ -36,15 +36,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model = new Project(entity.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.ProjectPostDto)
+            else if (from is API.Dtos.ProjectPostDto)
             {
-                var dto = (API.DtosNew.ProjectPostDto)from;
+                var dto = (API.Dtos.ProjectPostDto)from;
                 model = new Project(dto.Title);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
-            else if (from is API.DtosNew.ProjectPatchDto)
+            else if (from is API.Dtos.ProjectPatchDto)
             {
-                var dto = (API.DtosNew.ProjectPatchDto)from;
+                var dto = (API.Dtos.ProjectPatchDto)from;
                 var entity = _DBContext.Project.Find(dto.ID);
                 if (entity != null)
                 {
@@ -94,9 +94,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     }
                 }
             }
-            else if (from is API.DtosNew.ProjectPostDto)
+            else if (from is API.Dtos.ProjectPostDto)
             {
-                var dto = (API.DtosNew.ProjectPostDto)from;
+                var dto = (API.Dtos.ProjectPostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
@@ -113,9 +113,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                     );
                 }
             }
-            else if (from is API.DtosNew.ProjectPatchDto)
+            else if (from is API.Dtos.ProjectPatchDto)
             {
-                var dto = (API.DtosNew.ProjectPatchDto)from;
+                var dto = (API.Dtos.ProjectPatchDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
             }
