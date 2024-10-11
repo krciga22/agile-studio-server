@@ -4,7 +4,6 @@ using ModelHydrators = AgileStudioServer.Application.Models.Hydrators;
 using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
 
 using AgileStudioServer.Application.Services;
-using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -30,15 +29,6 @@ namespace AgileStudioServer
             builder.Services.AddDbContext<DBContext>(optionsBuilder => {
                 DBContextFactory.ConfigureDefaultOptions(ref optionsBuilder);
             });
-
-            builder.Services.AddScoped<BacklogItemDataProvider>();
-            builder.Services.AddScoped<BacklogItemTypeDataProvider>();
-            builder.Services.AddScoped<BacklogItemTypeSchemaDataProvider>();
-            builder.Services.AddScoped<ProjectDataProvider>();
-            builder.Services.AddScoped<ReleaseDataProvider>();
-            builder.Services.AddScoped<SprintDataProvider>();
-            builder.Services.AddScoped<WorkflowDataProvider>();
-            builder.Services.AddScoped<WorkflowStateDataProvider>();
 
             builder.Services.AddScoped<DtoModelConverters.BacklogItemConverter>();
             builder.Services.AddScoped<DtoModelConverters.BacklogItemPatchConverter>();

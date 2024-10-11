@@ -1,4 +1,3 @@
-using AgileStudioServer.API.Dtos;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

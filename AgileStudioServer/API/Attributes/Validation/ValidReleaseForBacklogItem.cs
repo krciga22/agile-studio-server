@@ -1,4 +1,4 @@
-﻿using AgileStudioServer.API.Dtos;
+﻿using AgileStudioServer.API.DtosNew;
 using AgileStudioServer.Data;
 using AgileStudioServer.Data.Entities;
 using AgileStudioServer.Data.Exceptions;

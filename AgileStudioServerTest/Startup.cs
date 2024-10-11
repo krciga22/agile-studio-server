@@ -5,7 +5,6 @@ using EntityHydrators = AgileStudioServer.Data.Entities.Hydrators;
 
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Application.Services;
-using AgileStudioServer.Application.Services.DataProviders;
 using AgileStudioServer.Data;
 using AgileStudioServerTest.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,15 +28,6 @@ namespace AgileStudioServerTest
             services.AddScoped<SprintController>();
             services.AddScoped<WorkflowController>();
             services.AddScoped<WorkflowStateController>();
-
-            services.AddScoped<BacklogItemDataProvider>();
-            services.AddScoped<BacklogItemTypeDataProvider>();
-            services.AddScoped<BacklogItemTypeSchemaDataProvider>();
-            services.AddScoped<ProjectDataProvider>();
-            services.AddScoped<ReleaseDataProvider>();
-            services.AddScoped<SprintDataProvider>();
-            services.AddScoped<WorkflowDataProvider>();
-            services.AddScoped<WorkflowStateDataProvider>();
 
             services.AddScoped<ModelFixtures>();
             services.AddScoped<EntityFixtures>();

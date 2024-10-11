@@ -1,5 +1,5 @@
 ﻿using AgileStudioServer.API.Attributes.Validation;
-using AgileStudioServer.API.Dtos;
+using AgileStudioServer.API.DtosNew;
 using AgileStudioServer.Data;
 using System.ComponentModel.DataAnnotations;
 
@@ -64,8 +64,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
                 title: "Test Backlog Item",
                 projectId: project.ID,
                 backlogItemTypeId: backlogItemType.ID,
-                workflowStateId: workflowState.ID,
-                sprintId: sprint.ID);
+                workflowStateId: workflowState.ID);
+
+            backlogItemPostDto.SprintId = sprint.ID;
 
             var attribute = new ValidSprintForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
@@ -87,8 +88,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
                 title: "Test Backlog Item",
                 projectId: project1.ID,
                 backlogItemTypeId: backlogItemType.ID,
-                workflowStateId: workflowState.ID,
-                sprintId: sprint.ID);
+                workflowStateId: workflowState.ID);
+
+            backlogItemPostDto.SprintId = sprint.ID;
 
             var attribute = new ValidSprintForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
@@ -109,8 +111,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
-                workflowStateId: backlogItem.WorkflowState.ID,
-                sprintId: sprint.ID);
+                workflowStateId: backlogItem.WorkflowState.ID);
+
+            backlogItemPatchDto.SprintId = sprint.ID;
 
             var attribute = new ValidSprintForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
@@ -133,8 +136,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
-                workflowStateId: backlogItem.WorkflowState.ID,
-                sprintId: sprint2.ID);
+                workflowStateId: backlogItem.WorkflowState.ID);
+
+            backlogItemPatchDto.SprintId = sprint2.ID;
 
             var attribute = new ValidSprintForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
@@ -155,8 +159,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
                 title: "Test Backlog Item",
                 projectId: project.ID,
                 backlogItemTypeId: backlogItemType.ID,
-                workflowStateId: workflowState.ID,
-                releaseId: release.ID);
+                workflowStateId: workflowState.ID);
+
+            backlogItemPostDto.ReleaseId = release.ID;
 
             var attribute = new ValidReleaseForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
@@ -178,8 +183,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
                 title: "Test Backlog Item",
                 projectId: project1.ID,
                 backlogItemTypeId: backlogItemType.ID,
-                workflowStateId: workflowState.ID,
-                releaseId: release.ID);
+                workflowStateId: workflowState.ID);
+
+            backlogItemPostDto.ReleaseId = release.ID;
 
             var attribute = new ValidReleaseForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPostDto, CreateValidationContext(backlogItemPostDto));
@@ -200,8 +206,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
-                workflowStateId: backlogItem.WorkflowState.ID,
-                releaseId: release.ID);
+                workflowStateId: backlogItem.WorkflowState.ID);
+
+            backlogItemPatchDto.ReleaseId = release.ID;
 
             var attribute = new ValidReleaseForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
@@ -224,8 +231,9 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
             var backlogItemPatchDto = new BacklogItemPatchDto(
                 id: backlogItem.ID,
                 title: "Test Backlog Item",
-                workflowStateId: backlogItem.WorkflowState.ID,
-                releaseId: release2.ID);
+                workflowStateId: backlogItem.WorkflowState.ID);
+
+            backlogItemPatchDto.ReleaseId = release2.ID;
 
             var attribute = new ValidReleaseForBacklogItem();
             var result = attribute.GetValidationResult(backlogItemPatchDto, CreateValidationContext(backlogItemPatchDto));
