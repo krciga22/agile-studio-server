@@ -22,7 +22,7 @@ public class ReleaseHydrator : AbstractEntityHydrator
     {
         if (!Supports(from.GetType(), to))
         {
-            throw new HydrationNotSupported(from.GetType(), to);
+            throw new HydrationNotSupportedException(from.GetType(), to);
         }
 
         Object? entity = null;
@@ -62,7 +62,7 @@ public class ReleaseHydrator : AbstractEntityHydrator
     {
         if (!Supports(from.GetType(), to.GetType()))
         {
-            throw new HydrationNotSupported(from.GetType(), to.GetType());
+            throw new HydrationNotSupportedException(from.GetType(), to.GetType());
         }
 
         var entity = (Release)to;

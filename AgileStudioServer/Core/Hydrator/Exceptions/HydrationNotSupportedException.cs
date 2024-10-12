@@ -2,7 +2,7 @@
 
 namespace AgileStudioServer.Core.Hydrator.Exceptions
 {
-    public class HydrationNotSupported : AbstractException
+    public class HydrationNotSupportedException : AbstractException
     {
         public Type From { get => _From; }
 
@@ -12,7 +12,7 @@ namespace AgileStudioServer.Core.Hydrator.Exceptions
 
         private readonly Type _To;
 
-        public HydrationNotSupported(Type from, Type to) : base($"Hydrating with the given From type \"{from}\" and To type \"{to}\" is not supported")
+        public HydrationNotSupportedException(Type from, Type to) : base($"Hydrating with the given From type \"{from}\" and To type \"{to}\" is not supported")
         {
             _From = from;
             _To = to;

@@ -16,7 +16,7 @@ namespace AgileStudioServer.API.Dtos.Hydrators
         {
             if (!Supports(from.GetType(), to))
             {
-                throw new HydrationNotSupported(from.GetType(), to);
+                throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
             Object? dto = null;
@@ -49,7 +49,7 @@ namespace AgileStudioServer.API.Dtos.Hydrators
         {
             if (!Supports(from.GetType(), to.GetType()))
             {
-                throw new HydrationNotSupported(from.GetType(), to.GetType());
+                throw new HydrationNotSupportedException(from.GetType(), to.GetType());
             }
 
             var dto = (BacklogItemTypeDto)to;

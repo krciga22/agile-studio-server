@@ -22,7 +22,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             if (!Supports(from.GetType(), to))
             {
-                throw new HydrationNotSupported(from.GetType(), to.GetType());
+                throw new HydrationNotSupportedException(from.GetType(), to.GetType());
             }
 
             Object? model = null;
@@ -46,7 +46,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
         {
             if (!Supports(from.GetType(), to.GetType()))
             {
-                throw new HydrationNotSupported(from.GetType(), to.GetType());
+                throw new HydrationNotSupportedException(from.GetType(), to.GetType());
             }
 
             if (from is Data.Entities.User && to is User)
