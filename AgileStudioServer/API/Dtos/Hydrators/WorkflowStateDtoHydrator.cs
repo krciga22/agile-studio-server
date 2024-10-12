@@ -1,5 +1,6 @@
 ﻿
 using AgileStudioServer.Core.Hydrator;
+using AgileStudioServer.Core.Hydrator.Exceptions;
 
 namespace AgileStudioServer.API.Dtos.Hydrators
 {
@@ -13,12 +14,12 @@ namespace AgileStudioServer.API.Dtos.Hydrators
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            Object? dto = null;
-
-            if (to != typeof(WorkflowStateDto))
+            if (!Supports(from.GetType(), to))
             {
-                throw new Exception("Unsupported to"); // todo
+                throw new HydrationNotSupported(from.GetType(), to);
             }
+
+            Object? dto = null;
 
             if (from is Application.Models.WorkflowState  &&
                 referenceHydrator != null)
@@ -43,9 +44,9 @@ namespace AgileStudioServer.API.Dtos.Hydrators
 
         public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            if (to is not WorkflowStateDto)
+            if (!Supports(from.GetType(), to.GetType()))
             {
-                throw new Exception("Unsupported to");
+                throw new HydrationNotSupported(from.GetType(), to.GetType());
             }
 
             var dto = (WorkflowStateDto)to;

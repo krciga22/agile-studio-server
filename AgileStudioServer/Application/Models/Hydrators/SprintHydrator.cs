@@ -1,6 +1,7 @@
 ﻿
 using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Core.Hydrator;
+using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Models.Hydrators
@@ -23,12 +24,12 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
         public override object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            Object? model = null;
-
-            if (to != typeof(Sprint))
+            if (!Supports(from.GetType(), to))
             {
-                throw new Exception("Unsupported to"); // todo
+                throw new HydrationNotSupported(from.GetType(), to);
             }
+
+            Object? model = null;
 
             if (from is Data.Entities.Sprint)
             {
@@ -62,9 +63,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
         public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            if (to is not Sprint)
+            if (!Supports(from.GetType(), to.GetType()))
             {
-                throw new Exception("Unsupported to");
+                throw new HydrationNotSupported(from.GetType(), to.GetType());
             }
 
             var model = (Sprint)to;

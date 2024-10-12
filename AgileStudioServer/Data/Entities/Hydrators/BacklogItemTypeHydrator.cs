@@ -1,5 +1,6 @@
 ﻿
 using AgileStudioServer.Core.Hydrator;
+using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data.Exceptions;
 
 namespace AgileStudioServer.Data.Entities.Hydrators
@@ -19,12 +20,12 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            Object? entity = null;
-
-            if (to != typeof(BacklogItemType))
+            if (!Supports(from.GetType(), to))
             {
-                throw new Exception("Unsupported to"); // todo
+                throw new HydrationNotSupported(from.GetType(), to);
             }
+
+            Object? entity = null;
 
             if (from is Application.Models.BacklogItemType)
             {
@@ -59,9 +60,9 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override void Hydrate(object from, object to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
         {
-            if (to is not BacklogItemType)
+            if (!Supports(from.GetType(), to.GetType()))
             {
-                throw new Exception("Unsupported to");
+                throw new HydrationNotSupported(from.GetType(), to.GetType());
             }
 
             var entity = (BacklogItemType)to;
