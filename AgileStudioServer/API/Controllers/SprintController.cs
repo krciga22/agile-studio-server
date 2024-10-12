@@ -70,6 +70,11 @@ namespace AgileStudioServer.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public IActionResult Patch(int id, SprintPatchDto sprintPatchDto)
         {
+            if (id != sprintPatchDto.ID)
+            {
+                return BadRequest();
+            }
+
             SprintDto dto;
             try
             {
