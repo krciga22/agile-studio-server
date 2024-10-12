@@ -56,7 +56,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             if (model == null)
             {
-                throw new Exception("Hydration failed for from and to"); // todo
+                throw new HydrationFailedException(from.GetType(), to);
             }
 
             return model;

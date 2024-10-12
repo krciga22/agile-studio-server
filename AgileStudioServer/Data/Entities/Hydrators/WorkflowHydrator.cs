@@ -52,7 +52,7 @@ public class WorkflowHydrator : AbstractEntityHydrator
 
         if (entity == null)
         {
-            throw new Exception("Hydration failed for from and to"); // todo
+            throw new HydrationFailedException(from.GetType(), to);
         }
 
         return entity;

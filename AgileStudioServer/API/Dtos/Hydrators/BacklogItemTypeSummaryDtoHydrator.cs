@@ -30,7 +30,7 @@ namespace AgileStudioServer.API.Dtos.Hydrators
 
             if (dto == null)
             {
-                throw new Exception("Hydration failed for from and to"); // todo
+                throw new HydrationFailedException(from.GetType(), to);
             }
 
             return dto;

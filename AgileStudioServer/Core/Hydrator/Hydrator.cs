@@ -1,4 +1,6 @@
-﻿namespace AgileStudioServer.Core.Hydrator
+﻿using AgileStudioServer.Core.Hydrator.Exceptions;
+
+namespace AgileStudioServer.Core.Hydrator
 {
     /// <summary>
     /// General hydrator that can perform all hydrations. 
@@ -70,7 +72,7 @@
 
             if (obj == null)
             {
-                throw new Exception("Hydration failed for from and to"); // todo
+                throw new HydrationFailedException(from.GetType(), to);
             }
 
             return obj;
