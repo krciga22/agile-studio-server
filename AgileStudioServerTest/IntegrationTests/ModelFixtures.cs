@@ -13,6 +13,7 @@ namespace AgileStudioServerTest.IntegrationTests
         private readonly BacklogItemService _backlogItemService;
         private readonly BacklogItemTypeService _backlogItemTypeService;
         private readonly BacklogItemTypeSchemaService _backlogItemTypeSchemaService;
+        private readonly ChildBacklogItemTypeService _childBacklogItemTypeService;
         private readonly SprintService _sprintService;
         private readonly ReleaseService _releaseService;
         private readonly UserService _userService;
@@ -24,6 +25,7 @@ namespace AgileStudioServerTest.IntegrationTests
             BacklogItemService backlogItemService,
             BacklogItemTypeService backlogItemTypeService,
             BacklogItemTypeSchemaService backlogItemTypeSchemaService,
+            ChildBacklogItemTypeService childBacklogItemTypeService,
             SprintService sprintService,
             ReleaseService releaseService,
             UserService userService,
@@ -34,6 +36,7 @@ namespace AgileStudioServerTest.IntegrationTests
             _backlogItemService = backlogItemService;
             _backlogItemTypeService = backlogItemTypeService;
             _backlogItemTypeSchemaService = backlogItemTypeSchemaService;
+            _childBacklogItemTypeService = childBacklogItemTypeService;
             _sprintService = sprintService;
             _releaseService = releaseService;
             _userService = userService;
@@ -124,6 +127,28 @@ namespace AgileStudioServerTest.IntegrationTests
             };
             backlogItemType = _backlogItemTypeService.Create(backlogItemType);
             return backlogItemType;
+        }
+
+        public ChildBacklogItemType CreateChildBacklogItemType(
+            BacklogItemType? parentType = null,
+            BacklogItemType? childType = null,
+            BacklogItemTypeSchema? schema = null,
+            User? createdBy = null)
+        {
+            schema ??= CreateBacklogItemTypeSchema();
+            parentType ??= CreateBacklogItemType("Story", backlogItemTypeSchema: schema);
+            childType ??= CreateBacklogItemType("Task", backlogItemTypeSchema: schema);
+            createdBy ??= CreateUser();
+
+            var childBacklogItemType = new ChildBacklogItemType()
+            {
+                ParentType = parentType,
+                ChildType = childType,
+                Schema = schema,
+                CreatedBy = createdBy
+            };
+            childBacklogItemType = _childBacklogItemTypeService.Create(childBacklogItemType);
+            return childBacklogItemType;
         }
 
         public Sprint CreateSprint(

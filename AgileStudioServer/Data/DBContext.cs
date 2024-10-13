@@ -13,6 +13,8 @@ namespace AgileStudioServer.Data
 
         public DbSet<BacklogItemTypeSchema> BacklogItemTypeSchema { get; set; }
 
+        public DbSet<ChildBacklogItemType> ChildBacklogItemType { get; set; }
+
         public DbSet<Sprint> Sprint { get; set; }
 
         public DbSet<Release> Release { get; set; }
@@ -35,6 +37,21 @@ namespace AgileStudioServer.Data
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("fk_project_backlog_item_type_schema_id");
+
+            modelBuilder.Entity<ChildBacklogItemType>()
+                .HasOne(e => e.ChildType)
+                .WithMany()
+                .HasConstraintName("fk_child_backlog_item_type_child_type_backlog_item_type_id");
+
+            modelBuilder.Entity<ChildBacklogItemType>()
+                .HasOne(e => e.ParentType)
+                .WithMany()
+                .HasConstraintName("fk_child_backlog_item_type_parent_type_backlog_item_type_id");
+
+            modelBuilder.Entity<ChildBacklogItemType>()
+                .HasOne(e => e.Schema)
+                .WithMany()
+                .HasConstraintName("fk_child_backlog_item_type_schema_backlog_item_type_schema_id");
 
             modelBuilder.Entity<BacklogItem>()
                 .HasOne(e => e.BacklogItemType)

@@ -14,8 +14,11 @@ Projects are managed by a team of users, each of which has a specific level of a
 Backlog items represent tasks/work to be done within a project.
 
 ### Backlog Item Types
-Backlog Item Types are used to categorize Backlog Items. Common types include Stories, Defects, General Tasks, Epics, etc. 
-Backlog Item Types are created within a Backlog Item Type Schema which can be assigned to specific projects.
+Backlog Item Types are used to categorize Backlog Items. Common types include Epics, Stories, Defects, Tasks, etc. 
+
+### Child Backlog Item Types
+Child Backlog Item Types define which types are available when creating child backlog items.
+For example, a Story can have a Task as a child, but a Task cannot have a Story as a child.
 
 ### Backlog Item Type Schemas
 Backlog Item Type Schemas are used to group backlog item types, so that they can be reused accross different projects.
