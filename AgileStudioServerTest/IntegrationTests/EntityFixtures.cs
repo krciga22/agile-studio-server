@@ -104,6 +104,29 @@ namespace AgileStudioServerTest.IntegrationTests
             return backlogItemType;
         }
 
+        public ChildBacklogItemType CreateChildBacklogItemType(
+            BacklogItemType? parentType = null,
+            BacklogItemType? childType = null,
+            BacklogItemTypeSchema? schema = null,
+            User? createdBy = null)
+        {
+            schema ??= CreateBacklogItemTypeSchema();
+            parentType ??= CreateBacklogItemType("Story", backlogItemTypeSchema: schema);
+            childType ??= CreateBacklogItemType("Task", backlogItemTypeSchema: schema);
+            createdBy ??= CreateUser();
+
+            var childBacklogItemType = new ChildBacklogItemType()
+            {
+                ParentType = parentType,
+                ChildType = childType,
+                Schema = schema,
+                CreatedBy = createdBy
+            };
+            _DBContext.ChildBacklogItemType.Add(childBacklogItemType);
+            _DBContext.SaveChanges();
+            return childBacklogItemType;
+        }
+
         public Sprint CreateSprint(
             int? sprintNumber = null,
             Project? project = null,

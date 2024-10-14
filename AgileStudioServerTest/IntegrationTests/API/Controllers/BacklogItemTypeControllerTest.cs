@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.API.Controllers;
 using AgileStudioServer.Data;
+using AgileStudioServer.Data.Entities;
 
 namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 {
@@ -31,6 +32,35 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
             Assert.IsType<BacklogItemTypeDto>(dto);
             Assert.Equal(backlogItemType.ID, dto.ID);
+        }
+
+        [Fact]
+        public void GetForParentBacklogItemType_WithId_ReturnsDtos()
+        {
+            var parentBacklogItemType = _Fixtures.CreateBacklogItemType();
+            var childBacklogItemType1 = _Fixtures.CreateBacklogItemType();
+            var childBacklogItemType2 = _Fixtures.CreateBacklogItemType();
+
+            var childBacklogItemTypes = new List<ChildBacklogItemType>() {
+                _Fixtures.CreateChildBacklogItemType(
+                    parentType: parentBacklogItemType,    
+                    childType: childBacklogItemType1
+                ),
+                _Fixtures.CreateChildBacklogItemType(
+                    parentType: parentBacklogItemType,
+                    childType: childBacklogItemType2
+                )
+            };
+
+            List<BacklogItemTypeDto>? dtos = null;
+            IActionResult result = _Controller.GetForParentBacklogItemType(parentBacklogItemType.ID);
+            if (result is OkObjectResult okResult)
+            {
+                dtos = okResult.Value as List<BacklogItemTypeDto>;
+            }
+
+            Assert.IsType<List<BacklogItemTypeDto>>(dtos);
+            Assert.Equal(childBacklogItemTypes.Count, dtos.Count);
         }
 
         [Fact]

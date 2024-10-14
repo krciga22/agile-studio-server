@@ -18,16 +18,21 @@ namespace AgileStudioServer.Application.Services
 
         public virtual List<ChildBacklogItemType> GetByParentTypeId(int parentTypeId)
         {
-            List<Data.Entities.ChildBacklogItemType> entities = _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
-                childBacklogItemType.ParentType.ID == parentTypeId).ToList();
+            List<Data.Entities.ChildBacklogItemType> entities = 
+                _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
+                    childBacklogItemType.ParentType.ID == parentTypeId
+                )
+                .ToList();
 
-            return HydrateChildBacklogItemTypeModels(entities);
+            return HydrateChildBacklogItemTypeModels(entities, 2);
         }
 
         public virtual List<ChildBacklogItemType> GetByChildTypeId(int childTypeId)
         {
-            List<Data.Entities.ChildBacklogItemType> entities = _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
-                childBacklogItemType.ChildType.ID == childTypeId).ToList();
+            List<Data.Entities.ChildBacklogItemType> entities = 
+                _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
+                childBacklogItemType.ChildType.ID == childTypeId
+            ).ToList();
 
             return HydrateChildBacklogItemTypeModels(entities);
         }

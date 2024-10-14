@@ -15,12 +15,18 @@ namespace AgileStudioServer.API.Controllers
     {
         private readonly BacklogItemTypeService _BacklogItemTypeService;
 
+        private readonly ChildBacklogItemTypeService _ChildBacklogItemTypeService;
+
         private readonly Hydrator _Hydrator;
 
-        public BacklogItemTypeController(BacklogItemTypeService dataProvider, Hydrator hydrator)
+        public BacklogItemTypeController(
+            BacklogItemTypeService dataProvider, 
+            Hydrator hydrator, 
+            ChildBacklogItemTypeService childBacklogItemTypeService)
         {
             _BacklogItemTypeService = dataProvider;
             _Hydrator = hydrator;
+            _ChildBacklogItemTypeService = childBacklogItemTypeService;
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemType")]
@@ -37,6 +43,29 @@ namespace AgileStudioServer.API.Controllers
 
             var dto = HydrateBacklogItemTypeDto(model);
             return Ok(dto);
+        }
+
+        [HttpGet("{id}/ChildTypes", Name = "GetChildTypesForBacklogItemType")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<BacklogItemTypeDto>), StatusCodes.Status200OK)]
+        public IActionResult GetForParentBacklogItemType(int id)
+        {
+            var backlogItemType = _BacklogItemTypeService.Get(id);
+            if (backlogItemType == null)
+            {
+                return NotFound();
+            }
+
+            List<BacklogItemType> models = new();
+
+            var childBacklogItemTypes = _ChildBacklogItemTypeService.GetByParentTypeId(id);
+            childBacklogItemTypes.ForEach(
+                childBacklogItemType => models.Add(childBacklogItemType.ChildType)
+            );
+
+            var dtos = HydrateBacklogItemTypeDtos(models);
+            return Ok(dtos);
         }
 
         [HttpPost(Name = "CreateBacklogItemType")]
