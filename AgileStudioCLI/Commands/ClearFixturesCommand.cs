@@ -30,6 +30,7 @@ namespace AgileStudioCLI.Commands
             await _DBContext.BacklogItem.ForEachAsync(x => _DBContext.BacklogItem.Remove(x));
             await _DBContext.BacklogItemType.ForEachAsync(x => _DBContext.BacklogItemType.Remove(x));
             await _DBContext.BacklogItemTypeSchema.ForEachAsync(x => _DBContext.BacklogItemTypeSchema.Remove(x));
+            await _DBContext.ChildBacklogItemType.ForEachAsync(x => _DBContext.ChildBacklogItemType.Remove(x));
             await _DBContext.WorkflowState.ForEachAsync(x => _DBContext.WorkflowState.Remove(x));
             await _DBContext.Workflow.ForEachAsync(x => _DBContext.Workflow.Remove(x));
             await _DBContext.User.ForEachAsync(x => _DBContext.User.Remove(x));

@@ -55,11 +55,47 @@ namespace AgileStudioCLI.FixtureSets
                 backlogItemTypeSchema: backlogItemTypeSchema,
                 workflow: workflow);
 
-            fixtures.CreateBacklogItemType(
+            var backlogItemTypeDefect = fixtures.CreateBacklogItemType(
                 title: "Defect",
                 createdBy: user,
                 backlogItemTypeSchema: backlogItemTypeSchema,
                 workflow: workflow);
+
+            var backlogItemTypeTask = fixtures.CreateBacklogItemType(
+                title: "Task",
+                createdBy: user,
+                backlogItemTypeSchema: backlogItemTypeSchema,
+                workflow: workflow);
+
+            var backlogItemTypeTest = fixtures.CreateBacklogItemType(
+                title: "Test",
+                createdBy: user,
+                backlogItemTypeSchema: backlogItemTypeSchema,
+                workflow: workflow);
+
+            fixtures.CreateChildBacklogItemType(
+                parentType: backlogItemTypeStory,
+                childType: backlogItemTypeTask,
+                schema: backlogItemTypeSchema
+            );
+
+            fixtures.CreateChildBacklogItemType(
+                parentType: backlogItemTypeStory,
+                childType: backlogItemTypeTest,
+                schema: backlogItemTypeSchema
+            );
+
+            fixtures.CreateChildBacklogItemType(
+                parentType: backlogItemTypeDefect,
+                childType: backlogItemTypeTask,
+                schema: backlogItemTypeSchema
+            );
+
+            fixtures.CreateChildBacklogItemType(
+                parentType: backlogItemTypeDefect,
+                childType: backlogItemTypeTest,
+                schema: backlogItemTypeSchema
+            );
 
             var project = fixtures.CreateProject(
                 title: "Agile Studio", 
