@@ -78,7 +78,7 @@ namespace AgileStudioServer.Application.Services
             return lastSprint?.SprintNumber ?? 0;
         }
 
-        private List<Sprint> HydrateSprintModels(List<Data.Entities.Sprint> entities, int depth = 1)
+        private List<Sprint> HydrateSprintModels(List<Data.Entities.Sprint> entities, int depth = 3)
         {
             List<Sprint> models = new();
 
@@ -90,14 +90,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private Sprint HydrateSprintModel(Data.Entities.Sprint sprint, int depth = 1)
+        private Sprint HydrateSprintModel(Data.Entities.Sprint sprint, int depth = 3)
         {
             return (Sprint)_Hydrator.Hydrate(
                 sprint, typeof(Sprint), depth
             );
         }
 
-        private Data.Entities.Sprint HydrateSprintEntity(Sprint sprint, int depth = 1)
+        private Data.Entities.Sprint HydrateSprintEntity(Sprint sprint, int depth = 3)
         {
             return (Data.Entities.Sprint)_Hydrator.Hydrate(
                 sprint, typeof(Data.Entities.Sprint), depth

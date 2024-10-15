@@ -60,7 +60,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private List<Workflow> HydrateWorkflowModels(List<Data.Entities.Workflow> entities, int depth = 1)
+        private List<Workflow> HydrateWorkflowModels(List<Data.Entities.Workflow> entities, int depth = 3)
         {
             List<Workflow> models = new();
 
@@ -72,14 +72,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private Workflow HydrateWorkflowModel(Data.Entities.Workflow workflow, int depth = 1)
+        private Workflow HydrateWorkflowModel(Data.Entities.Workflow workflow, int depth = 3)
         {
             return (Workflow)_Hydrator.Hydrate(
                 workflow, typeof(Workflow), depth
             );
         }
 
-        private Data.Entities.Workflow HydrateWorkflowEntity(Workflow workflow, int depth = 1)
+        private Data.Entities.Workflow HydrateWorkflowEntity(Workflow workflow, int depth = 3)
         {
             return (Data.Entities.Workflow)_Hydrator.Hydrate(
                 workflow, typeof(Data.Entities.Workflow), depth

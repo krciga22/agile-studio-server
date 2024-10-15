@@ -65,7 +65,7 @@ namespace AgileStudioServer.Application.Services
         }
 
         private List<BacklogItemTypeSchema> HydrateBacklogItemTypeSchemaModels(
-            List<Data.Entities.BacklogItemTypeSchema> entities, int depth = 1)
+            List<Data.Entities.BacklogItemTypeSchema> entities, int depth = 3)
         {
             List<BacklogItemTypeSchema> models = new();
 
@@ -78,7 +78,7 @@ namespace AgileStudioServer.Application.Services
         }
 
         private BacklogItemTypeSchema HydrateBacklogItemTypeSchemaModel(
-            Data.Entities.BacklogItemTypeSchema backlogItemTypeSchema, int depth = 1)
+            Data.Entities.BacklogItemTypeSchema backlogItemTypeSchema, int depth = 3)
         {
             return (BacklogItemTypeSchema)_Hydrator.Hydrate(
                 backlogItemTypeSchema, typeof(BacklogItemTypeSchema), depth
@@ -86,7 +86,7 @@ namespace AgileStudioServer.Application.Services
         }
 
         private Data.Entities.BacklogItemTypeSchema HydrateBacklogItemTypeSchemaEntity(
-            BacklogItemTypeSchema backlogItemTypeSchema, int depth = 1)
+            BacklogItemTypeSchema backlogItemTypeSchema, int depth = 3)
         {
             return (Data.Entities.BacklogItemTypeSchema)_Hydrator.Hydrate(
                 backlogItemTypeSchema, typeof(Data.Entities.BacklogItemTypeSchema), depth

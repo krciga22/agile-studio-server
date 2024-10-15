@@ -69,7 +69,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private List<Project> HydrateProjectModels(List<Data.Entities.Project> entities, int depth = 1)
+        private List<Project> HydrateProjectModels(List<Data.Entities.Project> entities, int depth = 3)
         {
             List<Project> models = new();
 
@@ -81,14 +81,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private Project HydrateProjectModel(Data.Entities.Project project, int depth = 1)
+        private Project HydrateProjectModel(Data.Entities.Project project, int depth = 3)
         {
             return (Project)_Hydrator.Hydrate(
                 project, typeof(Project), depth
             );
         }
 
-        private Data.Entities.Project HydrateProjectEntity(Project project, int depth = 1)
+        private Data.Entities.Project HydrateProjectEntity(Project project, int depth = 3)
         {
             return (Data.Entities.Project)_Hydrator.Hydrate(
                 project, typeof(Data.Entities.Project), depth

@@ -75,7 +75,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private List<ChildBacklogItemType> HydrateChildBacklogItemTypeModels(List<Data.Entities.ChildBacklogItemType> entities, int depth = 1)
+        private List<ChildBacklogItemType> HydrateChildBacklogItemTypeModels(List<Data.Entities.ChildBacklogItemType> entities, int depth = 3)
         {
             List<ChildBacklogItemType> models = new();
 
@@ -87,14 +87,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private ChildBacklogItemType HydrateChildBacklogItemTypeModel(Data.Entities.ChildBacklogItemType childBacklogItemType, int depth = 1)
+        private ChildBacklogItemType HydrateChildBacklogItemTypeModel(Data.Entities.ChildBacklogItemType childBacklogItemType, int depth = 3)
         {
             return (ChildBacklogItemType)_Hydrator.Hydrate(
                 childBacklogItemType, typeof(ChildBacklogItemType), depth
             );
         }
 
-        private Data.Entities.ChildBacklogItemType HydrateChildBacklogItemTypeEntity(ChildBacklogItemType childBacklogItemType, int depth = 1)
+        private Data.Entities.ChildBacklogItemType HydrateChildBacklogItemTypeEntity(ChildBacklogItemType childBacklogItemType, int depth = 3)
         {
             return (Data.Entities.ChildBacklogItemType)_Hydrator.Hydrate(
                 childBacklogItemType, typeof(Data.Entities.ChildBacklogItemType), depth

@@ -54,7 +54,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private List<User> HydrateUserModels(List<Data.Entities.User> entities, int depth = 1)
+        private List<User> HydrateUserModels(List<Data.Entities.User> entities, int depth = 3)
         {
             List<User> models = new();
 
@@ -66,14 +66,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private User HydrateUserModel(Data.Entities.User user, int depth = 1)
+        private User HydrateUserModel(Data.Entities.User user, int depth = 3)
         {
             return (User)_Hydrator.Hydrate(
                 user, typeof(User), depth
             );
         }
 
-        private Data.Entities.User HydrateUserEntity(User user, int depth = 1)
+        private Data.Entities.User HydrateUserEntity(User user, int depth = 3)
         {
             return (Data.Entities.User)_Hydrator.Hydrate(
                 user, typeof(Data.Entities.User), depth

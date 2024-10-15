@@ -178,21 +178,21 @@ namespace AgileStudioServer.API.Controllers
             );
         }
 
-        private Workflow HydrateWorkflowModel(WorkflowPostDto workflowPostDto, int depth = 0)
+        private Workflow HydrateWorkflowModel(WorkflowPostDto workflowPostDto, int depth = 3)
         {
             return (Workflow)_Hydrator.Hydrate(
                 workflowPostDto, typeof(Workflow), depth
             );
         }
 
-        private Workflow HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, int depth = 0)
+        private Workflow HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, int depth = 3)
         {
             return (Workflow)_Hydrator.Hydrate(
                 workflowPatchDto, typeof(Workflow), depth
             );
         }
 
-        private void HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, Workflow workflow, int depth = 0)
+        private void HydrateWorkflowModel(WorkflowPatchDto workflowPatchDto, Workflow workflow, int depth = 3)
         {
             _Hydrator.Hydrate(
                 workflowPatchDto, workflow, depth

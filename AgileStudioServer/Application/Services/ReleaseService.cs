@@ -62,7 +62,7 @@ namespace AgileStudioServer.Application.Services
             _DBContext.SaveChanges();
         }
 
-        private List<Release> HydrateReleaseModels(List<Data.Entities.Release> entities, int depth = 1)
+        private List<Release> HydrateReleaseModels(List<Data.Entities.Release> entities, int depth = 3)
         {
             List<Release> models = new();
 
@@ -74,14 +74,14 @@ namespace AgileStudioServer.Application.Services
             return models;
         }
 
-        private Release HydrateReleaseModel(Data.Entities.Release release, int depth = 1)
+        private Release HydrateReleaseModel(Data.Entities.Release release, int depth = 3)
         {
             return (Release)_Hydrator.Hydrate(
                 release, typeof(Release), depth
             );
         }
 
-        private Data.Entities.Release HydrateReleaseEntity(Release release, int depth = 1)
+        private Data.Entities.Release HydrateReleaseEntity(Release release, int depth = 3)
         {
             return (Data.Entities.Release)_Hydrator.Hydrate(
                 release, typeof(Data.Entities.Release), depth

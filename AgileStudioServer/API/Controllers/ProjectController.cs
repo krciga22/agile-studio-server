@@ -244,14 +244,14 @@ namespace AgileStudioServer.API.Controllers
             );
         }
 
-        private Project HydrateProjectModel(ProjectPostDto projectPostDto, int depth = 1)
+        private Project HydrateProjectModel(ProjectPostDto projectPostDto, int depth = 3)
         {
             return (Project)_Hydrator.Hydrate(
                 projectPostDto, typeof(Project), depth
             );
         }
 
-        private Project HydrateProjectModel(ProjectPatchDto projectPatchDto, int depth = 1)
+        private Project HydrateProjectModel(ProjectPatchDto projectPatchDto, int depth = 3)
         {
             return (Project)_Hydrator.Hydrate(
                 projectPatchDto, typeof(Project), depth

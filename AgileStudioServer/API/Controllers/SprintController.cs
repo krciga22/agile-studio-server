@@ -114,24 +114,24 @@ namespace AgileStudioServer.API.Controllers
             return new OkResult();
         }
 
-        private Sprint HydrateSprintModel(SprintPostDto sprintPostDto, int depth = 1)
+        private SprintDto HydrateSprintDto(Sprint sprint, int depth = 1)
+        {
+            return (SprintDto)_Hydrator.Hydrate(
+                sprint, typeof(SprintDto), depth
+            );
+        }
+
+        private Sprint HydrateSprintModel(SprintPostDto sprintPostDto, int depth = 3)
         {
             return (Sprint)_Hydrator.Hydrate(
                 sprintPostDto, typeof(Sprint), depth
             );
         }
 
-        private Sprint HydrateSprintModel(SprintPatchDto sprintPatchDto, int depth = 1)
+        private Sprint HydrateSprintModel(SprintPatchDto sprintPatchDto, int depth = 3)
         {
             return (Sprint)_Hydrator.Hydrate(
                 sprintPatchDto, typeof(Sprint), depth
-            );
-        }
-
-        private SprintDto HydrateSprintDto(Sprint sprint, int depth = 1)
-        {
-            return (SprintDto) _Hydrator.Hydrate(
-                sprint, typeof(SprintDto), depth
             );
         }
     }

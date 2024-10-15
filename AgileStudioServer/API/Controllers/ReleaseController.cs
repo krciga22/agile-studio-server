@@ -116,24 +116,24 @@ namespace AgileStudioServer.API.Controllers
             return new OkResult();
         }
 
-        private Release HydrateReleaseModel(ReleasePostDto releasePostDto, int depth = 1)
+        private ReleaseDto HydrateReleaseDto(Release release, int depth = 1)
+        {
+            return (ReleaseDto)_Hydrator.Hydrate(
+                release, typeof(ReleaseDto), depth
+            );
+        }
+
+        private Release HydrateReleaseModel(ReleasePostDto releasePostDto, int depth = 3)
         {
             return (Release)_Hydrator.Hydrate(
                 releasePostDto, typeof(Release), depth
             );
         }
 
-        private Release HydrateReleaseModel(ReleasePatchDto releasePatchDto, int depth = 1)
+        private Release HydrateReleaseModel(ReleasePatchDto releasePatchDto, int depth = 3)
         {
             return (Release)_Hydrator.Hydrate(
                 releasePatchDto, typeof(Release), depth
-            );
-        }
-
-        private ReleaseDto HydrateReleaseDto(Release release, int depth = 1)
-        {
-            return (ReleaseDto)_Hydrator.Hydrate(
-                release, typeof(ReleaseDto), depth
             );
         }
     }

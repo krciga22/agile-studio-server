@@ -160,14 +160,14 @@ namespace AgileStudioServer.API.Controllers
             );
         }
 
-        private BacklogItemType HydrateBacklogItemTypeModel(BacklogItemTypePostDto backlogItemTypePostDto, int depth = 1)
+        private BacklogItemType HydrateBacklogItemTypeModel(BacklogItemTypePostDto backlogItemTypePostDto, int depth = 3)
         {
             return (BacklogItemType)_Hydrator.Hydrate(
                 backlogItemTypePostDto, typeof(BacklogItemType), depth
             );
         }
 
-        private BacklogItemType HydrateBacklogItemTypeModel(BacklogItemTypePatchDto backlogItemTypePatchDto, int depth = 1)
+        private BacklogItemType HydrateBacklogItemTypeModel(BacklogItemTypePatchDto backlogItemTypePatchDto, int depth = 3)
         {
             return (BacklogItemType)_Hydrator.Hydrate(
                 backlogItemTypePatchDto, typeof(BacklogItemType), depth
