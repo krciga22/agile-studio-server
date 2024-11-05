@@ -1,6 +1,7 @@
 ﻿using AgileStudioServer.Application.Models;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioServer.Application.Services
 {
@@ -19,7 +20,11 @@ namespace AgileStudioServer.Application.Services
         public virtual List<BacklogItemType> GetByBacklogItemTypeSchemaId(int backlogItemTypeSchemaId)
         {
             List<Data.Entities.BacklogItemType> entities = _DBContext.BacklogItemType.Where(backlogItemType =>
-                backlogItemType.BacklogItemTypeSchema.ID == backlogItemTypeSchemaId).ToList();
+                backlogItemType.BacklogItemTypeSchema.ID == backlogItemTypeSchemaId)
+                .Include(b => b.CreatedBy)
+                .Include(b => b.BacklogItemTypeSchema)
+                .Include(b => b.Workflow)
+                .ToList();
 
             return HydrateBacklogItemTypeModels(entities);
         }
@@ -30,6 +35,10 @@ namespace AgileStudioServer.Application.Services
             if (entity is null) {
                 return null;
             }
+
+            _DBContext.Entry(entity).Reference("CreatedBy").Load();
+            _DBContext.Entry(entity).Reference("BacklogItemTypeSchema").Load();
+            _DBContext.Entry(entity).Reference("Workflow").Load();
 
             return HydrateBacklogItemTypeModel(entity);
         }

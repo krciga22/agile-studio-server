@@ -45,29 +45,6 @@ namespace AgileStudioServer.API.Controllers
             return Ok(dto);
         }
 
-        [HttpGet("{id}/ChildTypes", Name = "GetChildTypesForBacklogItemType")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<BacklogItemTypeDto>), StatusCodes.Status200OK)]
-        public IActionResult GetForParentBacklogItemType(int id)
-        {
-            var backlogItemType = _BacklogItemTypeService.Get(id);
-            if (backlogItemType == null)
-            {
-                return NotFound();
-            }
-
-            List<BacklogItemType> models = new();
-
-            var childBacklogItemTypes = _ChildBacklogItemTypeService.GetByParentTypeId(id);
-            childBacklogItemTypes.ForEach(
-                childBacklogItemType => models.Add(childBacklogItemType.ChildType)
-            );
-
-            var dtos = HydrateBacklogItemTypeDtos(models);
-            return Ok(dtos);
-        }
-
         [HttpPost(Name = "CreateBacklogItemType")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -139,6 +116,84 @@ namespace AgileStudioServer.API.Controllers
             _BacklogItemTypeService.Delete(model);
 
             return new OkResult();
+        }
+
+        [HttpGet("{id}/ChildTypes", Name = "GetChildTypesForBacklogItemType")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<BacklogItemTypeDto>), StatusCodes.Status200OK)]
+        public IActionResult GetChildTypes(int id)
+        {
+            var backlogItemType = _BacklogItemTypeService.Get(id);
+            if (backlogItemType == null)
+            {
+                return NotFound();
+            }
+
+            List<BacklogItemType> models = new();
+
+            var childBacklogItemTypes = _ChildBacklogItemTypeService.GetByParentTypeId(id);
+            childBacklogItemTypes.ForEach(
+                childBacklogItemType => models.Add(childBacklogItemType.ChildType)
+            );
+
+            var dtos = HydrateBacklogItemTypeDtos(models);
+            return Ok(dtos);
+        }
+
+        [HttpPut("{id}/ChildTypes/{childId}", Name = "PutChildTypeForBacklogItemType")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BacklogItemTypeDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BacklogItemTypeDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public IActionResult PutChildType(int id, int childId)
+        {
+            var parentType = _BacklogItemTypeService.Get(id);
+            var childType = _BacklogItemTypeService.Get(childId);
+            if (parentType == null || childType == null)
+            {
+                return NotFound();
+            }
+
+            if(parentType.BacklogItemTypeSchema.ID != childType.BacklogItemTypeSchema.ID)
+            {
+                var problem = new ProblemDetails();
+                problem.Title = "Child belongs to a different schema";
+                problem.Status = 400;
+                return BadRequest(problem);
+            }
+
+            var created = false;
+            var childBacklogItemType = _ChildBacklogItemTypeService.Get(id, childId);
+            if (childBacklogItemType == null)
+            {
+                childBacklogItemType = new ChildBacklogItemType();
+                childBacklogItemType.ParentType = parentType;
+                childBacklogItemType.ChildType = childType;
+                childBacklogItemType.Schema = parentType.BacklogItemTypeSchema;
+                childBacklogItemType = _ChildBacklogItemTypeService.Create(childBacklogItemType);
+                created = true;
+            }
+
+            var dto = HydrateBacklogItemTypeDto(childType);
+            return created ? Created("", dto) : Ok(dto);
+        }
+
+        [HttpDelete("{id}/ChildTypes/{childId}", Name = "DeleteChildTypeForBacklogItemType")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public IActionResult DeleteChildType(int id, int childId)
+        {
+            var childBacklogItemType = _ChildBacklogItemTypeService.Get(id, childId);
+            if (childBacklogItemType == null)
+            {
+                return NotFound();
+            }
+
+            _ChildBacklogItemTypeService.Delete(childBacklogItemType);
+
+            return new NoContentResult();
         }
 
         private List<BacklogItemTypeDto> HydrateBacklogItemTypeDtos(List<BacklogItemType> backlogItemTypes, int depth = 1)

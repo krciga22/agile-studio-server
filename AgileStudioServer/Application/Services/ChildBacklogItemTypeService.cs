@@ -1,6 +1,7 @@
 ﻿using AgileStudioServer.Application.Models;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AgileStudioServer.Application.Services
 {
@@ -22,6 +23,10 @@ namespace AgileStudioServer.Application.Services
                 _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
                     childBacklogItemType.ParentType.ID == parentTypeId
                 )
+                .Include(b => b.ChildType)
+                .Include(b => b.ParentType)
+                .Include(b => b.Schema)
+                .Include(b => b.CreatedBy)
                 .ToList();
 
             return HydrateChildBacklogItemTypeModels(entities, 2);
@@ -31,8 +36,13 @@ namespace AgileStudioServer.Application.Services
         {
             List<Data.Entities.ChildBacklogItemType> entities = 
                 _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
-                childBacklogItemType.ChildType.ID == childTypeId
-            ).ToList();
+                    childBacklogItemType.ChildType.ID == childTypeId
+                )
+                .Include(b => b.ChildType)
+                .Include(b => b.ParentType)
+                .Include(b => b.Schema)
+                .Include(b => b.CreatedBy)
+                .ToList();
 
             return HydrateChildBacklogItemTypeModels(entities);
         }
@@ -45,6 +55,22 @@ namespace AgileStudioServer.Application.Services
             }
 
             return HydrateChildBacklogItemTypeModel(entity);
+        }
+
+        public virtual ChildBacklogItemType? Get(int parentTypeId, int childTypeId)
+        {
+            List<Data.Entities.ChildBacklogItemType> entities =
+                _DBContext.ChildBacklogItemType.Where(childBacklogItemType =>
+                    childBacklogItemType.ParentType.ID == parentTypeId && 
+                    childBacklogItemType.ChildType.ID == childTypeId
+                )
+                .Include(b => b.ChildType)
+                .Include(b => b.ParentType)
+                .Include(b => b.Schema)
+                .Include(b => b.CreatedBy)
+                .ToList();
+
+            return entities.Count() == 1 ? HydrateChildBacklogItemTypeModel(entities[0]) : null;
         }
 
         public virtual ChildBacklogItemType Create(ChildBacklogItemType childBacklogItemType)
