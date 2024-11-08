@@ -211,10 +211,9 @@ namespace AgileStudioServerTest.IntegrationTests
             workflow ??= CreateWorkflow();
             createdBy ??= CreateUser();
 
-            var workflowState = new WorkflowState(title)
+            var workflowState = new WorkflowState(title, workflow.ID)
             {
-                Workflow = workflow,
-                CreatedBy = createdBy
+                CreatedById = createdBy.ID
             };
             workflowState = _workflowStateService.Create(workflowState);
             return workflowState;

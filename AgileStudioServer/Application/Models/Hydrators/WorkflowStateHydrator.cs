@@ -1,5 +1,4 @@
 ﻿
-using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data;
@@ -16,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.WorkflowState)
-                || from == typeof(API.Dtos.WorkflowStatePostDto)
-                || from == typeof(API.Dtos.WorkflowStatePatchDto)
+                from == typeof(int) || 
+                from == typeof(Data.Entities.WorkflowState) || 
+                from == typeof(API.Dtos.WorkflowStatePostDto) || 
+                from == typeof(API.Dtos.WorkflowStatePatchDto)
             ) && to == typeof(WorkflowState);
         }
 
@@ -34,13 +34,13 @@ namespace AgileStudioServer.Application.Models.Hydrators
             if (from is Data.Entities.WorkflowState)
             {
                 var entity = (Data.Entities.WorkflowState)from;
-                model = new WorkflowState(entity.Title);
+                model = new WorkflowState(entity.Title, entity.Workflow.ID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.WorkflowStatePostDto)
             {
                 var dto = (API.Dtos.WorkflowStatePostDto)from;
-                model = new WorkflowState(dto.Title);
+                model = new WorkflowState(dto.Title, dto.WorkflowId);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.WorkflowStatePatchDto)
@@ -70,7 +70,6 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (WorkflowState)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.WorkflowState)
             {
@@ -80,21 +79,14 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
 
-                if (referenceHydrator != null && nextDepth <= maxDepth)
+                if (entity.Workflow != null)
                 {
-                    if (entity.Workflow != null)
-                    {
-                        model.Workflow = (Workflow)referenceHydrator.Hydrate(
-                            entity.Workflow, typeof(Workflow), maxDepth, nextDepth
-                        );
-                    }
+                    model.WorkflowId = entity.Workflow.ID;
+                }
 
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
+                if (entity.CreatedBy != null)
+                {
+                    model.CreatedById = entity.CreatedBy.ID;
                 }
             }
             else if (from is API.Dtos.WorkflowStatePostDto)
@@ -103,20 +95,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Title = dto.Title;
                 model.Description = dto.Description;
 
-                if (referenceHydrator != null && depth < maxDepth)
+                if (dto.WorkflowId > 0)
                 {
-                    if (dto.WorkflowId > 0)
-                    {
-                        Data.Entities.Workflow? workflowEntity = _DBContext.Workflow.Find(dto.WorkflowId) ??
-                            throw new ModelNotFoundException(
-                                nameof(Workflow), 
-                                dto.WorkflowId.ToString()
-                            );
-
-                        model.Workflow = (Workflow)referenceHydrator.Hydrate(
-                            workflowEntity, typeof(Workflow), maxDepth, nextDepth
-                        );
-                    }
+                    model.WorkflowId = dto.WorkflowId;
                 }
             }
             else if (from is API.Dtos.WorkflowStatePatchDto)

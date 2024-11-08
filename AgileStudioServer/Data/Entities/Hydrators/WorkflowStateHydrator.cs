@@ -14,7 +14,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.WorkflowState) &&
+            return (
+                    from == typeof(Application.Models.WorkflowState) ||
+                    from == typeof(int)
+                ) &&
                 to == typeof(WorkflowState);
         }
 
@@ -49,6 +52,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                     Hydrate(model, entity, maxDepth, depth, referenceHydrator);
                 }
             }
+            else if(from is int)
+            {
+                entity = _DBContext.WorkflowState.Find(from);
+            }
 
             if (entity == null)
             {
@@ -80,13 +87,13 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     entity.Workflow = (Workflow)referenceHydrator.Hydrate(
-                        model.Workflow, typeof(Workflow), maxDepth, nextDepth
+                        model.WorkflowId, typeof(Workflow), maxDepth, nextDepth
                     );
 
-                    if (model.CreatedBy != null)
+                    if (model.CreatedById != null)
                     {
                         entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                            model.CreatedById, typeof(User), maxDepth, nextDepth
                         );
                     }
                 }

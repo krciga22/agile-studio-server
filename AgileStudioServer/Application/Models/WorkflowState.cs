@@ -9,17 +9,18 @@ namespace AgileStudioServer.Application.Models
         public string Title { get; set; }
 
         [Required]
-        public Workflow Workflow { get; set; } = null!;
+        public int WorkflowId { get; set; }
 
         public string? Description { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
-        public User? CreatedBy { get; set; } = null!;
+        public int? CreatedById { get; set; } = null!;
 
-        public WorkflowState(string title)
+        public WorkflowState(string title, int workflowId)
         {
             Title = title;
+            WorkflowId = workflowId;
             CreatedOn = DateTime.Now;
         }
     }

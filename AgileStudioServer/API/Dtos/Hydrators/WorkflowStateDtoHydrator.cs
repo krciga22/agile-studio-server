@@ -8,8 +8,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
     {
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.WorkflowState) &&
-                to == typeof(WorkflowStateDto);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.WorkflowState)
+            ) && to == typeof(WorkflowStateDto);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -27,7 +29,7 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 var model = (Application.Models.WorkflowState)from;
 
                 var workflowSummaryDto = (WorkflowSummaryDto)referenceHydrator.Hydrate(
-                    model.Workflow, typeof(WorkflowSummaryDto), maxDepth, depth
+                    model.WorkflowId, typeof(WorkflowSummaryDto), maxDepth, depth
                 );
 
                 dto = new WorkflowStateDto(model.ID, model.Title, workflowSummaryDto, model.CreatedOn);
@@ -63,13 +65,13 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     dto.Workflow = (WorkflowSummaryDto)referenceHydrator.Hydrate(
-                        model.Workflow, typeof(WorkflowSummaryDto), maxDepth, depth
+                        model.WorkflowId, typeof(WorkflowSummaryDto), maxDepth, depth
                     );
 
-                    if (model.CreatedBy != null)
+                    if (model.CreatedById != null)
                     {
                         dto.CreatedBy = (UserSummaryDto)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(UserSummaryDto), maxDepth, depth
+                            model.CreatedById, typeof(UserSummaryDto), maxDepth, depth
                         );
                     }
                 }

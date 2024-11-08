@@ -19,8 +19,8 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
         [Fact]
         public void Create_ReturnsWorkflowState()
         {
-            WorkflowState workflowState = new("Test WorkflowState");
-            workflowState.Workflow = _Fixtures.CreateWorkflow();
+            Workflow workflow = _Fixtures.CreateWorkflow();
+            WorkflowState workflowState = new("Test WorkflowState", workflow.ID);
 
             workflowState = _workflowStateService.Create(workflowState);
 
