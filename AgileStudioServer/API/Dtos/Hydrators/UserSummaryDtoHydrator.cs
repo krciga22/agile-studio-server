@@ -1,4 +1,5 @@
 ﻿
+using AgileStudioServer.API.Dtos.Hydrators.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 
@@ -8,8 +9,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
     {
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.User) &&
-                to == typeof(UserSummaryDto);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.User)
+            ) && to == typeof(UserSummaryDto);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -19,11 +22,26 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
-            Object? dto = null;
-
-            if (from is Application.Models.User)
+            if (referenceHydrator == null)
             {
-                var model = (Application.Models.User)from;
+                throw new ReferenceHydratorRequiredException(this);
+            }
+
+            Application.Models.User? model = null;
+            if (from is int)
+            {
+                model = (Application.Models.User)referenceHydrator.Hydrate(
+                    from, typeof(Application.Models.User), maxDepth, depth, referenceHydrator
+                );
+            }
+            else if (from is Application.Models.User)
+            {
+                model = (Application.Models.User)from;
+            }
+
+            Object? dto = null;
+            if (model != null)
+            {
                 dto = new UserSummaryDto(model.ID, model.FirstName, model.LastName);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }

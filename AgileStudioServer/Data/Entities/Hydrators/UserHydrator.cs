@@ -14,8 +14,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.User) &&
-                to == typeof(User);
+            return (
+                from == typeof(int) ||
+                from == typeof(Application.Models.User)
+            ) && to == typeof(User);
         }
 
         public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
@@ -49,6 +51,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                     Hydrate(model, entity, maxDepth, depth, referenceHydrator);
                 }
             }
+            else if (from is int)
+            {
+                entity = _DBContext.User.Find(from);
+            }
 
             if (entity == null)
             {
@@ -66,7 +72,6 @@ namespace AgileStudioServer.Data.Entities.Hydrators
             }
 
             var entity = (User)to;
-            int nextDepth = depth + 1;
 
             if (from is Application.Models.User)
             {

@@ -14,8 +14,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Data.Entities.User)
-                && to == typeof(User);
+            return (
+                from == typeof(int) ||
+                from == typeof(Data.Entities.User)
+            ) && to == typeof(User);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -26,6 +28,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             Object? model = null;
+
+            if (from is int)
+            {
+                var user = _DBContext.User.Find(from);
+                if (user != null)
+                {
+                    from = user;
+                }
+            }
 
             if (from is Data.Entities.User)
             {
