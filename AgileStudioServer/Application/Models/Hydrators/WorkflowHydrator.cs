@@ -15,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.Workflow)
-                || from == typeof(API.Dtos.WorkflowPostDto)
-                || from == typeof(API.Dtos.WorkflowPatchDto)
+                from == typeof(int) ||
+                from == typeof(Data.Entities.Workflow) || 
+                from == typeof(API.Dtos.WorkflowPostDto) || 
+                from == typeof(API.Dtos.WorkflowPatchDto)
             ) && to == typeof(Workflow);
         }
 
@@ -29,6 +30,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             Object? model = null;
+
+            if(from is int)
+            {
+                var workflow = _DBContext.Workflow.Find(from);
+                if(workflow != null)
+                {
+                    from = workflow;
+                }
+            }
 
             if (from is Data.Entities.Workflow)
             {
@@ -69,7 +79,6 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (Workflow)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.Workflow)
             {
@@ -79,14 +88,9 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
 
-                if(referenceHydrator != null && nextDepth <= maxDepth)
+                if (entity.CreatedBy != null)
                 {
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
+                    model.CreatedById = entity.CreatedBy.ID;
                 }
             }
             else if(from is API.Dtos.WorkflowPostDto)

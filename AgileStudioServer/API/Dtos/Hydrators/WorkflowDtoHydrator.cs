@@ -1,4 +1,5 @@
 ﻿
+using AgileStudioServer.API.Dtos.Hydrators.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 
@@ -8,8 +9,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
     {
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.Workflow) &&
-                to == typeof(WorkflowDto);
+            return (
+                from == typeof(int) ||
+                from == typeof(Application.Models.Workflow)
+            ) && to == typeof(WorkflowDto);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -19,11 +22,26 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
-            Object? dto = null;
-
-            if (from is Application.Models.Workflow)
+            if (referenceHydrator == null)
             {
-                var model = (Application.Models.Workflow)from;
+                throw new ReferenceHydratorRequiredException(this);
+            }
+
+            Application.Models.Workflow? model = null;
+            if (from is int && referenceHydrator != null)
+            {
+                model = (Application.Models.Workflow) referenceHydrator.Hydrate(
+                    from, typeof(Application.Models.Workflow), maxDepth, depth, referenceHydrator
+                );
+            }
+            else if (from is Application.Models.Workflow)
+            {
+                model = (Application.Models.Workflow)from;
+            }
+
+            Object? dto = null;
+            if (model != null)
+            {
                 dto = new WorkflowDto(model.ID, model.Title, model.CreatedOn);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }
@@ -56,10 +74,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
-                    if (model.CreatedBy != null)
+                    if (model.CreatedById != null)
                     {
                         dto.CreatedBy = (UserSummaryDto)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(UserSummaryDto), maxDepth, depth
+                            model.CreatedById, typeof(UserSummaryDto), maxDepth, depth
                         );
                     }
                 }

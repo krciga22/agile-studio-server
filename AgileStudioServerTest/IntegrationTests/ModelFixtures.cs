@@ -196,7 +196,7 @@ namespace AgileStudioServerTest.IntegrationTests
 
             var workflow = new Workflow(title) 
             {
-                CreatedBy = createdBy
+                CreatedById = createdBy.ID
             };
             workflow = _workflowService.Create(workflow);
             return workflow;

@@ -1,4 +1,5 @@
 ﻿
+using AgileStudioServer.API.Dtos.Hydrators.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 
@@ -21,13 +22,26 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
-            Object? dto = null;
-
-            if (from is Application.Models.WorkflowState  &&
-                referenceHydrator != null)
+            if(referenceHydrator == null)
             {
-                var model = (Application.Models.WorkflowState)from;
+                throw new ReferenceHydratorRequiredException(this);
+            }
 
+            Application.Models.WorkflowState? model = null;
+            if (from is int)
+            {
+                model = (Application.Models.WorkflowState)referenceHydrator.Hydrate(
+                    from, typeof(Application.Models.WorkflowState), maxDepth, depth, referenceHydrator
+                );
+            }
+            else if (from is Application.Models.WorkflowState)
+            {
+                model = (Application.Models.WorkflowState)from;
+            }
+
+            Object? dto = null;
+            if (model != null)
+            {
                 var workflowSummaryDto = (WorkflowSummaryDto)referenceHydrator.Hydrate(
                     model.WorkflowId, typeof(WorkflowSummaryDto), maxDepth, depth
                 );

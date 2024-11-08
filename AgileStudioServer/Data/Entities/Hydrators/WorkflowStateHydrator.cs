@@ -15,10 +15,9 @@ namespace AgileStudioServer.Data.Entities.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                    from == typeof(Application.Models.WorkflowState) ||
-                    from == typeof(int)
-                ) &&
-                to == typeof(WorkflowState);
+                from == typeof(int) || 
+                from == typeof(Application.Models.WorkflowState)
+            ) && to == typeof(WorkflowState);
         }
 
         public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)

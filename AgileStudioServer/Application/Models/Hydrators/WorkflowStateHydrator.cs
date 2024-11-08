@@ -31,6 +31,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             Object? model = null;
 
+            if (from is int)
+            {
+                var workflowState = _DBContext.WorkflowState.Find(from);
+                if (workflowState != null)
+                {
+                    from = workflowState;
+                }
+            }
+
             if (from is Data.Entities.WorkflowState)
             {
                 var entity = (Data.Entities.WorkflowState)from;
