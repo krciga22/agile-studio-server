@@ -90,7 +90,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
                 if (entity.CreatedBy != null)
                 {
-                    model.CreatedById = entity.CreatedBy.ID;
+                    model.CreatedById = entity.CreatedByID;
                 }
             }
             else if(from is API.Dtos.WorkflowPostDto)

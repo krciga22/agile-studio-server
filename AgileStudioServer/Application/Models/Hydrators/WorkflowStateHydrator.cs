@@ -43,7 +43,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
             if (from is Data.Entities.WorkflowState)
             {
                 var entity = (Data.Entities.WorkflowState)from;
-                model = new WorkflowState(entity.Title, entity.Workflow.ID);
+                model = new WorkflowState(entity.Title, entity.WorkflowID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.WorkflowStatePostDto)
@@ -90,12 +90,12 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
                 if (entity.Workflow != null)
                 {
-                    model.WorkflowId = entity.Workflow.ID;
+                    model.WorkflowId = entity.WorkflowID;
                 }
 
                 if (entity.CreatedBy != null)
                 {
-                    model.CreatedById = entity.CreatedBy.ID;
+                    model.CreatedById = entity.CreatedByID;
                 }
             }
             else if (from is API.Dtos.WorkflowStatePostDto)

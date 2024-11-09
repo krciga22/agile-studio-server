@@ -1,4 +1,5 @@
 ﻿
+using AgileStudioServer.API.Dtos.Hydrators.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 
@@ -8,8 +9,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
     {
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.BacklogItemType) &&
-                to == typeof(BacklogItemTypeDto);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.BacklogItemType)
+            ) && to == typeof(BacklogItemTypeDto);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -19,21 +22,38 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
-            Object? dto = null;
-
-            if (from is Application.Models.BacklogItemType && referenceHydrator != null)
+            if (referenceHydrator == null)
             {
-                var model = (Application.Models.BacklogItemType)from;
+                throw new ReferenceHydratorRequiredException(this);
+            }
 
+            Application.Models.BacklogItemType? model = null;
+            if (from is int && referenceHydrator != null)
+            {
+                model = (Application.Models.BacklogItemType)referenceHydrator.Hydrate(
+                    from, typeof(Application.Models.BacklogItemType), maxDepth, depth, referenceHydrator
+                );
+            }
+            else if (from is Application.Models.BacklogItemType)
+            {
+                model = (Application.Models.BacklogItemType)from;
+            }
+
+            Object? dto = null;
+            if (model != null && referenceHydrator != null)
+            {
                 var backlogItemTypeSchemaSummaryDto = (BacklogItemTypeSchemaSummaryDto)referenceHydrator.Hydrate(
-                    model.BacklogItemTypeSchema, typeof(BacklogItemTypeSchemaSummaryDto), maxDepth, depth
+                    model.BacklogItemTypeSchemaID, typeof(BacklogItemTypeSchemaSummaryDto), maxDepth, depth
                 );
 
                 var workflowSummaryDto = (WorkflowSummaryDto)referenceHydrator.Hydrate(
-                    model.Workflow, typeof(WorkflowSummaryDto), maxDepth, depth
+                    model.WorkflowID, typeof(WorkflowSummaryDto), maxDepth, depth
                 );
 
-                dto = new BacklogItemTypeDto(model.ID, model.Title, model.CreatedOn, backlogItemTypeSchemaSummaryDto, workflowSummaryDto);
+                dto = new BacklogItemTypeDto(
+                    model.ID, model.Title, model.CreatedOn,
+                    backlogItemTypeSchemaSummaryDto, workflowSummaryDto);
+
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }
 
@@ -66,17 +86,17 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     dto.BacklogItemTypeSchema = (BacklogItemTypeSchemaSummaryDto)referenceHydrator.Hydrate(
-                        model.BacklogItemTypeSchema, typeof(BacklogItemTypeSchemaSummaryDto), maxDepth, depth
+                        model.BacklogItemTypeSchemaID, typeof(BacklogItemTypeSchemaSummaryDto), maxDepth, depth
                     );
 
                     dto.Workflow = (WorkflowSummaryDto)referenceHydrator.Hydrate(
-                        model.Workflow, typeof(WorkflowSummaryDto), maxDepth, depth
+                        model.WorkflowID, typeof(WorkflowSummaryDto), maxDepth, depth
                     );
 
-                    if (model.CreatedBy != null)
+                    if (model.CreatedByID != null)
                     {
                         dto.CreatedBy = (UserSummaryDto)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(UserSummaryDto), maxDepth, depth
+                            model.CreatedByID, typeof(UserSummaryDto), maxDepth, depth
                         );
                     }
                 }

@@ -119,11 +119,9 @@ namespace AgileStudioServerTest.IntegrationTests
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
             workflow ??= CreateWorkflow();
 
-            var backlogItemType = new BacklogItemType(title)
+            var backlogItemType = new BacklogItemType(title, backlogItemTypeSchema.ID, workflow.ID)
             {
-                CreatedBy = createdBy,
-                BacklogItemTypeSchema = backlogItemTypeSchema,
-                Workflow = workflow
+                CreatedByID = createdBy.ID,
             };
             backlogItemType = _backlogItemTypeService.Create(backlogItemType);
             return backlogItemType;

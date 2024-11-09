@@ -1,5 +1,4 @@
 ﻿
-using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data;
@@ -16,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.BacklogItemType)
-                || from == typeof(API.Dtos.BacklogItemTypePostDto)
-                || from == typeof(API.Dtos.BacklogItemTypePatchDto)
+                from == typeof(int) ||
+                from == typeof(Data.Entities.BacklogItemType) || 
+                from == typeof(API.Dtos.BacklogItemTypePostDto) || 
+                from == typeof(API.Dtos.BacklogItemTypePatchDto)
             ) && to == typeof(BacklogItemType);
         }
 
@@ -34,13 +34,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
             if (from is Data.Entities.BacklogItemType)
             {
                 var entity = (Data.Entities.BacklogItemType)from;
-                model = new BacklogItemType(entity.Title);
+                model = new BacklogItemType(
+                    entity.Title, entity.BacklogItemTypeSchemaID, entity.WorkflowID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.BacklogItemTypePostDto)
             {
                 var dto = (API.Dtos.BacklogItemTypePostDto)from;
-                model = new BacklogItemType(dto.Title);
+                model = new BacklogItemType(
+                    dto.Title, dto.BacklogItemTypeSchemaId, dto.WorkflowId);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.BacklogItemTypePatchDto)
@@ -70,7 +72,6 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (BacklogItemType)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.BacklogItemType)
             {
@@ -80,55 +81,17 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Title = entity.Title;
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
-
-                if (referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                        entity.BacklogItemTypeSchema, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
-                    );
-
-                    model.Workflow = (Workflow)referenceHydrator.Hydrate(
-                        entity.Workflow, typeof(Workflow), maxDepth, nextDepth
-                    );
-
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
-                }
+                model.BacklogItemTypeSchemaID = entity.BacklogItemTypeSchemaID;
+                model.WorkflowID = entity.WorkflowID;
+                model.CreatedByID = entity.CreatedByID;
             }
             else if (from is API.Dtos.BacklogItemTypePostDto)
             {
                 var dto = (API.Dtos.BacklogItemTypePostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
-
-                if(referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity =
-                    _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
-                        throw new ModelNotFoundException(
-                            nameof(BacklogItemTypeSchema),
-                            dto.BacklogItemTypeSchemaId.ToString()
-                        );
-
-                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                        backlogItemTypeSchemaEntity, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
-                    );
-
-                    Data.Entities.Workflow? workflowEntity =
-                        _DBContext.Workflow.Find(dto.WorkflowId) ??
-                            throw new ModelNotFoundException(
-                                nameof(Workflow),
-                                dto.WorkflowId.ToString()
-                            );
-
-                    model.Workflow = (Workflow)referenceHydrator.Hydrate(
-                        workflowEntity, typeof(Workflow), maxDepth, nextDepth
-                    );
-                }
+                model.BacklogItemTypeSchemaID = dto.BacklogItemTypeSchemaId;
+                model.WorkflowID = dto.WorkflowId;
             }
             else if (from is API.Dtos.BacklogItemTypePatchDto)
             {

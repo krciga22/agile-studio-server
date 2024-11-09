@@ -19,9 +19,9 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
         [Fact]
         public void Create_ReturnsBacklogItemType()
         {
-            BacklogItemType backlogItemType = new("Test BacklogItemType");
-            backlogItemType.BacklogItemTypeSchema = _Fixtures.CreateBacklogItemTypeSchema();
-            backlogItemType.Workflow = _Fixtures.CreateWorkflow();
+            BacklogItemTypeSchema schema = _Fixtures.CreateBacklogItemTypeSchema();
+            Workflow workflow = _Fixtures.CreateWorkflow(); ;
+            BacklogItemType backlogItemType = new("Test BacklogItemType", schema.ID, workflow.ID);
 
             backlogItemType = _backlogItemTypeService.Create(backlogItemType);
 

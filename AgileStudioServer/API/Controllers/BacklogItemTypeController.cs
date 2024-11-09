@@ -17,16 +17,20 @@ namespace AgileStudioServer.API.Controllers
 
         private readonly ChildBacklogItemTypeService _ChildBacklogItemTypeService;
 
+        private readonly BacklogItemTypeSchemaService _BacklogItemTypeSchemaService;
+
         private readonly Hydrator _Hydrator;
 
         public BacklogItemTypeController(
             BacklogItemTypeService dataProvider, 
             Hydrator hydrator, 
-            ChildBacklogItemTypeService childBacklogItemTypeService)
+            ChildBacklogItemTypeService childBacklogItemTypeService,
+            BacklogItemTypeSchemaService backlogItemTypeSchemaService)
         {
             _BacklogItemTypeService = dataProvider;
             _Hydrator = hydrator;
             _ChildBacklogItemTypeService = childBacklogItemTypeService;
+            _BacklogItemTypeSchemaService = backlogItemTypeSchemaService;
         }
 
         [HttpGet("{id}", Name = "GetBacklogItemType")]
@@ -155,7 +159,7 @@ namespace AgileStudioServer.API.Controllers
                 return NotFound();
             }
 
-            if(parentType.BacklogItemTypeSchema.ID != childType.BacklogItemTypeSchema.ID)
+            if(parentType.BacklogItemTypeSchemaID != childType.BacklogItemTypeSchemaID)
             {
                 var problem = new ProblemDetails();
                 problem.Title = "Child belongs to a different schema";
@@ -167,10 +171,21 @@ namespace AgileStudioServer.API.Controllers
             var childBacklogItemType = _ChildBacklogItemTypeService.Get(id, childId);
             if (childBacklogItemType == null)
             {
+                var schema = _BacklogItemTypeSchemaService.Get(
+                    parentType.BacklogItemTypeSchemaID
+                );
+                if(schema == null)
+                {
+                    throw new ModelNotFoundException(
+                        nameof(BacklogItemTypeSchema),
+                        parentType.BacklogItemTypeSchemaID.ToString()
+                    );
+                }
+
                 childBacklogItemType = new ChildBacklogItemType();
                 childBacklogItemType.ParentType = parentType;
                 childBacklogItemType.ChildType = childType;
-                childBacklogItemType.Schema = parentType.BacklogItemTypeSchema;
+                childBacklogItemType.Schema = schema;
                 childBacklogItemType = _ChildBacklogItemTypeService.Create(childBacklogItemType);
                 created = true;
             }
