@@ -21,11 +21,9 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
         {
             BacklogItemType backlogItemTypeStory = _Fixtures.CreateBacklogItemType("Story");
             BacklogItemType backlogItemTypeTask = _Fixtures.CreateBacklogItemType("Task");
-
-            ChildBacklogItemType childBacklogItemType = new();
-            childBacklogItemType.ParentType = backlogItemTypeStory;
-            childBacklogItemType.ChildType = backlogItemTypeTask;
-            childBacklogItemType.Schema = _Fixtures.CreateBacklogItemTypeSchema();
+            BacklogItemTypeSchema schema = _Fixtures.CreateBacklogItemTypeSchema();
+            ChildBacklogItemType childBacklogItemType = new(
+                backlogItemTypeTask.ID, backlogItemTypeStory.ID, schema.ID);
 
             childBacklogItemType = _childBacklogItemTypeService.Create(childBacklogItemType);
 
@@ -92,11 +90,11 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
             var childBacklogItemType = _Fixtures.CreateChildBacklogItemType();
             var backlogItemType = _Fixtures.CreateBacklogItemType("Updated Type");
 
-            childBacklogItemType.ChildType = backlogItemType;
+            childBacklogItemType.ChildTypeID = backlogItemType.ID;
             childBacklogItemType = _childBacklogItemTypeService.Update(childBacklogItemType);
 
             Assert.NotNull(childBacklogItemType);
-            Assert.Equal(backlogItemType.ID, childBacklogItemType.ChildType.ID);
+            Assert.Equal(backlogItemType.ID, childBacklogItemType.ChildTypeID);
         }
 
         [Fact]

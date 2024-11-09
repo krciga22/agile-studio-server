@@ -137,9 +137,17 @@ namespace AgileStudioServer.API.Controllers
             List<BacklogItemType> models = new();
 
             var childBacklogItemTypes = _ChildBacklogItemTypeService.GetByParentTypeId(id);
-            childBacklogItemTypes.ForEach(
-                childBacklogItemType => models.Add(childBacklogItemType.ChildType)
-            );
+            childBacklogItemTypes.ForEach(childBacklogItemType => {
+                var childType = _BacklogItemTypeService.Get(childBacklogItemType.ChildTypeID);
+                if(childType == null)
+                {
+                    throw new ModelNotFoundException(
+                        nameof(BacklogItemType),
+                        childBacklogItemType.ChildTypeID.ToString()
+                    );
+                }
+                models.Add(childType);
+            });
 
             var dtos = HydrateBacklogItemTypeDtos(models);
             return Ok(dtos);
@@ -182,10 +190,8 @@ namespace AgileStudioServer.API.Controllers
                     );
                 }
 
-                childBacklogItemType = new ChildBacklogItemType();
-                childBacklogItemType.ParentType = parentType;
-                childBacklogItemType.ChildType = childType;
-                childBacklogItemType.Schema = schema;
+                childBacklogItemType = new ChildBacklogItemType(
+                    childType.ID, parentType.ID, schema.ID);
                 childBacklogItemType = _ChildBacklogItemTypeService.Create(childBacklogItemType);
                 created = true;
             }

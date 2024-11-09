@@ -31,6 +31,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             Object? model = null;
 
+            if (from is int)
+            {
+                var backlogItemType = _DBContext.BacklogItemType.Find(from);
+                if (backlogItemType != null)
+                {
+                    from = backlogItemType;
+                }
+            }
+
             if (from is Data.Entities.BacklogItemType)
             {
                 var entity = (Data.Entities.BacklogItemType)from;

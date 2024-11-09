@@ -14,8 +14,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.ChildBacklogItemType) && 
-                to == typeof(ChildBacklogItemType);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.ChildBacklogItemType) 
+            ) && to == typeof(ChildBacklogItemType);
         }
 
         public override object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -42,13 +44,17 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 else
                 {
                     entity = new ChildBacklogItemType(
-                        model.ChildType.ID, model.ParentType.ID, model.Schema.ID);
+                        model.ChildTypeID, model.ParentTypeID, model.SchemaID);
                 }
 
                 if (entity != null)
                 {
                     Hydrate(model, entity, maxDepth, depth, referenceHydrator);
                 }
+            }
+            else if (from is int)
+            {
+                entity = _DBContext.ChildBacklogItemType.Find(from);
             }
 
             if (entity == null)
@@ -75,29 +81,29 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
                 entity.ID = model.ID;
                 entity.CreatedOn = model.CreatedOn;
-                entity.ChildTypeID = model.ChildType.ID;
-                entity.ParentTypeID = model.ParentType.ID;
-                entity.SchemaID = model.Schema.ID;
-                entity.CreatedByID = model.CreatedBy?.ID;
+                entity.ChildTypeID = model.ChildTypeID;
+                entity.ParentTypeID = model.ParentTypeID;
+                entity.SchemaID = model.SchemaID;
+                entity.CreatedByID = model.CreatedByID;
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     entity.ChildType = (BacklogItemType)referenceHydrator.Hydrate(
-                        model.ChildType, typeof(BacklogItemType), maxDepth, nextDepth
+                        model.ChildTypeID, typeof(BacklogItemType), maxDepth, nextDepth
                     );
 
                     entity.ParentType = (BacklogItemType)referenceHydrator.Hydrate(
-                        model.ParentType, typeof(BacklogItemType), maxDepth, nextDepth
+                        model.ParentTypeID, typeof(BacklogItemType), maxDepth, nextDepth
                     );
 
                     entity.Schema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                        model.Schema, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
+                        model.SchemaID, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
                     );
 
-                    if (model.CreatedBy != null)
+                    if (model.CreatedByID != null)
                     {
                         entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                            model.CreatedByID, typeof(User), maxDepth, nextDepth
                         );
                     }
                 }
