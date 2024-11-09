@@ -14,8 +14,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.BacklogItemTypeSchema) &&
-                to == typeof(BacklogItemTypeSchema);
+            return (
+                from == typeof(int) ||
+                from == typeof(Application.Models.BacklogItemTypeSchema) 
+            ) && to == typeof(BacklogItemTypeSchema);
         }
 
         public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
@@ -49,6 +51,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                     Hydrate(model, entity, maxDepth, depth, referenceHydrator);
                 }
             }
+            else if (from is int)
+            {
+                entity = _DBContext.BacklogItemTypeSchema.Find(from);
+            }
 
             if (entity == null)
             {
@@ -79,10 +85,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
-                    if (model.CreatedBy != null)
+                    if (model.CreatedById != null)
                     {
                         entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                            model.CreatedById, typeof(User), maxDepth, nextDepth
                         );
                     }
                 }

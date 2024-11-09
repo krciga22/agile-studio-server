@@ -102,7 +102,7 @@ namespace AgileStudioServerTest.IntegrationTests
 
             var backlogItemTypeSchema = new BacklogItemTypeSchema(title)
             {
-                CreatedBy = createdBy
+                CreatedById = createdBy.ID
             };
             backlogItemTypeSchema = _backlogItemTypeSchemaService.Create(backlogItemTypeSchema);
             return backlogItemTypeSchema;

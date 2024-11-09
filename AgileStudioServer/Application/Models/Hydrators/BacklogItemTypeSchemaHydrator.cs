@@ -15,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.BacklogItemTypeSchema)
-                || from == typeof(API.Dtos.BacklogItemTypeSchemaPostDto)
-                || from == typeof(API.Dtos.BacklogItemTypeSchemaPatchDto)
+                from == typeof(int) ||
+                from == typeof(Data.Entities.BacklogItemTypeSchema) || 
+                from == typeof(API.Dtos.BacklogItemTypeSchemaPostDto) || 
+                from == typeof(API.Dtos.BacklogItemTypeSchemaPatchDto)
             ) && to == typeof(BacklogItemTypeSchema);
         }
 
@@ -29,6 +30,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             Object? model = null;
+
+            if (from is int)
+            {
+                var backlogItemTypeSchema = _DBContext.BacklogItemTypeSchema.Find(from);
+                if (backlogItemTypeSchema != null)
+                {
+                    from = backlogItemTypeSchema;
+                }
+            }
 
             if (from is Data.Entities.BacklogItemTypeSchema)
             {
@@ -84,9 +94,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 {
                     if (entity.CreatedBy != null)
                     {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
+                        model.CreatedById = entity.CreatedBy.ID;
                     }
                 }
             }
