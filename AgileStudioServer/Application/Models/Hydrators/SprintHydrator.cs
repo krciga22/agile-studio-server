@@ -16,9 +16,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.Sprint)
-                || from == typeof(API.Dtos.SprintPostDto)
-                || from == typeof(API.Dtos.SprintPatchDto)
+                from == typeof(int) ||
+                from == typeof(Data.Entities.Sprint) || 
+                from == typeof(API.Dtos.SprintPostDto) || 
+                from == typeof(API.Dtos.SprintPatchDto)
             ) && to == typeof(Sprint);
         }
 
@@ -31,15 +32,25 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             Object? model = null;
 
+            if (from is int)
+            {
+                var sprint = _DBContext.Sprint.Find(from);
+                if (sprint != null)
+                {
+                    from = sprint;
+                }
+            }
+
             if (from is Data.Entities.Sprint)
             {
                 var entity = (Data.Entities.Sprint)from;
-                model = new Sprint(entity.SprintNumber);
+                model = new Sprint(entity.SprintNumber, entity.ProjectID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.SprintPostDto)
             {
-                model = new Sprint(0); // todo fix hard coded sprint number
+                var dto = (API.Dtos.SprintPostDto)from;
+                model = new Sprint(0, dto.ProjectId); // todo fix hard coded sprint number
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.SprintPatchDto)
@@ -69,32 +80,18 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (Sprint)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.Sprint)
             {
                 var entity = (Data.Entities.Sprint)from;
-
                 model.ID = entity.ID;
                 model.SprintNumber = entity.SprintNumber;
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
                 model.StartDate = entity.StartDate;
                 model.EndDate = entity.EndDate;
-
-                if (referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    model.Project = (Project)referenceHydrator.Hydrate(
-                        entity.Project, typeof(Project), maxDepth, nextDepth
-                    );
-
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
-                }
+                model.ProjectID = entity.ProjectID;
+                model.CreatedByID = entity.CreatedByID;
             }
             else if (from is API.Dtos.SprintPostDto)
             {
@@ -102,19 +99,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;
                 model.EndDate = dto.EndDate;
-
-                if (referenceHydrator != null && depth < maxDepth)
-                {
-                    Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
-                        throw new ModelNotFoundException(
-                            nameof(Project),
-                            dto.ProjectId.ToString()
-                        );
-
-                    model.Project = (Project)referenceHydrator.Hydrate(
-                        projectEntity, typeof(Project), maxDepth, nextDepth
-                    );
-                }
+                model.ProjectID = dto.ProjectId;
             }
             else if (from is API.Dtos.SprintPatchDto)
             {

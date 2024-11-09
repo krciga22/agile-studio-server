@@ -156,10 +156,9 @@ namespace AgileStudioServerTest.IntegrationTests
             project ??= CreateProject();
             createdBy ??= CreateUser();
 
-            var sprint = new Sprint(nextSprintNumber)
+            var sprint = new Sprint(nextSprintNumber, project.ID)
             {
-                Project = project,
-                CreatedBy = createdBy
+                CreatedByID = createdBy.ID
             };
             sprint = _sprintService.Create(sprint);
             return sprint;
