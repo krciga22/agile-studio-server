@@ -12,15 +12,15 @@ namespace AgileStudioServer.Application.Models
 
         public DateTime CreatedOn { get; set; }
 
-        public User? CreatedBy { get; set; } = null!;
+        public int? CreatedByID { get; set; } = null!;
 
-        [Required]
-        public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
+        public int BacklogItemTypeSchemaID { get; set; }
 
-        public Project(string title)
+        public Project(string title, int backlogItemTypeSchemaID)
         {
             Title = title;
             CreatedOn = DateTime.Now;
+            BacklogItemTypeSchemaID = backlogItemTypeSchemaID;
         }
     }
 }

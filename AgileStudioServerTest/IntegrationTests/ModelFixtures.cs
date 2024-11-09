@@ -53,10 +53,9 @@ namespace AgileStudioServerTest.IntegrationTests
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
             createdBy ??= CreateUser();
 
-            var project = new Project(title)
+            var project = new Project(title, backlogItemTypeSchema.ID)
             {
-                BacklogItemTypeSchema = backlogItemTypeSchema,
-                CreatedBy = createdBy
+                CreatedByID = createdBy.ID
             };
             project = _projectService.Create(project);
             return project;
@@ -73,9 +72,11 @@ namespace AgileStudioServerTest.IntegrationTests
         {
             title ??= "Test BacklogItem";
             createdBy ??= CreateUser();
-            project ??= CreateProject();
-            backlogItemType ??= CreateBacklogItemType(
-                    backlogItemTypeSchema: project.BacklogItemTypeSchema);
+
+            BacklogItemTypeSchema schema = CreateBacklogItemTypeSchema();
+            project ??= CreateProject(null, backlogItemTypeSchema: schema);
+            backlogItemType ??= CreateBacklogItemType(backlogItemTypeSchema: schema);
+
             workflowState ??= CreateWorkflowState();
             sprint ??= CreateSprint(project: project);
             release ??= CreateRelease(project: project);

@@ -14,8 +14,10 @@ public class ProjectHydrator : AbstractEntityHydrator
 
     public override bool Supports(Type from, Type to)
     {
-        return from == typeof(Application.Models.Project) &&
-            to == typeof(Project);
+        return (
+            from == typeof(int) ||
+            from == typeof(Application.Models.Project)
+        ) && to == typeof(Project);
     }
 
     public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
@@ -41,13 +43,17 @@ public class ProjectHydrator : AbstractEntityHydrator
             }
             else
             {
-                entity = new Project(model.Title, model.BacklogItemTypeSchema.ID);
+                entity = new Project(model.Title, model.BacklogItemTypeSchemaID);
             }
 
             if (entity != null)
             {
                 Hydrate(model, entity, maxDepth, depth, referenceHydrator);
             }
+        }
+        else if (from is int)
+        {
+            entity = _DBContext.Project.Find(from);
         }
 
         if (entity == null)
@@ -76,19 +82,19 @@ public class ProjectHydrator : AbstractEntityHydrator
             entity.Title = model.Title;
             entity.Description = model.Description;
             entity.CreatedOn = model.CreatedOn;
-            entity.BacklogItemTypeSchemaID = model.BacklogItemTypeSchema.ID;
-            entity.CreatedByID = model.CreatedBy?.ID;
+            entity.BacklogItemTypeSchemaID = model.BacklogItemTypeSchemaID;
+            entity.CreatedByID = model.CreatedByID;
 
             if (referenceHydrator != null && nextDepth <= maxDepth)
             {
                 entity.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                    model.BacklogItemTypeSchema, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
+                    model.BacklogItemTypeSchemaID, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
                 );
 
-                if (model.CreatedBy != null)
+                if (model.CreatedByID != null)
                 {
                     entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                        model.CreatedBy, typeof(User), maxDepth, nextDepth
+                        model.CreatedByID, typeof(User), maxDepth, nextDepth
                     );
                 }
             }

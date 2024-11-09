@@ -1,5 +1,4 @@
 ﻿
-using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data;
@@ -16,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.Project)
-                || from == typeof(API.Dtos.ProjectPostDto)
-                || from == typeof(API.Dtos.ProjectPatchDto)
+                from == typeof(int) ||
+                from == typeof(Data.Entities.Project) || 
+                from == typeof(API.Dtos.ProjectPostDto) || 
+                from == typeof(API.Dtos.ProjectPatchDto)
             ) && to == typeof(Project);
         }
 
@@ -31,16 +31,25 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             Object? model = null;
 
+            if (from is int)
+            {
+                var project = _DBContext.Project.Find(from);
+                if (project != null)
+                {
+                    from = project;
+                }
+            }
+
             if (from is Data.Entities.Project)
             {
                 var entity = (Data.Entities.Project)from;
-                model = new Project(entity.Title);
+                model = new Project(entity.Title, entity.BacklogItemTypeSchemaID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.ProjectPostDto)
             {
                 var dto = (API.Dtos.ProjectPostDto)from;
-                model = new Project(dto.Title);
+                model = new Project(dto.Title, dto.BacklogItemTypeSchemaId);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.ProjectPatchDto)
@@ -70,7 +79,6 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (Project)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.Project)
             {
@@ -80,39 +88,15 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Title = entity.Title;
                 model.Description = entity.Description;
                 model.CreatedOn = entity.CreatedOn;
-
-                if (referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                        entity.BacklogItemTypeSchema, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
-                    );
-
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
-                }
+                model.BacklogItemTypeSchemaID = entity.BacklogItemTypeSchemaID;
+                model.CreatedByID = entity.CreatedByID;
             }
             else if (from is API.Dtos.ProjectPostDto)
             {
                 var dto = (API.Dtos.ProjectPostDto)from;
                 model.Title = dto.Title;
                 model.Description = dto.Description;
-
-                if (referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    Data.Entities.BacklogItemTypeSchema? backlogItemTypeSchemaEntity = _DBContext.BacklogItemTypeSchema.Find(dto.BacklogItemTypeSchemaId) ??
-                        throw new ModelNotFoundException(
-                            nameof(BacklogItemTypeSchema),
-                            dto.BacklogItemTypeSchemaId.ToString()
-                        );
-
-                    model.BacklogItemTypeSchema = (BacklogItemTypeSchema)referenceHydrator.Hydrate(
-                        backlogItemTypeSchemaEntity, typeof(BacklogItemTypeSchema), maxDepth, nextDepth
-                    );
-                }
+                model.BacklogItemTypeSchemaID = dto.BacklogItemTypeSchemaId;
             }
             else if (from is API.Dtos.ProjectPatchDto)
             {
