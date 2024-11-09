@@ -76,6 +76,8 @@ public class ProjectHydrator : AbstractEntityHydrator
             entity.Title = model.Title;
             entity.Description = model.Description;
             entity.CreatedOn = model.CreatedOn;
+            entity.BacklogItemTypeSchemaID = model.BacklogItemTypeSchema.ID;
+            entity.CreatedByID = model.CreatedBy?.ID;
 
             if (referenceHydrator != null && nextDepth <= maxDepth)
             {

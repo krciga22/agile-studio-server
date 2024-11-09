@@ -75,6 +75,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
                 entity.ID = model.ID;
                 entity.CreatedOn = model.CreatedOn;
+                entity.ChildTypeID = model.ChildType.ID;
+                entity.ParentTypeID = model.ParentType.ID;
+                entity.SchemaID = model.Schema.ID;
+                entity.CreatedByID = model.CreatedBy?.ID;
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {

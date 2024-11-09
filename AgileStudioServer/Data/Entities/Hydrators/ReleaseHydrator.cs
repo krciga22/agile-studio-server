@@ -78,6 +78,8 @@ public class ReleaseHydrator : AbstractEntityHydrator
             entity.CreatedOn = model.CreatedOn;
             entity.StartDate = model.StartDate;
             entity.EndDate = model.EndDate;
+            entity.ProjectID = model.Project.ID;
+            entity.CreatedByID = model.CreatedBy?.ID;
 
             if (referenceHydrator != null && nextDepth <= maxDepth)
             {

@@ -80,6 +80,12 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 entity.Title = model.Title;
                 entity.Description = model.Description;
                 entity.CreatedOn = model.CreatedOn;
+                entity.ProjectID = model.Project.ID;
+                entity.BacklogItemTypeID = model.BacklogItemType.ID;
+                entity.WorkflowStateID = model.WorkflowState.ID;
+                entity.SprintID = model.Sprint?.ID;
+                entity.ReleaseID = model.Release?.ID;
+                entity.CreatedByID = model.CreatedBy?.ID;
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
