@@ -41,7 +41,7 @@ public class ReleaseHydrator : AbstractEntityHydrator
             }
             else
             {
-                entity = new Release(model.Title);
+                entity = new Release(model.Title, model.Project.ID);
             }
 
             if (entity != null)

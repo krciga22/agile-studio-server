@@ -41,7 +41,7 @@ public class SprintHydrator : AbstractEntityHydrator
             }
             else
             {
-                entity = new Sprint(model.SprintNumber);
+                entity = new Sprint(model.SprintNumber, model.Project.ID);
             }
 
             if (entity != null)

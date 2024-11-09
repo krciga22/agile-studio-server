@@ -41,7 +41,8 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 }
                 else
                 {
-                    entity = new ChildBacklogItemType();
+                    entity = new ChildBacklogItemType(
+                        model.ChildType.ID, model.ParentType.ID, model.Schema.ID);
                 }
 
                 if (entity != null)

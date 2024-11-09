@@ -10,16 +10,24 @@
 
         public DateTime CreatedOn { get; set; }
 
+        public int? CreatedByID { get; set; } = null!;
+
         public User? CreatedBy { get; set; } = null!;
+
+        public int BacklogItemTypeSchemaID { get; set; }
 
         public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 
+        public int WorkflowID { get; set; }
+
         public Workflow Workflow { get; set; } = null!;
 
-        public BacklogItemType(string title)
+        public BacklogItemType(string title, int backlogItemTypeSchemaID, int workflowID)
         {
             Title = title;
             CreatedOn = DateTime.Now;
+            BacklogItemTypeSchemaID = backlogItemTypeSchemaID;
+            WorkflowID = workflowID;
         }
     }
 }

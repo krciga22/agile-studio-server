@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace AgileStudioServer.Data.Entities
 {
     public class Project
@@ -12,15 +11,19 @@ namespace AgileStudioServer.Data.Entities
 
         public DateTime CreatedOn { get; set; }
 
+        public int? CreatedByID { get; set; } = null!;
+
         public User? CreatedBy { get; set; } = null!;
 
-        [Required]
+        public int BacklogItemTypeSchemaID { get; set; }
+
         public BacklogItemTypeSchema BacklogItemTypeSchema { get; set; } = null!;
 
-        public Project(string title)
+        public Project(string title, int backlogItemTypeSchemaID)
         {
             Title = title;
             CreatedOn = DateTime.Now;
+            BacklogItemTypeSchemaID = backlogItemTypeSchemaID;
         }
     }
 }

@@ -24,9 +24,8 @@ namespace AgileStudioServerTest.IntegrationTests
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
             createdBy ??= CreateUser();
 
-            var project = new Project(title)
+            var project = new Project(title, backlogItemTypeSchema.ID)
             {
-                BacklogItemTypeSchema = backlogItemTypeSchema,
                 CreatedBy = createdBy
             };
             _DBContext.Project.Add(project);
@@ -52,12 +51,9 @@ namespace AgileStudioServerTest.IntegrationTests
             sprint ??= CreateSprint(project: project);
             release ??= CreateRelease(project: project);
 
-            var backlogItem = new BacklogItem(title)
+            var backlogItem = new BacklogItem(title, project.ID, backlogItemType.ID, workflowState.ID)
             {
                 CreatedBy = createdBy,
-                Project = project,
-                BacklogItemType = backlogItemType,
-                WorkflowState = workflowState,
                 Sprint = sprint,
                 Release = release
             };
@@ -93,11 +89,9 @@ namespace AgileStudioServerTest.IntegrationTests
             backlogItemTypeSchema ??= CreateBacklogItemTypeSchema();
             workflow ??= CreateWorkflow();
 
-            var backlogItemType = new BacklogItemType(title)
+            var backlogItemType = new BacklogItemType(title, backlogItemTypeSchema.ID, workflow.ID)
             {
                 CreatedBy = createdBy,
-                BacklogItemTypeSchema = backlogItemTypeSchema,
-                Workflow = workflow
             };
             _DBContext.BacklogItemType.Add(backlogItemType);
             _DBContext.SaveChanges();
@@ -115,11 +109,8 @@ namespace AgileStudioServerTest.IntegrationTests
             childType ??= CreateBacklogItemType("Task", backlogItemTypeSchema: schema);
             createdBy ??= CreateUser();
 
-            var childBacklogItemType = new ChildBacklogItemType()
+            var childBacklogItemType = new ChildBacklogItemType(childType.ID, parentType.ID, schema.ID)
             {
-                ParentType = parentType,
-                ChildType = childType,
-                Schema = schema,
                 CreatedBy = createdBy
             };
             _DBContext.ChildBacklogItemType.Add(childBacklogItemType);
@@ -136,9 +127,8 @@ namespace AgileStudioServerTest.IntegrationTests
             project ??= CreateProject();
             createdBy ??= CreateUser();
 
-            var sprint = new Sprint(nextSprintNumber)
+            var sprint = new Sprint(nextSprintNumber, project.ID)
             {
-                Project = project,
                 CreatedBy = createdBy
             };
             _DBContext.Sprint.Add(sprint);
@@ -155,9 +145,8 @@ namespace AgileStudioServerTest.IntegrationTests
             project ??= CreateProject();
             createdBy ??= CreateUser();
 
-            var release = new Release(title)
+            var release = new Release(title, project.ID)
             {
-                Project = project,
                 CreatedBy = createdBy
             };
             _DBContext.Release.Add(release);
@@ -190,9 +179,8 @@ namespace AgileStudioServerTest.IntegrationTests
             workflow ??= CreateWorkflow();
             createdBy ??= CreateUser();
 
-            var workflowState = new WorkflowState(title)
+            var workflowState = new WorkflowState(title, workflow.ID)
             {
-                Workflow = workflow,
                 CreatedBy = createdBy
             };
             _DBContext.WorkflowState.Add(workflowState);

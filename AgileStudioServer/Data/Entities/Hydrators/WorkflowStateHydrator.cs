@@ -43,7 +43,7 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 }
                 else
                 {
-                    entity = new WorkflowState(model.Title);
+                    entity = new WorkflowState(model.Title, model.WorkflowId);
                 }
 
                 if (entity != null)
