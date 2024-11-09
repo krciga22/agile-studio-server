@@ -174,10 +174,9 @@ namespace AgileStudioServerTest.IntegrationTests
             project ??= CreateProject();
             createdBy ??= CreateUser();
 
-            var release = new Release(title)
+            var release = new Release(title, project.ID)
             {
-                Project = project,
-                CreatedBy = createdBy
+                CreatedByID = createdBy.ID
             };
             release = _releaseService.Create(release);
             return release;

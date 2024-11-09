@@ -1,4 +1,5 @@
 ﻿
+using AgileStudioServer.API.Dtos.Hydrators.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 
@@ -8,8 +9,10 @@ namespace AgileStudioServer.API.Dtos.Hydrators
     {
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.Release) &&
-                to == typeof(ReleaseSummaryDto);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.Release)
+            ) && to == typeof(ReleaseSummaryDto);
         }
 
         public override Object Hydrate(object from, Type to, int maxDepth, int depth, IHydrator? referenceHydrator = null)
@@ -19,11 +22,26 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                 throw new HydrationNotSupportedException(from.GetType(), to);
             }
 
-            Object? dto = null;
-
-            if (from is Application.Models.Release)
+            if (referenceHydrator == null)
             {
-                var model = (Application.Models.Release)from;
+                throw new ReferenceHydratorRequiredException(this);
+            }
+
+            Application.Models.Release? model = null;
+            if (from is int && referenceHydrator != null)
+            {
+                model = (Application.Models.Release)referenceHydrator.Hydrate(
+                    from, typeof(Application.Models.Release), maxDepth, depth, referenceHydrator
+                );
+            }
+            else if (from is Application.Models.Release)
+            {
+                model = (Application.Models.Release)from;
+            }
+
+            Object? dto = null;
+            if (model != null)
+            {
                 dto = new ReleaseSummaryDto(model.ID, model.Title);
                 Hydrate(model, dto, maxDepth, depth, referenceHydrator);
             }

@@ -1,5 +1,4 @@
 ﻿
-using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Core.Hydrator;
 using AgileStudioServer.Core.Hydrator.Exceptions;
 using AgileStudioServer.Data;
@@ -16,9 +15,10 @@ namespace AgileStudioServer.Application.Models.Hydrators
         public override bool Supports(Type from, Type to)
         {
             return (
-                from == typeof(Data.Entities.Release)
-                || from == typeof(API.Dtos.ReleasePostDto)
-                || from == typeof(API.Dtos.ReleasePatchDto)
+                from == typeof(int) || 
+                from == typeof(Data.Entities.Release) || 
+                from == typeof(API.Dtos.ReleasePostDto) || 
+                from == typeof(API.Dtos.ReleasePatchDto)
             ) && to == typeof(Release);
         }
 
@@ -31,16 +31,25 @@ namespace AgileStudioServer.Application.Models.Hydrators
 
             Object? model = null;
 
+            if (from is int)
+            {
+                var release = _DBContext.Release.Find(from);
+                if (release != null)
+                {
+                    from = release;
+                }
+            }
+
             if (from is Data.Entities.Release)
             {
                 var entity = (Data.Entities.Release)from;
-                model = new Release(entity.Title);
+                model = new Release(entity.Title, entity.ProjectID);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.ReleasePostDto)
             {
                 var dto = (API.Dtos.ReleasePostDto)from;
-                model = new Release(dto.Title);
+                model = new Release(dto.Title, dto.ProjectId);
                 Hydrate(from, model, maxDepth, depth, referenceHydrator);
             }
             else if (from is API.Dtos.ReleasePatchDto)
@@ -70,7 +79,6 @@ namespace AgileStudioServer.Application.Models.Hydrators
             }
 
             var model = (Release)to;
-            int nextDepth = depth + 1;
 
             if (from is Data.Entities.Release)
             {
@@ -82,20 +90,8 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.CreatedOn = entity.CreatedOn;
                 model.StartDate = entity.StartDate;
                 model.EndDate = entity.EndDate;
-
-                if (referenceHydrator != null && nextDepth <= maxDepth)
-                {
-                    model.Project = (Project)referenceHydrator.Hydrate(
-                        entity.Project, typeof(Project), maxDepth, nextDepth
-                    );
-
-                    if (entity.CreatedBy != null)
-                    {
-                        model.CreatedBy = (User)referenceHydrator.Hydrate(
-                            entity.CreatedBy, typeof(User), maxDepth, nextDepth
-                        );
-                    }
-                }
+                model.ProjectID = entity.ProjectID;
+                model.CreatedByID = entity.CreatedByID;
             }
             else if (from is API.Dtos.ReleasePostDto)
             {
@@ -104,19 +100,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.Description = dto.Description;
                 model.StartDate = dto.StartDate;
                 model.EndDate = dto.EndDate;
-
-                if (referenceHydrator != null && depth < maxDepth)
-                {
-                    Data.Entities.Project? projectEntity = _DBContext.Project.Find(dto.ProjectId) ??
-                        throw new ModelNotFoundException(
-                            nameof(Project),
-                            dto.ProjectId.ToString()
-                        );
-
-                    model.Project = (Project)referenceHydrator.Hydrate(
-                        projectEntity, typeof(Project), maxDepth, nextDepth
-                    );
-                }
+                model.ProjectID = dto.ProjectId;
             }
             else if (from is API.Dtos.ReleasePatchDto)
             {

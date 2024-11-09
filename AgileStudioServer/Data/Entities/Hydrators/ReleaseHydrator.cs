@@ -14,8 +14,10 @@ public class ReleaseHydrator : AbstractEntityHydrator
 
     public override bool Supports(Type from, Type to)
     {
-        return from == typeof(Application.Models.Release) &&
-            to == typeof(Release);
+        return (
+            from == typeof(int) || 
+            from == typeof(Application.Models.Release)
+        ) && to == typeof(Release);
     }
 
     public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
@@ -41,13 +43,17 @@ public class ReleaseHydrator : AbstractEntityHydrator
             }
             else
             {
-                entity = new Release(model.Title, model.Project.ID);
+                entity = new Release(model.Title, model.ProjectID);
             }
 
             if (entity != null)
             {
                 Hydrate(model, entity, maxDepth, depth, referenceHydrator);
             }
+        }
+        else if (from is int)
+        {
+            entity = _DBContext.Release.Find(from);
         }
 
         if (entity == null)
@@ -78,19 +84,19 @@ public class ReleaseHydrator : AbstractEntityHydrator
             entity.CreatedOn = model.CreatedOn;
             entity.StartDate = model.StartDate;
             entity.EndDate = model.EndDate;
-            entity.ProjectID = model.Project.ID;
-            entity.CreatedByID = model.CreatedBy?.ID;
+            entity.ProjectID = model.ProjectID;
+            entity.CreatedByID = model.CreatedByID;
 
             if (referenceHydrator != null && nextDepth <= maxDepth)
             {
                 entity.Project = (Project)referenceHydrator.Hydrate(
-                    model.Project, typeof(Project), maxDepth, nextDepth
+                    model.ProjectID, typeof(Project), maxDepth, nextDepth
                 );
 
-                if (model.CreatedBy != null)
+                if (model.CreatedByID != null)
                 {
                     entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                        model.CreatedBy, typeof(User), maxDepth, nextDepth
+                        model.CreatedByID, typeof(User), maxDepth, nextDepth
                     );
                 }
             }
