@@ -81,14 +81,11 @@ namespace AgileStudioServerTest.IntegrationTests
             sprint ??= CreateSprint(project: project);
             release ??= CreateRelease(project: project);
 
-            var backlogItem = new BacklogItem(title)
+            var backlogItem = new BacklogItem(title, project.ID, backlogItemType.ID, workflowState.ID)
             {
-                CreatedBy = createdBy,
-                Project = project,
-                BacklogItemType = backlogItemType,
-                WorkflowState = workflowState,
-                Sprint = sprint,
-                Release = release
+                CreatedByID = createdBy.ID,
+                SprintID = sprint.ID,
+                ReleaseID = release.ID
             };
             backlogItem = _backlogItemService.Create(backlogItem);
             return backlogItem;

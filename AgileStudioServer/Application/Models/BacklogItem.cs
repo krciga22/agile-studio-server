@@ -10,22 +10,25 @@
 
         public DateTime CreatedOn { get; set; }
 
-        public User? CreatedBy { get; set; } = null!;
+        public int? CreatedByID { get; set; } = null!;
 
-        public Project Project { get; set; } = null!;
+        public int ProjectID { get; set; }
 
-        public Sprint? Sprint { get; set; } = null;
+        public int? SprintID { get; set; } = null;
 
-        public Release? Release { get; set; } = null;
+        public int? ReleaseID { get; set; } = null;
 
-        public BacklogItemType BacklogItemType { get; set; } = null!;
+        public int BacklogItemTypeID { get; set; }
 
-        public WorkflowState WorkflowState { get; set; } = null!;
+        public int WorkflowStateID { get; set; }
 
-        public BacklogItem(string title)
+        public BacklogItem(string title, int projectId, int backlogItemTypeId, int workflowStateId)
         {
             Title = title;
             CreatedOn = DateTime.Now;
+            ProjectID = projectId;
+            BacklogItemTypeID = backlogItemTypeId;
+            WorkflowStateID = workflowStateId;
         }
     }
 }

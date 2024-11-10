@@ -14,8 +14,10 @@ namespace AgileStudioServer.Data.Entities.Hydrators
 
         public override bool Supports(Type from, Type to)
         {
-            return from == typeof(Application.Models.BacklogItem) && 
-                to == typeof(BacklogItem);
+            return (
+                from == typeof(int) || 
+                from == typeof(Application.Models.BacklogItem)
+            ) && to == typeof(BacklogItem);
         }
 
         public override object Hydrate(object from, Type to, int maxDepth = 0, int depth = 0, IHydrator? referenceHydrator = null)
@@ -43,15 +45,19 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 {
                     entity = new BacklogItem(
                         model.Title, 
-                        model.Project.ID, 
-                        model.BacklogItemType.ID, 
-                        model.WorkflowState.ID);
+                        model.ProjectID, 
+                        model.BacklogItemTypeID, 
+                        model.WorkflowStateID);
                 }
 
                 if (entity != null)
                 {
                     Hydrate(model, entity, maxDepth, depth, referenceHydrator);
                 }
+            }
+            else if (from is int)
+            {
+                entity = _DBContext.BacklogItem.Find(from);
             }
 
             if (entity == null)
@@ -80,45 +86,45 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 entity.Title = model.Title;
                 entity.Description = model.Description;
                 entity.CreatedOn = model.CreatedOn;
-                entity.ProjectID = model.Project.ID;
-                entity.BacklogItemTypeID = model.BacklogItemType.ID;
-                entity.WorkflowStateID = model.WorkflowState.ID;
-                entity.SprintID = model.Sprint?.ID;
-                entity.ReleaseID = model.Release?.ID;
-                entity.CreatedByID = model.CreatedBy?.ID;
+                entity.ProjectID = model.ProjectID;
+                entity.BacklogItemTypeID = model.BacklogItemTypeID;
+                entity.WorkflowStateID = model.WorkflowStateID;
+                entity.SprintID = model.SprintID;
+                entity.ReleaseID = model.ReleaseID;
+                entity.CreatedByID = model.CreatedByID;
 
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     entity.Project = (Project)referenceHydrator.Hydrate(
-                        model.Project, typeof(Project), maxDepth, nextDepth
+                        model.ProjectID, typeof(Project), maxDepth, nextDepth
                     );
 
                     entity.BacklogItemType = (BacklogItemType)referenceHydrator.Hydrate(
-                        model.BacklogItemType, typeof(BacklogItemType), maxDepth, nextDepth
+                        model.BacklogItemTypeID, typeof(BacklogItemType), maxDepth, nextDepth
                     );
 
                     entity.WorkflowState = (WorkflowState)referenceHydrator.Hydrate(
-                        model.WorkflowState, typeof(WorkflowState), maxDepth, nextDepth
+                        model.WorkflowStateID, typeof(WorkflowState), maxDepth, nextDepth
                     );
 
-                    if (model.Sprint != null)
+                    if (model.SprintID != null)
                     {
                         entity.Sprint = (Sprint)referenceHydrator.Hydrate(
-                            model.Sprint, typeof(Sprint), maxDepth, nextDepth
+                            model.SprintID, typeof(Sprint), maxDepth, nextDepth
                         );
                     }
 
-                    if (model.Release != null)
+                    if (model.ReleaseID != null)
                     {
                         entity.Release = (Release)referenceHydrator.Hydrate(
-                            model.Release, typeof(Release), maxDepth, nextDepth
+                            model.ReleaseID, typeof(Release), maxDepth, nextDepth
                         );
                     }
 
-                    if (model.CreatedBy != null)
+                    if (model.CreatedByID != null)
                     {
                         entity.CreatedBy = (User)referenceHydrator.Hydrate(
-                            model.CreatedBy, typeof(User), maxDepth, nextDepth
+                            model.CreatedByID, typeof(User), maxDepth, nextDepth
                         );
                     }
                 }
