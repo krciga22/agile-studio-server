@@ -45,6 +45,23 @@ namespace AgileStudioCLI.FixtureSets
                 workflow: workflow,
                 createdBy: user);
 
+            var taskWorkflow = fixtures.CreateWorkflow(
+                title: "Task Workflow",
+                createdBy: user);
+
+            var taskWorkflowStateNotStarted = fixtures.CreateWorkflowState(
+                title: "Not Started",
+                workflow: taskWorkflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "In Progress",
+                workflow: taskWorkflow,
+                createdBy: user);
+            fixtures.CreateWorkflowState(
+                title: "Complete",
+                workflow: taskWorkflow,
+                createdBy: user);
+
             var backlogItemTypeSchema = fixtures.CreateBacklogItemTypeSchema(
                 title: "Agile Studio Backlog Item Type Schema",
                 createdBy: user);
@@ -112,7 +129,7 @@ namespace AgileStudioCLI.FixtureSets
                 project: project,
                 createdBy: user);
 
-            fixtures.CreateBacklogItem(
+            var testStory = fixtures.CreateBacklogItem(
                 title: "Test Story", 
                 project: project,
                 backlogItemType: backlogItemTypeStory,
@@ -120,6 +137,17 @@ namespace AgileStudioCLI.FixtureSets
                 sprint: sprint1, 
                 release: release1_0_0,
                 createdBy: user);
+
+            for( var i = 0; i < 5; i++ )
+            {
+                fixtures.CreateBacklogItem(
+                    title: $"Child Task {i}",
+                    project: project,
+                    backlogItemType: backlogItemTypeTask,
+                    workflowState: taskWorkflowStateNotStarted,
+                    parentBacklogItem: testStory,
+                    createdBy: user);
+            }
         }
     }
 }
