@@ -23,6 +23,16 @@ namespace AgileStudioServer.API.Controllers
             _Hydrator = hydrator;
         }
 
+        [HttpGet("{id}/Children", Name = "GetChildBacklogItems")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(List<BacklogItemDto>), StatusCodes.Status200OK)]
+        public IActionResult GetChildBacklogItems(int id)
+        {
+            var models = _BacklogItemService.GetChildBacklogItems(id);
+            var dtos = HydrateBacklogItemDtos(models);
+            return Ok(dtos);
+        }
+
         [HttpGet("{id}", Name = "GetBacklogItem")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -30,6 +40,22 @@ namespace AgileStudioServer.API.Controllers
         public IActionResult Get(int id)
         {
             var model = _BacklogItemService.Get(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            var dto = HydrateBacklogItemDto(model);
+            return Ok(dto);
+        }
+
+        [HttpGet("{id}/Parent", Name = "GetParentBacklogItem")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BacklogItemDto), StatusCodes.Status200OK)]
+        public IActionResult GetParentBacklogItem(int id)
+        {
+            var model = _BacklogItemService.GetParentBacklogItem(id);
             if (model == null)
             {
                 return NotFound();

@@ -2,6 +2,7 @@
 using AgileStudioServer.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.Data;
+using AgileStudioServer.Data.Entities;
 
 namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 {
@@ -18,6 +19,60 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
         }
 
         [Fact]
+        public void GetChildBacklogItems_WithId_ReturnsDtos()
+        {
+            var project = _Fixtures.CreateProject();
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                "Parent Backlog Item",
+                project: project
+            );
+            var childBacklogItemType = _Fixtures.CreateBacklogItemType();
+            var childBacklogItem1 = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem 1",
+                project: project,
+                backlogItemType: childBacklogItemType,
+                parentBacklogItem: parentBacklogItem
+            );
+            var childBacklogItem2 = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem 2",
+                project: project,
+                backlogItemType: childBacklogItemType,
+                parentBacklogItem: parentBacklogItem
+            );
+
+            var childBacklogItems = new List<BacklogItem>
+            {
+                childBacklogItem1,
+                childBacklogItem2
+            };
+
+            List<BacklogItemDto>? dtos = null;
+            IActionResult result = _Controller.GetChildBacklogItems(parentBacklogItem.ID);
+            if (result is OkObjectResult okResult)
+            {
+                dtos = okResult.Value as List<BacklogItemDto>;
+            }
+
+            Assert.IsType<List<BacklogItemDto>>(dtos);
+            Assert.Equal(childBacklogItems.Count, dtos.Count);
+
+            foreach (var dto in dtos)
+            {
+                bool isChildBacklogItem = false;
+                foreach (var childBacklogItem in childBacklogItems)
+                {
+                    if (childBacklogItem.ID == dto.ID)
+                    {
+                        isChildBacklogItem = true;
+                        break;
+                    }
+                }
+
+                Assert.True(isChildBacklogItem);
+            }
+        }
+
+        [Fact]
         public void Get_WithId_ReturnsDto()
         {
             var backlogItem = _Fixtures.CreateBacklogItem();
@@ -31,6 +86,53 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 
             Assert.IsType<BacklogItemDto>(dto);
             Assert.Equal(backlogItem.ID, dto.ID);
+        }
+
+        [Fact]
+        public void GetParentBacklogItem_WithId_ReturnsDto()
+        {
+            var project = _Fixtures.CreateProject();
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                "Parent Backlog Item",
+                project: project
+            );
+            var childBacklogItem = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem",
+                project: project,
+                parentBacklogItem: parentBacklogItem
+            );
+
+            BacklogItemDto? dto = null;
+            IActionResult result = _Controller.GetParentBacklogItem(childBacklogItem.ID);
+            if (result is OkObjectResult okResult)
+            {
+                dto = okResult.Value as BacklogItemDto;
+            }
+
+            Assert.IsType<BacklogItemDto>(dto);
+            Assert.Equal(parentBacklogItem.ID, dto.ID);
+        }
+
+        [Fact]
+        public void GetParentBacklogItem_WithInvalidId_ReturnsNotFoundResult()
+        {
+            var project = _Fixtures.CreateProject();
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                "Test BacklogItem",
+                project: project
+            );
+
+            IActionResult result = _Controller.GetParentBacklogItem(backlogItem.ID);
+
+            Assert.IsType<NotFoundResult>(result as NotFoundResult);
+        }
+
+        [Fact]
+        public void GetParentBacklogItem_WithNonExistantId_ReturnsNotFoundResult()
+        {
+            IActionResult result = _Controller.GetParentBacklogItem(Constants.NonExistantId);
+
+            Assert.IsType<NotFoundResult>(result as NotFoundResult);
         }
 
         [Fact]
