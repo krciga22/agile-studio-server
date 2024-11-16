@@ -92,7 +92,8 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                 entity.SprintID = model.SprintID;
                 entity.ReleaseID = model.ReleaseID;
                 entity.CreatedByID = model.CreatedByID;
-
+                entity.ParentBacklogItemId = model.ParentBacklogItemId;
+;
                 if (referenceHydrator != null && nextDepth <= maxDepth)
                 {
                     entity.Project = (Project)referenceHydrator.Hydrate(
@@ -125,6 +126,13 @@ namespace AgileStudioServer.Data.Entities.Hydrators
                     {
                         entity.CreatedBy = (User)referenceHydrator.Hydrate(
                             model.CreatedByID, typeof(User), maxDepth, nextDepth
+                        );
+                    }
+
+                    if (model.ParentBacklogItemId != null)
+                    {
+                        entity.ParentBacklogItem = (BacklogItem)referenceHydrator.Hydrate(
+                            model.ParentBacklogItemId, typeof(BacklogItem), maxDepth, nextDepth
                         );
                     }
                 }

@@ -32,6 +32,32 @@ namespace AgileStudioServer.Application.Services
             return HydrateBacklogItemModels(entities);
         }
 
+        public virtual List<BacklogItem> GetChildBacklogItems(int parentBacklogItemId)
+        {
+            List<Data.Entities.BacklogItem> entities = _DBContext.BacklogItem.Where(backlogItem =>
+                backlogItem.ParentBacklogItemId == parentBacklogItemId).ToList();
+
+            return HydrateBacklogItemModels(entities);
+        }
+
+        public virtual BacklogItem? GetParentBacklogItem(int id)
+        {
+            Data.Entities.BacklogItem? entity = _DBContext.BacklogItem.Find(id);
+            if (entity is null || entity.ParentBacklogItemId is null)
+            {
+                return null;
+            }
+
+            Data.Entities.BacklogItem? parentEntity = 
+                _DBContext.BacklogItem.Find(entity.ParentBacklogItemId);
+            if(parentEntity is null)
+            {
+                return null;
+            }
+
+            return HydrateBacklogItemModel(parentEntity);
+        }
+
         public virtual BacklogItem? Get(int id)
         {
             Data.Entities.BacklogItem? entity = _DBContext.BacklogItem.Find(id);

@@ -104,6 +104,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.SprintID = entity.SprintID;
                 model.ReleaseID = entity.ReleaseID;
                 model.CreatedByID = entity.CreatedByID;
+                model.ParentBacklogItemId = entity.ParentBacklogItemId;
             }
             else if (from is API.Dtos.BacklogItemPostDto)
             {

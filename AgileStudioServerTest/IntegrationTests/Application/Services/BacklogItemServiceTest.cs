@@ -48,6 +48,28 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
         }
 
         [Fact]
+        public void GetParentBacklogItem_ReturnsBacklogItem()
+        {
+            var project = _Fixtures.CreateProject();
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                "Parent Backlog Item", 
+                project: project
+            );
+
+            var childBacklogItem = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem",
+                project: project,
+                parentBacklogItem: parentBacklogItem
+            );
+
+            BacklogItem? returnedBacklogItem = _backlogItemService
+                .GetParentBacklogItem(childBacklogItem.ID);
+
+            Assert.NotNull(returnedBacklogItem);
+            Assert.Equal(parentBacklogItem.ID, returnedBacklogItem.ID);
+        }
+
+        [Fact]
         public void GetAll_ReturnsAllBacklogItems()
         {
             var project = _Fixtures.CreateProject();
@@ -78,6 +100,54 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
                 .GetByProjectIdAndBacklogItemTypeId(project.ID, backlogItemType.ID);
 
             Assert.Equal(backlogItems.Count, returnedBacklogItems.Count);
+        }
+
+        [Fact]
+        public void GetChildBacklogItems_ReturnsBacklogItems()
+        {
+            var project = _Fixtures.CreateProject();
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                "Parent Backlog Item", 
+                project: project
+            );
+            var childBacklogItemType = _Fixtures.CreateBacklogItemType();
+            var childBacklogItem1 = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem 1",
+                project: project,
+                backlogItemType: childBacklogItemType,
+                parentBacklogItem: parentBacklogItem
+            );
+            var childBacklogItem2 = _Fixtures.CreateBacklogItem(
+                "Child BacklogItem 2",
+                project: project,
+                backlogItemType: childBacklogItemType,
+                parentBacklogItem: parentBacklogItem
+            );
+
+            var childBacklogItems = new List<BacklogItem>
+            {
+                childBacklogItem1,
+                childBacklogItem2
+            };
+
+            List<BacklogItem> returnedBacklogItems = _backlogItemService
+                .GetChildBacklogItems(parentBacklogItem.ID);
+
+            Assert.Equal(childBacklogItems.Count, returnedBacklogItems.Count);
+
+            foreach (var returnedBacklogItem in returnedBacklogItems)
+            {
+                bool isChildBacklogItem = false;
+                foreach (var childBacklogItem in childBacklogItems) 
+                {
+                    if(childBacklogItem.ID == returnedBacklogItem.ID){
+                        isChildBacklogItem = true;
+                        break;
+                    }
+                }
+
+                Assert.True(isChildBacklogItem);
+            }
         }
 
         [Fact]

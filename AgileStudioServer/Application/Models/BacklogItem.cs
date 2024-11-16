@@ -22,6 +22,8 @@
 
         public int WorkflowStateID { get; set; }
 
+        public int? ParentBacklogItemId { get; set; } = null;
+
         public BacklogItem(string title, int projectId, int backlogItemTypeId, int workflowStateId)
         {
             Title = title;

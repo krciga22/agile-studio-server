@@ -68,25 +68,39 @@ namespace AgileStudioServerTest.IntegrationTests
             BacklogItemType? backlogItemType = null,
             WorkflowState? workflowState = null,
             Sprint? sprint = null,
-            Release? release = null)
+            Release? release = null,
+            BacklogItem? parentBacklogItem = null)
         {
             title ??= "Test BacklogItem";
-            createdBy ??= CreateUser();
 
             BacklogItemTypeSchema schema = CreateBacklogItemTypeSchema();
             project ??= CreateProject(null, backlogItemTypeSchema: schema);
             backlogItemType ??= CreateBacklogItemType(backlogItemTypeSchema: schema);
 
             workflowState ??= CreateWorkflowState();
-            sprint ??= CreateSprint(project: project);
-            release ??= CreateRelease(project: project);
 
-            var backlogItem = new BacklogItem(title, project.ID, backlogItemType.ID, workflowState.ID)
+            var backlogItem = new BacklogItem(title, project.ID, backlogItemType.ID, workflowState.ID);
+
+            if (createdBy != null)
             {
-                CreatedByID = createdBy.ID,
-                SprintID = sprint.ID,
-                ReleaseID = release.ID
-            };
+                backlogItem.CreatedByID = createdBy.ID;
+            }
+
+            if (sprint != null)
+            {
+                backlogItem.SprintID = sprint.ID;
+            }
+
+            if (release != null)
+            {
+                backlogItem.ReleaseID = release.ID;
+            }
+
+            if (parentBacklogItem != null)
+            {
+                backlogItem.ParentBacklogItemId = parentBacklogItem.ID;
+            }
+
             backlogItem = _backlogItemService.Create(backlogItem);
             return backlogItem;
         }
