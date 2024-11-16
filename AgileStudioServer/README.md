@@ -13,6 +13,9 @@ Projects are managed by a team of users, each of which has a specific level of a
 ### Backlog Items
 Backlog items represent tasks/work to be done within a project.
 
+### Child Backlog Items
+Child backlog items are backlog items that have a parent backlog item specified. This allows for the creation of a heirarchy of backlog items (eg. Epics > Stories > Tasks & Tests).
+
 ### Backlog Item Types
 Backlog Item Types are used to categorize Backlog Items. Common types include Epics, Stories, Defects, Tasks, etc. 
 

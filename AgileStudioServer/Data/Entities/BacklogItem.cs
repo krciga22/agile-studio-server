@@ -34,6 +34,10 @@
 
         public WorkflowState WorkflowState { get; set; } = null!;
 
+        public int? ParentBacklogItemId { get; set; } = null!;
+
+        public BacklogItem? ParentBacklogItem { get; set; } = null!;
+
         public BacklogItem(string title, int projectID, int backlogItemTypeID, int workflowStateID)
         {
             Title = title;
