@@ -342,6 +342,126 @@ namespace AgileStudioServerTest.IntegrationTests.API.Attributes
             Assert.IsType<ValidationResult>(result);
         }
 
+        [Fact]
+        public void PostBacklogItem_WithParentBacklogItemForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                project: project
+            );
+
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project.BacklogItemTypeSchema
+            );
+            var workflowState = _Fixtures.CreateWorkflowState();
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID
+            );
+            backlogItemPostDto.ParentBacklogItemId = parentBacklogItem.ID;
+
+            var attribute = new ValidParentBacklogItemForBacklogItem();
+            var result = attribute.GetValidationResult(
+                backlogItemPostDto, 
+                CreateValidationContext(backlogItemPostDto)
+            );
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PostBacklogItem_WithParentBacklogItemForDifferentProject_IsInvalid()
+        {
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                project: project1
+            );
+
+            var backlogItemType = _Fixtures.CreateBacklogItemType(
+                    backlogItemTypeSchema: project2.BacklogItemTypeSchema
+            );
+            var workflowState = _Fixtures.CreateWorkflowState();
+            var backlogItemPostDto = new BacklogItemPostDto(
+                title: "Test Backlog Item",
+                projectId: project2.ID,
+                backlogItemTypeId: backlogItemType.ID,
+                workflowStateId: workflowState.ID
+            );
+            backlogItemPostDto.ParentBacklogItemId = parentBacklogItem.ID;
+
+            var attribute = new ValidParentBacklogItemForBacklogItem();
+            var result = attribute.GetValidationResult(
+                backlogItemPostDto,
+                CreateValidationContext(backlogItemPostDto)
+            );
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithParentBacklogItemForSameProject_IsValid()
+        {
+            var project = _Fixtures.CreateProject();
+
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                project: project
+            );
+
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: backlogItem.Title,
+                workflowStateId: backlogItem.WorkflowState.ID
+            );
+            backlogItemPatchDto.ParentBacklogItemId = parentBacklogItem.ID;
+
+            var attribute = new ValidParentBacklogItemForBacklogItem();
+            var result = attribute.GetValidationResult(
+                backlogItemPatchDto, 
+                CreateValidationContext(backlogItemPatchDto)
+            );
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void PatchBacklogItem_WithParentBacklogItemForDifferentProject_IsInvalid()
+        {
+            var project1 = _Fixtures.CreateProject();
+            var project2 = _Fixtures.CreateProject();
+
+            var parentBacklogItem = _Fixtures.CreateBacklogItem(
+                project: project1
+            );
+
+            var backlogItem = _Fixtures.CreateBacklogItem(
+                project: project2
+            );
+
+            var backlogItemPatchDto = new BacklogItemPatchDto(
+                id: backlogItem.ID,
+                title: backlogItem.Title,
+                workflowStateId: backlogItem.WorkflowState.ID
+            );
+            backlogItemPatchDto.ParentBacklogItemId = parentBacklogItem.ID;
+
+            var attribute = new ValidParentBacklogItemForBacklogItem();
+            var result = attribute.GetValidationResult(
+                backlogItemPatchDto,
+                CreateValidationContext(backlogItemPatchDto)
+            );
+
+            Assert.IsType<ValidationResult>(result);
+        }
+
         private ValidationContext CreateValidationContext(object instance)
         {
             if (_ServiceProvider is null)
