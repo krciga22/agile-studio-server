@@ -116,6 +116,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.WorkflowStateID = dto.WorkflowStateId;
                 model.SprintID = dto.SprintId;
                 model.ReleaseID = dto.ReleaseId;
+                model.ParentBacklogItemId = dto.ParentBacklogItemId;
             }
             else if (from is API.Dtos.BacklogItemPatchDto)
             {
@@ -125,6 +126,7 @@ namespace AgileStudioServer.Application.Models.Hydrators
                 model.WorkflowStateID = dto.WorkflowStateId;
                 model.SprintID = dto.SprintId;
                 model.ReleaseID = dto.ReleaseId;
+                model.ParentBacklogItemId = dto.ParentBacklogItemId;
             }
         }
     }

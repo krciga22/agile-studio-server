@@ -23,6 +23,8 @@ namespace AgileStudioServer.API.Dtos
 
         public ReleaseSummaryDto? Release { get; set; } = null;
 
+        public BacklogItemSummaryDto? ParentBacklogItem { get; set; } = null;
+
         public BacklogItemDto(
             int id, 
             string title, 

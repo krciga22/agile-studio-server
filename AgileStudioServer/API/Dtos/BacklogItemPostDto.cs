@@ -26,6 +26,8 @@ namespace AgileStudioServer.API.Dtos
 
         public int? ReleaseId { get; set; } = null;
 
+        public int? ParentBacklogItemId { get; set; } = null;
+
         [StringLength(255)]
         public string? Description { get; set; }
 

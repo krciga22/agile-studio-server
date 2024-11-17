@@ -119,6 +119,13 @@ namespace AgileStudioServer.API.Dtos.Hydrators
                             model.ReleaseID, typeof(ReleaseSummaryDto), maxDepth, depth
                         );
                     }
+
+                    if (model.ParentBacklogItemId != null)
+                    {
+                        dto.ParentBacklogItem = (BacklogItemSummaryDto)referenceHydrator.Hydrate(
+                            model.ParentBacklogItemId, typeof(BacklogItemSummaryDto), maxDepth, depth
+                        );
+                    }
                 }
             }
         }

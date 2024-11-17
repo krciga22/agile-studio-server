@@ -9,7 +9,7 @@ namespace AgileStudioServer.API.Dtos
     public class BacklogItemPatchDto
     {
         [Required]
-        public int ID;
+        public int ID { get; set; }
 
         [Required]
         [StringLength(60, MinimumLength = 3)]
@@ -24,6 +24,8 @@ namespace AgileStudioServer.API.Dtos
         public int? SprintId { get; set; } = null;
 
         public int? ReleaseId { get; set; } = null;
+
+        public int? ParentBacklogItemId { get; set; } = null;
 
         public BacklogItemPatchDto(int id, string title, int workflowStateId)
         {
