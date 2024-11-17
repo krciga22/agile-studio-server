@@ -1,7 +1,7 @@
 ﻿using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Data;
-using AgileStudioServer.Data.Entities;
-using AgileStudioServer.Data.Exceptions;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
 using AgileStudioServer.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,21 +21,21 @@ namespace AgileStudioServer.API.Attributes.Validation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            var dbContext = (DBContext?)validationContext.GetService(typeof(DBContext)) ??
-                throw new ServiceNotFoundException(nameof(DBContext));
+            var projectService = (ProjectService?)validationContext.GetService(typeof(ProjectService)) ??
+                throw new ServiceNotFoundException(nameof(ProjectService));
+
+            var backlogItemTypeService = (BacklogItemTypeService?)validationContext.GetService(typeof(BacklogItemTypeService)) ??
+                throw new ServiceNotFoundException(nameof(BacklogItemTypeService));
 
             var dto = (BacklogItemPostDto)value;
 
-            var project = dbContext.Project.Find(dto.ProjectId) ??
-                throw new EntityNotFoundException(nameof(Project), dto.ProjectId.ToString());
+            var project = projectService.Get(dto.ProjectId) ??
+                throw new ModelNotFoundException(nameof(Project), dto.ProjectId.ToString());
 
-            var backlogItemType = dbContext.BacklogItemType.Find(dto.BacklogItemTypeId) ??
-                throw new EntityNotFoundException(nameof(BacklogItemType), dto.BacklogItemTypeId.ToString());
+            var backlogItemType = backlogItemTypeService.Get(dto.BacklogItemTypeId) ??
+                throw new ModelNotFoundException(nameof(BacklogItemType), dto.BacklogItemTypeId.ToString());
 
-            dbContext.Entry(project).Reference("BacklogItemTypeSchema").Load();
-            dbContext.Entry(backlogItemType).Reference("BacklogItemTypeSchema").Load();
-
-            if (backlogItemType.BacklogItemTypeSchema.ID != project.BacklogItemTypeSchema.ID)
+            if (backlogItemType.BacklogItemTypeSchemaID != project.BacklogItemTypeSchemaID)
             {
                 return new ValidationResult(GetErrorMessage());
             }

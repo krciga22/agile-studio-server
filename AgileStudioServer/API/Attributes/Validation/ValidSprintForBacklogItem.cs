@@ -1,7 +1,7 @@
 ﻿using AgileStudioServer.API.Dtos;
-using AgileStudioServer.Data;
-using AgileStudioServer.Data.Entities;
-using AgileStudioServer.Data.Exceptions;
+using AgileStudioServer.Application.Exceptions;
+using AgileStudioServer.Application.Models;
+using AgileStudioServer.Application.Services;
 using AgileStudioServer.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,8 +21,14 @@ namespace AgileStudioServer.API.Attributes.Validation
                 return ValidationResult.Success;
             }
 
-            var dbContext = (DBContext?)validationContext.GetService(typeof(DBContext)) ??
-                throw new ServiceNotFoundException(nameof(DBContext));
+            var backlogItemService = (BacklogItemService?)validationContext.GetService(typeof(BacklogItemService)) ??
+                throw new ServiceNotFoundException(nameof(BacklogItemService));
+
+            var sprintService = (SprintService?)validationContext.GetService(typeof(SprintService)) ??
+                throw new ServiceNotFoundException(nameof(SprintService));
+
+            var projectService = (ProjectService?)validationContext.GetService(typeof(ProjectService)) ??
+                throw new ServiceNotFoundException(nameof(ProjectService));
 
             int sprintId;
             int projectId;
@@ -46,10 +52,10 @@ namespace AgileStudioServer.API.Attributes.Validation
 
                 sprintId = (int)patchDto.SprintId;
 
-                var backlogItem = dbContext.BacklogItem.Find(patchDto.ID) ??
-                    throw new EntityNotFoundException(nameof(Project), patchDto.ID.ToString());
+                var backlogItem = backlogItemService.Get(patchDto.ID) ??
+                    throw new ModelNotFoundException(nameof(BacklogItem), patchDto.ID.ToString());
 
-                projectId = backlogItem.Project.ID;
+                projectId = backlogItem.ProjectID;
             }
             else
             {
@@ -58,13 +64,13 @@ namespace AgileStudioServer.API.Attributes.Validation
             }
 
             // make sure the sprint belongs to the same project as the backlog item
-            var sprint = dbContext.Sprint.Find(sprintId) ??
-                throw new EntityNotFoundException(nameof(Sprint), sprintId.ToString());
+            var sprint = sprintService.Get(sprintId) ??
+                throw new ModelNotFoundException(nameof(Sprint), sprintId.ToString());
 
-            var project = dbContext.Project.Find(projectId) ??
-                throw new EntityNotFoundException(nameof(Project), projectId.ToString());
+            var project = projectService.Get(projectId) ??
+                throw new ModelNotFoundException(nameof(Project), projectId.ToString());
 
-            if (sprint.Project.ID == project.ID)
+            if (sprint.ProjectID == project.ID)
             {
                 return ValidationResult.Success;
             }
