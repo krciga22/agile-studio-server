@@ -3,6 +3,7 @@ using AgileStudioServer.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using AgileStudioServer.Data;
 using AgileStudioServer.Data.Entities;
+using Models = AgileStudioServer.Application.Models;
 
 namespace AgileStudioServerTest.IntegrationTests.API.Controllers
 {
@@ -46,17 +47,17 @@ namespace AgileStudioServerTest.IntegrationTests.API.Controllers
                 childBacklogItem2
             };
 
-            List<BacklogItemDto>? dtos = null;
+            PaginatedResultsDto<BacklogItemDto, Models.BacklogItem>? results = null;
             IActionResult result = _Controller.GetChildBacklogItems(parentBacklogItem.ID);
             if (result is OkObjectResult okResult)
             {
-                dtos = okResult.Value as List<BacklogItemDto>;
+                results = okResult.Value as PaginatedResultsDto<BacklogItemDto, Models.BacklogItem>;
             }
 
-            Assert.IsType<List<BacklogItemDto>>(dtos);
-            Assert.Equal(childBacklogItems.Count, dtos.Count);
+            Assert.IsType<PaginatedResultsDto<BacklogItemDto, Models.BacklogItem>>(results);
+            Assert.Equal(childBacklogItems.Count, results.Items.Count);
 
-            foreach (var dto in dtos)
+            foreach (var dto in results.Items)
             {
                 bool isChildBacklogItem = false;
                 foreach (var childBacklogItem in childBacklogItems)

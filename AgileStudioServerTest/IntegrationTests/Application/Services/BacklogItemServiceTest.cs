@@ -1,6 +1,7 @@
 ﻿using AgileStudioServer.Data;
 using AgileStudioServer.Application.Models;
 using AgileStudioServer.Application.Services;
+using AgileStudioServer.Core.Pagination;
 
 namespace AgileStudioServerTest.IntegrationTests.Application.Services
 {
@@ -130,12 +131,12 @@ namespace AgileStudioServerTest.IntegrationTests.Application.Services
                 childBacklogItem2
             };
 
-            List<BacklogItem> returnedBacklogItems = _backlogItemService
+            PaginationResults<BacklogItem> results = _backlogItemService
                 .GetChildBacklogItems(parentBacklogItem.ID);
 
-            Assert.Equal(childBacklogItems.Count, returnedBacklogItems.Count);
+            Assert.Equal(childBacklogItems.Count, results.Items.Count);
 
-            foreach (var returnedBacklogItem in returnedBacklogItems)
+            foreach (var returnedBacklogItem in results.Items)
             {
                 bool isChildBacklogItem = false;
                 foreach (var childBacklogItem in childBacklogItems) 

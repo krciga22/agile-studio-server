@@ -3,6 +3,7 @@ using AgileStudioServer.Application.Exceptions;
 using AgileStudioServer.Application.Models;
 using AgileStudioServer.Application.Services;
 using AgileStudioServer.Core.Hydrator;
+using AgileStudioServer.Core.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,12 +26,23 @@ namespace AgileStudioServer.API.Controllers
 
         [HttpGet("{id}/Children", Name = "GetChildBacklogItems")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(List<BacklogItemDto>), StatusCodes.Status200OK)]
-        public IActionResult GetChildBacklogItems(int id)
+        [ProducesResponseType(typeof(PaginatedResultsDto<BacklogItemDto, BacklogItem>), StatusCodes.Status200OK)]
+        public IActionResult GetChildBacklogItems(int id, [FromQuery] int? page = null)
         {
-            var models = _BacklogItemService.GetChildBacklogItems(id);
-            var dtos = HydrateBacklogItemDtos(models);
-            return Ok(dtos);
+            var paginationDetails = new PaginationDetails();
+            if(page != null)
+            {
+                paginationDetails.Page = (int) page;
+            }
+
+            var paginationResults = _BacklogItemService.GetChildBacklogItems(id, paginationDetails);
+
+            PaginatedResultsDto<BacklogItemDto, BacklogItem> paginatedResultsDto = new(
+                HydrateBacklogItemDtos(paginationResults.Items), 
+                paginationResults
+            );
+
+            return Ok(paginatedResultsDto);
         }
 
         [HttpGet("{id}", Name = "GetBacklogItem")]

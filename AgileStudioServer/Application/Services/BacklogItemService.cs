@@ -1,5 +1,6 @@
 ﻿using AgileStudioServer.Application.Models;
 using AgileStudioServer.Core.Hydrator;
+using AgileStudioServer.Core.Pagination;
 using AgileStudioServer.Data;
 
 namespace AgileStudioServer.Application.Services
@@ -32,12 +33,32 @@ namespace AgileStudioServer.Application.Services
             return HydrateBacklogItemModels(entities);
         }
 
-        public virtual List<BacklogItem> GetChildBacklogItems(int parentBacklogItemId)
+        public virtual PaginationResults<BacklogItem> GetChildBacklogItems(int parentBacklogItemId, PaginationDetails? paginationDetails = null)
         {
-            List<Data.Entities.BacklogItem> entities = _DBContext.BacklogItem.Where(backlogItem =>
-                backlogItem.ParentBacklogItemId == parentBacklogItemId).ToList();
+            if(paginationDetails is null)
+            {
+                paginationDetails = new PaginationDetails();
+            }
 
-            return HydrateBacklogItemModels(entities);
+            IQueryable<Data.Entities.BacklogItem> query = _DBContext.BacklogItem
+                .Where(backlogItem => backlogItem.ParentBacklogItemId == parentBacklogItemId)
+                .OrderByDescending(backlogItem => backlogItem.CreatedOn)
+                .ThenByDescending(backlogItem => backlogItem.ID);
+
+            int total = query.Count();
+
+            query = query.Skip(paginationDetails.ItemsPerPage * (paginationDetails.Page - 1)).Take(paginationDetails.ItemsPerPage);
+
+            List<Data.Entities.BacklogItem> entities = query.ToList();
+
+            PaginationResults<BacklogItem> results = new(
+                HydrateBacklogItemModels(entities),
+                total,
+                paginationDetails.Page,
+                paginationDetails.ItemsPerPage
+            );
+
+            return results;
         }
 
         public virtual BacklogItem? GetParentBacklogItem(int id)
